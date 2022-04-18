@@ -72,6 +72,56 @@ export const createCard = (suit, number) => ({
   number,
 });
 
+// helper function for suit ordering
+const suitToN = (suit) => {
+  if (suit === SUIT_CLUBS) return 1;
+  if (suit === SUIT_DIAMONDS) return 2;
+  if (suit === SUIT_HEARTS) return 3;
+  return 4;
+};
+
+// helper function to say if a suit is less than another suit
+const suitLessThan = (s1, s2) => suitToN(s1) < suitToN(s2);
+
+// sort a hand
+const sortHand = (handParam) => {
+  // simple copy of hand (just to get around eslint complaint about assigning to function params)
+  const hand = [handParam[0], handParam[1], handParam[2], handParam[3], handParam[4]];
+
+  // do bubble sort to order the cards
+  for (let length = 5; length > 1; length -= 1) {
+    // move the smallest card from first entry to length
+    for (let i = 0; i < length - 1; i += 1) {
+      const thisHandNumber = hand[i].number;
+      const nextHandNumber = hand[i + 1].number;
+      let swap = false;
+      if (thisHandNumber === NUMBER_A || nextHandNumber === NUMBER_A) {
+        // NUMBER_A is less than all other numbers but considered the greatest, so special code for that
+        if (nextHandNumber === NUMBER_A && thisHandNumber !== NUMBER_A) {
+          // if this number is not an ace and the next is, then this is smaller, so move to the right
+          swap = true;
+        }
+        // else this is a NUMBER_A and so cannot be smaller than the next number
+      } else if (thisHandNumber < nextHandNumber) {
+        // this is smaller, so move to the right
+        swap = true;
+      }
+      // if the numbers are the same - then sort suits S, H, D, C
+      if (thisHandNumber === nextHandNumber && suitLessThan(hand[i].suit, hand[i + 1].suit)) {
+        swap = true;
+      }
+      if (swap) {
+        // this is smaller, so move to the right
+        const card = hand[i + 1];
+        hand[i + 1] = hand[i];
+        hand[i] = card;
+      }
+    }
+  }
+
+  return hand;
+};
+
 // create the hands of a solution
 export const createSolutionHands = () => {
   // create a deck of cards
@@ -85,37 +135,37 @@ export const createSolutionHands = () => {
 
   // put them in the hands
 
-  const hand1 = [
+  const hand1 = sortHand([
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
-  ];
+  ]);
 
-  const hand2 = [
+  const hand2 = sortHand([
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
-  ];
+  ]);
 
-  const hand3 = [
+  const hand3 = sortHand([
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
-  ];
+  ]);
 
-  const hand4 = [
+  const hand4 = sortHand([
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
     deck.shift(),
-  ];
+  ]);
 
   return [hand1, hand2, hand3, hand4];
 };
