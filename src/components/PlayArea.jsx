@@ -9,6 +9,8 @@ import BorderTopRightImage from '../images/borders/topright.png';
 import BorderBottomRightImage from '../images/borders/bottomright.png';
 import BorderRightImage from '../images/borders/right.png';
 
+import SolutionHand from './SolutionHand';
+
 const bordertopleft = {
   position: 'absolute',
   top: '4px',
@@ -92,6 +94,10 @@ const PlayArea = () => (
     <img src={BorderTopRightImage} alt="bordertopright" style={bordertopright} />
     <img src={BorderBottomRightImage} alt="borderbottomright" style={borderbottomright} />
     <img src={BorderRightImage} alt="borderright" style={borderright} />
+    <SolutionHand solutionHandIndex={0} />
+    <SolutionHand solutionHandIndex={1} />
+    <SolutionHand solutionHandIndex={2} />
+    <SolutionHand solutionHandIndex={3} />
   </div>
 );
 
