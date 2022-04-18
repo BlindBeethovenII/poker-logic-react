@@ -32,9 +32,19 @@ export function colToLeft(col) {
   return 21 + (col * CARD_WIDTH);
 }
 
-// calc top based on given row - adjusting for row 5
+// calc top based on given row
 export function rowToTop(row) {
   return 20 + (row * CARD_HEIGHT);
+}
+
+// calc left based on given column for the small cards
+export function colToLeftSmall(col) {
+  return colToLeft(7) + (col * (CARD_WIDTH / 2));
+}
+
+// calc top based on given row for the small cards
+export function rowToTopSmall(row) {
+  return 24 + (row * (CARD_HEIGHT / 2));
 }
 
 export const cardNumberToString = (number) => {

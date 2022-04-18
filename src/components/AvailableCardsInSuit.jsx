@@ -42,7 +42,7 @@ const AvailableCardsInSuit = (props) => {
   const cards = [];
   NUMBERS.forEach((number, i) => {
     const card = createCard(suit, number);
-    cards.push(<Card key={card.id} col={i + 5} row={row} card={card} />);
+    cards.push(<Card key={card.id} col={i - 1} row={row} card={card} small />);
   });
 
   return cards;
