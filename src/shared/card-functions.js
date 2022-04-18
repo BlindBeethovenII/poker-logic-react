@@ -1,5 +1,7 @@
 // useful card functions
 
+import shuffle from 'lodash.shuffle';
+
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
@@ -7,19 +9,12 @@ import {
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
-  NUMBER_10,
-  NUMBER_9,
-  NUMBER_8,
-  NUMBER_7,
-  NUMBER_6,
-  NUMBER_5,
-  NUMBER_4,
-  NUMBER_3,
-  NUMBER_2,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
   SUIT_SPADES,
+  SUITS,
+  NUMBERS,
 } from './constants';
 
 import CardSuitSpadesImage from '../images/cards/spades.png';
@@ -79,36 +74,47 @@ export const createCard = (suit, number) => ({
 
 // create the hands of a solution
 export const createSolutionHands = () => {
+  // create a deck of cards
+  let deck = [];
+  SUITS.map((suit) =>
+    NUMBERS.map((number) =>
+      deck.push(createCard(suit, number))));
+
+  // and shuffle them
+  deck = shuffle(deck);
+
+  // put them in the hands
+
   const hand1 = [
-    createCard(SUIT_HEARTS, NUMBER_A),
-    createCard(SUIT_HEARTS, NUMBER_K),
-    createCard(SUIT_HEARTS, NUMBER_Q),
-    createCard(SUIT_HEARTS, NUMBER_J),
-    createCard(SUIT_HEARTS, NUMBER_10),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
   ];
 
   const hand2 = [
-    createCard(SUIT_DIAMONDS, NUMBER_3),
-    createCard(SUIT_HEARTS, NUMBER_3),
-    createCard(SUIT_CLUBS, NUMBER_3),
-    createCard(SUIT_DIAMONDS, NUMBER_2),
-    createCard(SUIT_SPADES, NUMBER_2),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
   ];
 
   const hand3 = [
-    createCard(SUIT_DIAMONDS, NUMBER_6),
-    createCard(SUIT_CLUBS, NUMBER_6),
-    createCard(SUIT_SPADES, NUMBER_4),
-    createCard(SUIT_DIAMONDS, NUMBER_4),
-    createCard(SUIT_HEARTS, NUMBER_9),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
   ];
 
   const hand4 = [
-    createCard(SUIT_SPADES, NUMBER_8),
-    createCard(SUIT_HEARTS, NUMBER_8),
-    createCard(SUIT_DIAMONDS, NUMBER_K),
-    createCard(SUIT_HEARTS, NUMBER_7),
-    createCard(SUIT_SPADES, NUMBER_5),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
+    deck.shift(),
   ];
 
   return [hand1, hand2, hand3, hand4];

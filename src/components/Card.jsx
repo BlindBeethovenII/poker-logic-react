@@ -82,7 +82,6 @@ const Card = (props) => {
     opacity: faded ? 0.5 : 1,
   };
 
-  // the inside of the motion.div or div is the same regardless of if we animate the card into position
   const cardblank = <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />;
   let textX = small ? 5 : 10;
   if (number === NUMBER_10) {
