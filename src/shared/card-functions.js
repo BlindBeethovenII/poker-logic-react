@@ -60,8 +60,8 @@ export const cardSuitToFillColour = (suit) => {
 // the simple algorithm to generate the player and opponent card id from the card's suit and number
 export const generateCardId = (suit, number) => `card_${suit}_${number}`;
 
-// helper function
-const createCard = (suit, number) => ({
+// create the card object for the given suit/number
+export const createCard = (suit, number) => ({
   id: generateCardId(suit, number),
   suit,
   number,

@@ -11,6 +11,14 @@ import BorderRightImage from '../images/borders/right.png';
 
 import SolutionPerson from './SolutionPerson';
 import SolutionHand from './SolutionHand';
+import AvailableCardsInSuit from './AvailableCardsInSuit';
+
+import {
+  SUIT_SPADES,
+  SUIT_HEARTS,
+  SUIT_DIAMONDS,
+  SUIT_CLUBS,
+} from '../shared/constants';
 
 const bordertopleft = {
   position: 'absolute',
@@ -103,6 +111,10 @@ const PlayArea = () => (
     <SolutionHand solutionHandIndex={1} />
     <SolutionHand solutionHandIndex={2} />
     <SolutionHand solutionHandIndex={3} />
+    <AvailableCardsInSuit suit={SUIT_SPADES} />
+    <AvailableCardsInSuit suit={SUIT_HEARTS} />
+    <AvailableCardsInSuit suit={SUIT_DIAMONDS} />
+    <AvailableCardsInSuit suit={SUIT_CLUBS} />
   </div>
 );
 

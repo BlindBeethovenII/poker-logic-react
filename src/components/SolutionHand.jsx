@@ -21,7 +21,6 @@ const SolutionHand = (props) => {
     return null;
   }
 
-  // we now return an array of cards (at most 2 for now) - so the 2nd card is visible as the top card animates into position; and a count label (if we in debug mode)
   const cards = [];
   solutionHand.forEach((card, i) => {
     cards.push(<Card key={card.id} col={i + 1} row={solutionHandIndex} card={card} />);
