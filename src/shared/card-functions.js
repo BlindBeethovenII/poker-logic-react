@@ -39,7 +39,7 @@ export function rowToTop(row) {
 
 // calc left based on given column for the small cards
 export function colToLeftSmall(col) {
-  return colToLeft(7) + (col * (CARD_WIDTH / 2));
+  return colToLeft(7) - 10 + (col * (CARD_WIDTH / 2));
 }
 
 // calc top based on given row for the small cards
