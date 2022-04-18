@@ -39,3 +39,8 @@ export const NUMBERS = [
 export const NUMBER_NONE = -1;
 
 export const CARD_NONE = { suit: SUIT_NONE, number: NUMBER_NONE };
+
+export const PERSON_1 = 'PERSON 1';
+export const PERSON_2 = 'PERSON 2';
+export const PERSON_3 = 'PERSON 3';
+export const PERSON_4 = 'PERSON 4';

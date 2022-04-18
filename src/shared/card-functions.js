@@ -67,7 +67,7 @@ const createCard = (suit, number) => ({
   number,
 });
 
-// create a hands of a solution
+// create the hands of a solution
 export const createSolutionHands = () => {
   const hand1 = [
     createCard(SUIT_HEARTS, NUMBER_A),
