@@ -22,12 +22,19 @@ const AvailableCardsInSuit = (props) => {
 
   const { solutionHands } = useContext(GameStateContext);
 
-  // TODO
-  const solutionHand = solutionHands[0];
-  if (!solutionHand?.length) {
-    // if there are no cards then nothing to show
-    return null;
-  }
+  // helper function to say if a card is in the solution hands
+  const cardInSolutionHands = (card) => {
+    let result = false;
+    // could do this more elegantly
+    solutionHands.forEach((solutionHand) => {
+      solutionHand.forEach((solutionHandCard) => {
+        if (solutionHandCard.suit === card.suit && solutionHandCard.number === card.number) {
+          result = true;
+        }
+      });
+    });
+    return result;
+  };
 
   // convert suit to row
   let row = 0;
@@ -42,7 +49,7 @@ const AvailableCardsInSuit = (props) => {
   const cards = [];
   NUMBERS.forEach((number, i) => {
     const card = createCard(suit, number);
-    cards.push(<Card key={card.id} col={i - 1} row={row} card={card} small />);
+    cards.push(<Card key={card.id} col={i - 1} row={row} card={card} small faded={!cardInSolutionHands(card)} />);
   });
 
   return cards;

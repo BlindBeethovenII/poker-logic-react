@@ -27,6 +27,7 @@ const Card = (props) => {
     row,
     card,
     small,
+    faded,
   } = props;
 
   // there are the card details - including where it was showing before
@@ -46,6 +47,7 @@ const Card = (props) => {
     top: '0px',
     width: small ? '31px' : '63px',
     height: small ? '40px' : '81px',
+    opacity: faded ? 0.5 : 1,
   };
 
   const cardnumberstyle = {
@@ -61,6 +63,7 @@ const Card = (props) => {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
     msUserSelect: 'none',
+    opacity: faded ? 0.5 : 1,
   };
 
   let height = small ? '21px' : '42px';
@@ -76,6 +79,7 @@ const Card = (props) => {
     top: suit === SUIT_SPADES ? '2px' : '0px',
     width: small ? '20px' : '40px',
     height,
+    opacity: faded ? 0.5 : 1,
   };
 
   // the inside of the motion.div or div is the same regardless of if we animate the card into position
@@ -130,10 +134,12 @@ Card.propTypes = {
     number: PropTypes.number.isRequired,
   }).isRequired,
   small: PropTypes.bool,
+  faded: PropTypes.bool,
 };
 
 Card.defaultProps = {
   small: false,
+  faded: false,
 };
 
 export default Card;
