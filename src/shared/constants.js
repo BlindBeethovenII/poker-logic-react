@@ -44,3 +44,13 @@ export const PERSON_1 = 'PERSON 1';
 export const PERSON_2 = 'PERSON 2';
 export const PERSON_3 = 'PERSON 3';
 export const PERSON_4 = 'PERSON 4';
+
+export const HAND_TYPE_STRAIGHT_FLUSH = 9;
+export const HAND_TYPE_FOUR_OF_A_KIND = 8;
+export const HAND_TYPE_FULL_HOUSE = 7;
+export const HAND_TYPE_FLUSH = 6;
+export const HAND_TYPE_STRAIGHT = 5;
+export const HAND_TYPE_THREE_OF_A_KIND = 4;
+export const HAND_TYPE_TWO_PAIR = 3;
+export const HAND_TYPE_PAIR = 2;
+export const HAND_TYPE_HIGH_CARD = 1;

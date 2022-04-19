@@ -85,7 +85,7 @@ const suitLessThan = (s1, s2) => suitToN(s1) < suitToN(s2);
 
 // sort a hand
 const sortHand = (handParam) => {
-  // simple copy of hand (just to get around eslint complaint about assigning to function params)
+  // simple copy of hand param (just to get around eslint complaint about assigning to function params)
   const hand = [handParam[0], handParam[1], handParam[2], handParam[3], handParam[4]];
 
   // do bubble sort to order the cards
@@ -120,6 +120,46 @@ const sortHand = (handParam) => {
   }
 
   return hand;
+};
+
+// return the type of the given hand
+export const calcHandType = (hand) => {
+  const result = hand[0].number;
+  return result;
+};
+
+// sort the hands - note we cannot have two hands of the same type
+export const sortHands = (handsParam) => {
+  // simple copy of hands param (just to get around eslint complaint about assigning to function params)
+  const hands = [handsParam[0], handsParam[1], handsParam[2], handsParam[3]];
+
+  const handTypes = [calcHandType(hands[0]), calcHandType(hands[1]), calcHandType(hands[2]), calcHandType(hands[3])];
+
+  // do bubble sort the hand types, moving hands at the same type
+  for (let length = 4; length > 1; length -= 1) {
+    // move the smallest card from first entry to length
+    for (let i = 0; i < length - 1; i += 1) {
+      const thisHandType = handTypes[i];
+      const nextHandType = handTypes[i + 1];
+
+      if (thisHandType < nextHandType) {
+        // this is smaller, so move to the right
+        const handType = handTypes[i + 1];
+        handTypes[i + 1] = handTypes[i];
+        handTypes[i] = handType;
+
+        // doing the same move on the hand
+        const hand = hands[i + 1];
+        hands[i + 1] = hands[i];
+        hands[i] = hand;
+      }
+
+      if (thisHandType === nextHandType) {
+        console.error(`sortHands found two hands of the hand type ${nextHandType}`);
+      }
+    }
+  }
+  return hands;
 };
 
 // create the hands of a solution
@@ -167,5 +207,5 @@ export const createSolutionHands = () => {
     deck.shift(),
   ]);
 
-  return [hand1, hand2, hand3, hand4];
+  return sortHands([hand1, hand2, hand3, hand4]);
 };
