@@ -2,6 +2,11 @@
 
 import shuffle from 'lodash.shuffle';
 
+import CardSuitSpadesImage from '../images/cards/spades.png';
+import CardSuitHeartsImage from '../images/cards/hearts.png';
+import CardSuitDiamondsImage from '../images/cards/diamonds.png';
+import CardSuitClubsImage from '../images/cards/clubs.png';
+
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
@@ -15,12 +20,19 @@ import {
   SUIT_SPADES,
   SUITS,
   NUMBERS,
+  HAND_TYPE_STRAIGHT_FLUSH,
+  HAND_TYPE_FOUR_OF_A_KIND,
+  HAND_TYPE_FULL_HOUSE,
+  HAND_TYPE_FLUSH,
+  HAND_TYPE_STRAIGHT,
+  HAND_TYPE_THREE_OF_A_KIND,
+  HAND_TYPE_TWO_PAIR,
+  HAND_TYPE_PAIR,
+  HAND_TYPE_HIGH_CARD,
+  NUMBER_10,
 } from './constants';
 
-import CardSuitSpadesImage from '../images/cards/spades.png';
-import CardSuitHeartsImage from '../images/cards/hearts.png';
-import CardSuitDiamondsImage from '../images/cards/diamonds.png';
-import CardSuitClubsImage from '../images/cards/clubs.png';
+import logIfDevEnv from './logIfDevEnv';
 
 // calc left based on given column
 export function colToLeft(col) {
@@ -122,10 +134,165 @@ const sortHand = (handParam) => {
   return hand;
 };
 
+// return true if the hand is 5 cards of the same suit
+function handIsFlush(sortedHand) {
+  // first card
+  const firstCard = sortedHand[0];
+  for (let i = 1; i < 5; i += 1) {
+    const nextCard = sortedHand[i];
+    if (nextCard.suit !== firstCard.suit) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// return true if the sorted hand is a straight
+function handIsStraight(sortedHand) {
+  // all cards are defined, so easy to see if they are a straight
+  if (
+    sortedHand[0].number === sortedHand[1].number - 1
+    && sortedHand[1].number === sortedHand[2].number - 1
+    && sortedHand[2].number === sortedHand[3].number - 1
+    && sortedHand[3].number === sortedHand[4].number - 1
+  ) {
+    return true;
+  }
+
+  // don't forget A K Q J 10
+  if (
+    sortedHand[0].number === NUMBER_A
+    && sortedHand[1].number === NUMBER_K
+    && sortedHand[2].number === NUMBER_Q
+    && sortedHand[3].number === NUMBER_J
+    && sortedHand[4].number === NUMBER_10
+  ) {
+    return true;
+  }
+
+  // it is not a straight
+  return false;
+}
+
+// return the length of the longest number in the sorted hand
+function handLongestNumber(sortedHand) {
+  let longestCount = 0;
+  let currentCount = 0;
+  let currentCard = sortedHand[0];
+
+  // we have a card
+  currentCount = 1;
+
+  for (let i = 1; i < 5; i += 1) {
+    const nextCard = sortedHand[i];
+
+    // if same as previous increment
+    if (nextCard.number === currentCard.number) {
+      // same number
+      currentCount += 1;
+    } else {
+      // we are moving to the next, see if current is a longer
+      if (currentCount > longestCount) {
+        longestCount = currentCount;
+      }
+      currentCard = nextCard;
+      // back to counting from 1
+      currentCount = 1;
+    }
+  }
+
+  // check one we have been working on
+  if (currentCount > longestCount) {
+    longestCount = currentCount;
+  }
+
+  return longestCount;
+}
+
+// return true if the sorted hand is a full house
+function handIsFullHouse(sortedHand) {
+  // to be a full house it must be 2 of same followed by 3 of same, or 3 of same followed by 2 of same
+  if (
+    sortedHand[0].number === sortedHand[1].number
+    && sortedHand[2].number === sortedHand[3].number
+    && sortedHand[3].number === sortedHand[4].number
+  ) {
+    return true;
+  }
+
+  if (
+    sortedHand[0].number === sortedHand[1].number
+    && sortedHand[1].number === sortedHand[2].number
+    && sortedHand[3].number === sortedHand[4].number
+  ) {
+    return true;
+  }
+
+  // it is not a full house
+  return false;
+}
+
+// return true if the sorted hand is two pairs (note this will be called after checking for full house)
+function handIsTwoPairs(sortedHand) {
+  // to be a two pairs it must be 2,2,1 (same test) or 2,1,2 or 1,2,2
+  if (sortedHand[0].number === sortedHand[1].number && sortedHand[2].number === sortedHand[3].number) {
+    return true;
+  }
+
+  if (sortedHand[0].number === sortedHand[1].number && sortedHand[3].number === sortedHand[4].number) {
+    return true;
+  }
+
+  if (sortedHand[1].number === sortedHand[2].number && sortedHand[3].number === sortedHand[4].number) {
+    return true;
+  }
+
+  return false;
+}
+
 // return the type of the given hand
 export const calcHandType = (hand) => {
-  const result = hand[0].number;
-  return result;
+  // work out if the hand is a flush, being 5 cards of the same suit
+  const isFlush = handIsFlush(hand);
+
+  // work out if the hand is a straight, being 5 cards of consequtive numbers
+  const isStraight = handIsStraight(hand);
+
+  if (isFlush && isStraight) {
+    return HAND_TYPE_STRAIGHT_FLUSH;
+  }
+
+  if (isStraight) {
+    return HAND_TYPE_STRAIGHT;
+  }
+
+  if (isFlush) {
+    return HAND_TYPE_FLUSH;
+  }
+
+  const longestNumber = handLongestNumber(hand);
+
+  if (longestNumber === 4) {
+    return HAND_TYPE_FOUR_OF_A_KIND;
+  }
+
+  if (handIsFullHouse(hand)) {
+    return HAND_TYPE_FULL_HOUSE;
+  }
+
+  if (longestNumber === 3) {
+    return HAND_TYPE_THREE_OF_A_KIND;
+  }
+
+  if (handIsTwoPairs(hand)) {
+    return HAND_TYPE_TWO_PAIR;
+  }
+
+  if (longestNumber === 2) {
+    return HAND_TYPE_PAIR;
+  }
+
+  return HAND_TYPE_HIGH_CARD;
 };
 
 // sort the hands - note we cannot have two hands of the same type
@@ -159,6 +326,9 @@ export const sortHands = (handsParam) => {
       }
     }
   }
+
+  logIfDevEnv(`sortHands hard types in order ${handTypes}`);
+
   return hands;
 };
 
