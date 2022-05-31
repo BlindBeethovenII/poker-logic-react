@@ -446,7 +446,7 @@ const generateStraightFlush = (cards) => {
     }
   }
 
-  logIfDevEnv(`generateStraightFlush couldn't find straight flush from cards ${JSON.stringify(cards)}`);
+  logIfDevEnv(`generateStraightFlush couldn't find straight flush from the cards ${JSON.stringify(cards)}`);
 
   return null;
 };
@@ -478,7 +478,60 @@ const generateFourOfAKind = (cards) => {
     }
   }
 
-  logIfDevEnv(`generateFourOfAKind couldn't find four of a kind from cards ${JSON.stringify(cards)}`);
+  logIfDevEnv(`generateFourOfAKind couldn't find four of a kind from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
+// generate a full house from the given shuffled cards
+// NOTE: The given cards are NOT updated here
+const generateFullHouse = (cards) => {
+  // randomly order the numbers
+  const numbers = shuffle(NUMBERS);
+
+  // sort the cards into numbers for which there are 3/4 and numbers for which there are 2 - remember the numbers themselves are in a random order
+  const numberCards3or4 = [];
+  const numberCards2 = [];
+  for (let i = 0; i < numbers.length; i += 1) {
+    const numberCards = getNumbersFromCards(numbers[i], cards);
+    if (numberCards.length >= 3) {
+      numberCards3or4.push(numberCards);
+    } else if (numberCards.length === 2) {
+      numberCards2.push(numberCards);
+    }
+  }
+
+  // logIfDevEnv(`generateFullHouse numberCards3or4 ${JSON.stringify(numberCards3or4)}`);
+
+  // now componse a full house
+  // first check we can do it - for that we need either one n3/n3 and at least one n2, or at least two n3/n4
+  if ((numberCards3or4.length === 1 && numberCards2.length >= 1) || numberCards3or4.length >= 2) {
+    // first deal with case where there is only one of size 3/4
+    if (numberCards3or4.length === 1) {
+      // put that in the hand, followed by the first pair
+      const the3CardsCard1 = numberCards3or4[0][0];
+      const the3CardsCard2 = numberCards3or4[0][1];
+      const the3CardsCard3 = numberCards3or4[0][2];
+      const the2CardsCard1 = numberCards2[0][0];
+      const the2CardsCard2 = numberCards2[0][1];
+      return sortHand([the3CardsCard1, the3CardsCard2, the3CardsCard3, the2CardsCard1, the2CardsCard2]);
+    }
+
+    // now we have more than one of size 3/4
+    // take the first 3/4
+    const first3or4Cards = numberCards3or4.shift();
+    const the3CardsCard1 = first3or4Cards[0];
+    const the3CardsCard2 = first3or4Cards[1];
+    const the3CardsCard3 = first3or4Cards[2];
+
+    // combine the 3/4 and 2 arrays into one, shuffle again, and take the first
+    const first2orMoreCards = shuffle([...numberCards3or4, ...numberCards2]).shift();
+    const the2CardsCard1 = first2orMoreCards[0];
+    const the2CardsCard2 = first2orMoreCards[1];
+    return sortHand([the3CardsCard1, the3CardsCard2, the3CardsCard3, the2CardsCard1, the2CardsCard2]);
+  }
+
+  logIfDevEnv(`generateFullHouse couldn't find a full house from the cards ${JSON.stringify(cards)}`);
 
   return null;
 };
@@ -494,6 +547,10 @@ export const generateHandOfHandType = (handType, cards) => {
 
   if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
     return generateFourOfAKind(cards);
+  }
+
+  if (handType === HAND_TYPE_FULL_HOUSE) {
+    return generateFullHouse(cards);
   }
 
   return sortHand([
