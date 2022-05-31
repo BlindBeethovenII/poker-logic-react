@@ -392,6 +392,13 @@ const getSortedSuitFromCards = (suit, cards) => {
   return sortSuit(suitCards);
 };
 
+// return an array of the cards of the given number (not in order)
+const getNumbersFromCards = (number, cards) => {
+  const numberCards = cards.filter((card) => card.number === number);
+
+  return numberCards;
+};
+
 // generate a straight flush from the given shuffled cards
 // NOTE: The given cards are NOT updated here
 const generateStraightFlush = (cards) => {
@@ -431,7 +438,7 @@ const generateStraightFlush = (cards) => {
         // select a random one and return it
         possibleStraightFlushes = shuffle(possibleStraightFlushes);
 
-        logIfDevEnv(`generateStraightFlush first possibleStraightFlushes is ${JSON.stringify(possibleStraightFlushes[0])}`);
+        // logIfDevEnv(`generateStraightFlush first possibleStraightFlushes is ${JSON.stringify(possibleStraightFlushes[0])}`);
 
         // it will already be sorted - but calling sortHand anyway
         return sortHand(possibleStraightFlushes[0]);
@@ -444,13 +451,49 @@ const generateStraightFlush = (cards) => {
   return null;
 };
 
+// generate four of a kind from the given shuffled cards
+// NOTE: The given cards are NOT updated here
+const generateFourOfAKind = (cards) => {
+  // randomly order the numbers
+  const numbers = shuffle(NUMBERS);
+
+  // work through each number
+  for (let i = 0; i < numbers.length; i += 1) {
+    const numberCards = getNumbersFromCards(numbers[i], cards);
+
+    // if there are 4 of them then we have found our four of a kind
+    if (numberCards.length === 4) {
+      // add in the first card that is not of this number
+      // Note: we assume here that cards has at least one other possible card
+      const numberCard = numberCards[0];
+
+      for (let j = 0; j < cards.length; j += 1) {
+        const card = cards[j];
+        if (card.number !== numberCard.number) {
+          // okay - we have it
+          numberCards.push(card);
+          return sortHand(numberCards);
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generateFourOfAKind couldn't find four of a kind from cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
-  logIfDevEnv(`generateHandOfHandType handType=${handType}`);
+  // logIfDevEnv(`generateHandOfHandType handType=${handType}`);
 
   if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
     return generateStraightFlush(cards);
+  }
+
+  if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
+    return generateFourOfAKind(cards);
   }
 
   return sortHand([
