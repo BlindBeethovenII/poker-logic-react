@@ -332,7 +332,22 @@ export const sortHands = (handsParam) => {
   return hands;
 };
 
+// generate hand of named hand type from cards in deck
+// NOTE: The deck is NOT updated here with the cards used
+export const generateHandOfHandType = (handType, deck) => {
+  logIfDevEnv(`generateHandOfHandType handType=${handType}`);
+
+  return sortHand([
+    deck[0],
+    deck[1],
+    deck[2],
+    deck[3],
+    deck[4],
+  ]);
+};
+
 // create the hands of a solution
+// the approach here makes sures each hand is of a different hand type
 export const createSolutionHands = () => {
   // create a deck of cards
   let deck = [];
@@ -343,39 +358,51 @@ export const createSolutionHands = () => {
   // and shuffle them
   deck = shuffle(deck);
 
-  // put them in the hands
+  // the hand types
+  let handTypes = [
+    HAND_TYPE_STRAIGHT_FLUSH,
+    HAND_TYPE_FOUR_OF_A_KIND,
+    HAND_TYPE_FULL_HOUSE,
+    HAND_TYPE_FLUSH,
+    HAND_TYPE_STRAIGHT,
+    HAND_TYPE_THREE_OF_A_KIND,
+    HAND_TYPE_TWO_PAIR,
+    HAND_TYPE_PAIR,
+    HAND_TYPE_HIGH_CARD,
+  ];
 
-  const hand1 = sortHand([
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-  ]);
+  // and shuffle them
+  handTypes = shuffle(handTypes);
 
-  const hand2 = sortHand([
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-  ]);
+  // logIfDevEnv(`handTypes = ${handTypes}`);
 
-  const hand3 = sortHand([
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-  ]);
+  const hand1 = generateHandOfHandType(handTypes[0], deck);
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
 
-  const hand4 = sortHand([
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-    deck.shift(),
-  ]);
+  const hand2 = generateHandOfHandType(handTypes[1], deck);
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+
+  const hand3 = generateHandOfHandType(handTypes[2], deck);
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+
+  const hand4 = generateHandOfHandType(handTypes[3], deck);
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
+  deck.shift();
 
   return sortHands([hand1, hand2, hand3, hand4]);
 };
