@@ -14,6 +14,10 @@ import {
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
+  NUMBER_2,
+  NUMBER_3,
+  NUMBER_4,
+  NUMBER_5,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -134,6 +138,44 @@ const sortHand = (handParam) => {
   return hand;
 };
 
+// sort a suit - this assumes all cards are in the same suit with no repeated cards
+const sortSuit = (cardsParam) => {
+  // copy of the given cards to get around eslint complaint about assigning to function params
+  const cards = [];
+  for (let len = 0; len < cardsParam.length; len += 1) {
+    cards[len] = cardsParam[len];
+  }
+
+  // do bubble sort to order the cards
+  for (let len = cards.length; len > 1; len -= 1) {
+    // move the smallest card from first entry to length
+    for (let i = 0; i < len - 1; i += 1) {
+      const thisHandNumber = cards[i].number;
+      const nextHandNumber = cards[i + 1].number;
+      let swap = false;
+      if (thisHandNumber === NUMBER_A || nextHandNumber === NUMBER_A) {
+        // NUMBER_A is less than all other numbers but considered the greatest, so special code for that
+        if (nextHandNumber === NUMBER_A && thisHandNumber !== NUMBER_A) {
+          // if this number is not an ace and the next is, then this is smaller, so move to the right
+          swap = true;
+        }
+        // else this is a NUMBER_A and so cannot be smaller than the next number
+      } else if (thisHandNumber < nextHandNumber) {
+        // this is smaller, so move to the right
+        swap = true;
+      }
+      if (swap) {
+        // this is smaller, so move to the right
+        const card = cards[i + 1];
+        cards[i + 1] = cards[i];
+        cards[i] = card;
+      }
+    }
+  }
+
+  return cards;
+};
+
 // return true if the hand is 5 cards of the same suit
 function handIsFlush(sortedHand) {
   // first card
@@ -151,10 +193,10 @@ function handIsFlush(sortedHand) {
 function handIsStraight(sortedHand) {
   // all cards are defined, so easy to see if they are a straight
   if (
-    sortedHand[0].number === sortedHand[1].number - 1
-    && sortedHand[1].number === sortedHand[2].number - 1
-    && sortedHand[2].number === sortedHand[3].number - 1
-    && sortedHand[3].number === sortedHand[4].number - 1
+    sortedHand[0].number === sortedHand[1].number + 1
+    && sortedHand[1].number === sortedHand[2].number + 1
+    && sortedHand[2].number === sortedHand[3].number + 1
+    && sortedHand[3].number === sortedHand[4].number + 1
   ) {
     return true;
   }
@@ -166,6 +208,17 @@ function handIsStraight(sortedHand) {
     && sortedHand[2].number === NUMBER_Q
     && sortedHand[3].number === NUMBER_J
     && sortedHand[4].number === NUMBER_10
+  ) {
+    return true;
+  }
+
+  // don't forget A 5 4 3 2
+  if (
+    sortedHand[0].number === NUMBER_A
+    && sortedHand[1].number === NUMBER_5
+    && sortedHand[2].number === NUMBER_4
+    && sortedHand[3].number === NUMBER_3
+    && sortedHand[4].number === NUMBER_2
   ) {
     return true;
   }
@@ -332,31 +385,99 @@ export const sortHands = (handsParam) => {
   return hands;
 };
 
-// generate hand of named hand type from cards in deck
-// NOTE: The deck is NOT updated here with the cards used
-export const generateHandOfHandType = (handType, deck) => {
+// return an array of the cards of the given suit in order
+const getSortedSuitFromCards = (suit, cards) => {
+  const suitCards = cards.filter((card) => card.suit === suit);
+
+  return sortSuit(suitCards);
+};
+
+// generate a straight flush from the given shuffled cards
+// NOTE: The given cards are NOT updated here
+const generateStraightFlush = (cards) => {
+  // randomly order the suits
+  const suits = shuffle([SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS, SUIT_CLUBS]);
+
+  // work through each suit
+  for (let i = 0; i < suits.length; i += 1) {
+    const suitCards = getSortedSuitFromCards(suits[i], cards);
+
+    // we need at least 5 cards before we are even interested in this suit
+    if (suitCards.length >= 5) {
+      // build up a list of possible straight flushes
+      let possibleStraightFlushes = [];
+
+      for (let j = 0; j < suitCards.length - 4; j += 1) {
+        // check this sequence of 5 cards
+        const number1 = suitCards[j].number;
+        const number2 = suitCards[j + 1].number;
+        const number3 = suitCards[j + 2].number;
+        const number4 = suitCards[j + 3].number;
+        const number5 = suitCards[j + 4].number;
+
+        if (number1 === NUMBER_A && number2 === NUMBER_K && number3 === NUMBER_Q && number4 === NUMBER_J && number5 === NUMBER_10) {
+          // special check for AKQJ10
+          possibleStraightFlushes.push([suitCards[j], suitCards[j + 1], suitCards[j + 2], suitCards[j + 3], suitCards[j + 4]]);
+        } else if (suitCards[0].number === NUMBER_A && number2 === NUMBER_5 && number3 === NUMBER_4 && number4 === NUMBER_3 && number5 === NUMBER_2) {
+          // special check for 5432A
+          possibleStraightFlushes.push([suitCards[0], suitCards[j + 1], suitCards[j + 2], suitCards[j + 3], suitCards[j + 4]]);
+        } else if (number1 === number2 + 1 && number2 === number3 + 1 && number3 === number4 + 1 && number4 === number5 + 1) {
+          possibleStraightFlushes.push([suitCards[j], suitCards[j + 1], suitCards[j + 2], suitCards[j + 3], suitCards[j + 4]]);
+        }
+      }
+
+      // if we've found any
+      if (possibleStraightFlushes.length > 0) {
+        // select a random one and return it
+        possibleStraightFlushes = shuffle(possibleStraightFlushes);
+
+        logIfDevEnv(`generateStraightFlush first possibleStraightFlushes is ${JSON.stringify(possibleStraightFlushes[0])}`);
+
+        // it will already be sorted - but calling sortHand anyway
+        return sortHand(possibleStraightFlushes[0]);
+      }
+    }
+  }
+
+  logIfDevEnv(`generateStraightFlush couldn't find straight flush from cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
+// generate hand of named hand type from given shuffled cards
+// NOTE: The given cards are is NOT updated
+export const generateHandOfHandType = (handType, cards) => {
   logIfDevEnv(`generateHandOfHandType handType=${handType}`);
 
+  if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
+    return generateStraightFlush(cards);
+  }
+
   return sortHand([
-    deck[0],
-    deck[1],
-    deck[2],
-    deck[3],
-    deck[4],
+    cards[0],
+    cards[1],
+    cards[2],
+    cards[3],
+    cards[4],
   ]);
 };
 
-// create the hands of a solution
-// the approach here makes sures each hand is of a different hand type
-export const createSolutionHands = () => {
+// create a new deck of shuffled cards
+export const createNewDeck = () => {
   // create a deck of cards
-  let deck = [];
+  const deck = [];
   SUITS.map((suit) =>
     NUMBERS.map((number) =>
       deck.push(createCard(suit, number))));
 
   // and shuffle them
-  deck = shuffle(deck);
+  return (shuffle(deck));
+};
+
+// create the hands of a solution
+// the approach here makes sures each hand is of a different hand type
+export const createSolutionHands = () => {
+  const cards = createNewDeck();
 
   // the hand types
   let handTypes = [
@@ -376,33 +497,29 @@ export const createSolutionHands = () => {
 
   // logIfDevEnv(`handTypes = ${handTypes}`);
 
-  const hand1 = generateHandOfHandType(handTypes[0], deck);
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
+  // generate the hands
+  const hands = [];
+  for (let i = 0; i < 4; i += 1) {
+    const nextHand = generateHandOfHandType(handTypes[i], cards);
 
-  const hand2 = generateHandOfHandType(handTypes[1], deck);
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
+    // check we got something
+    if (!nextHand) {
+      console.error(`createSolutionHands could not generate the hand type handTypes[i] from cards ${JSON.stringify(cards)}`);
 
-  const hand3 = generateHandOfHandType(handTypes[2], deck);
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
+      // TODO - try again here???
+      return null;
+    }
 
-  const hand4 = generateHandOfHandType(handTypes[3], deck);
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
-  deck.shift();
+    // remember this hand
+    hands.push(nextHand);
 
-  return sortHands([hand1, hand2, hand3, hand4]);
+    // remove nextHand cards
+    cards.shift();
+    cards.shift();
+    cards.shift();
+    cards.shift();
+    cards.shift();
+  }
+
+  return sortHands(hands);
 };
