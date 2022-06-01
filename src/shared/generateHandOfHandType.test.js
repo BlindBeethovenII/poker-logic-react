@@ -28,7 +28,7 @@ import {
   HAND_TYPE_THREE_OF_A_KIND,
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
-  // export const HAND_TYPE_HIGH_CARD = 1;
+  HAND_TYPE_HIGH_CARD,
 } from './constants';
 
 // how many times to iterate in tests
@@ -174,6 +174,12 @@ describe('generateHandOfHandType', () => {
   it(`will return a pair for HAND_TYPE_PAIR for a new deck of cards ${iterateN} times`, () => {
     for (let i = 0; i < iterateN; i += 1) {
       expect(calcHandType(generateHandOfHandType(HAND_TYPE_PAIR, createNewDeck()))).toEqual(HAND_TYPE_PAIR);
+    }
+  });
+
+  it(`will return a high card hand for HAND_TYPE_HIGH_CARD for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_HIGH_CARD, createNewDeck()))).toEqual(HAND_TYPE_HIGH_CARD);
     }
   });
 });

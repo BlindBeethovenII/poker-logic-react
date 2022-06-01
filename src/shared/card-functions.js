@@ -797,6 +797,44 @@ const generatePair = (cards) => {
   return null;
 };
 
+// generate high card the given shuffled cards, make sure it is not another type of hand
+// NOTE: The given cards are NOT updated here
+const generateHighCard = (cards) => {
+  // first some checks
+  if (cards.length < 5) {
+    logIfDevEnv(`generateHighCard was given less than 5 cards ${JSON.stringify(cards)}`);
+
+    return null;
+  }
+
+  if (cards.length === 5) {
+    const hand = sortHand(cards);
+    if (calcHandType(hand) === HAND_TYPE_HIGH_CARD) {
+      return hand;
+    }
+
+    logIfDevEnv(`generateHighCard was given 5 cards which are not a high card hand ${JSON.stringify(cards)}`);
+
+    return null;
+  }
+
+  // The approach is to keep shuffling the cards, taking the first 5, until a high card hand is found
+  // NOTE: This algorithm assumes there are 5 cards of different numbers, which are not also another hand type - otherwise this will loop for ever
+
+  // loop until we find a good hand
+  for (;;) {
+    const shuffledCards = shuffle(cards);
+
+    // take the first 5 cards and sort
+    const hand = sortHand([shuffledCards[0], shuffledCards[1], shuffledCards[2], shuffledCards[3], shuffledCards[4]]);
+
+    if (calcHandType(hand) === HAND_TYPE_HIGH_CARD) {
+      // found one
+      return hand;
+    }
+  }
+};
+
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
@@ -834,13 +872,11 @@ export const generateHandOfHandType = (handType, cards) => {
     return generatePair(cards);
   }
 
-  return sortHand([
-    cards[0],
-    cards[1],
-    cards[2],
-    cards[3],
-    cards[4],
-  ]);
+  if (handType === HAND_TYPE_HIGH_CARD) {
+    return generateHighCard(cards);
+  }
+
+  throw new Error(`generateHandOfHandType did not understand handType ${handType}`);
 };
 
 // create a new deck of shuffled cards
@@ -886,7 +922,7 @@ export const createSolutionHands = () => {
     // check we got something
     if (!nextHand) {
       // TODO - try again here???
-      throw new Error(`createSolutionHands could not generate the hand type handTypes[i] from cards ${JSON.stringify(cards)}`);
+      throw new Error(`createSolutionHands could not generate the hand type ${handTypes[i]} from cards ${JSON.stringify(cards)}`);
     }
 
     // remember this hand
