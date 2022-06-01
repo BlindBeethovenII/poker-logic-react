@@ -3,6 +3,7 @@ import {
   createNewDeck,
   createCard,
   calcHandType,
+  // createSolutionHands,
 } from './card-functions';
 
 import {
@@ -19,21 +20,24 @@ import {
   HAND_TYPE_FULL_HOUSE,
 } from './constants';
 
+// how many times to iterate in tests
+const iterateN = 1000;
+
 describe('generateHandOfHandType', () => {
-  it('will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a new deck of cards 1000 times', () => {
-    for (let i = 0; i < 1000; i += 1) {
+  it(`will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
       expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT_FLUSH, createNewDeck()))).toEqual(HAND_TYPE_STRAIGHT_FLUSH);
     }
   });
 
-  it('will return four of a kind for HAND_TYPE_FOUR_OF_A_KIND for a new deck of cards 1000 times', () => {
-    for (let i = 0; i < 1000; i += 1) {
+  it(`will return four of a kind for HAND_TYPE_FOUR_OF_A_KIND for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
       expect(calcHandType(generateHandOfHandType(HAND_TYPE_FOUR_OF_A_KIND, createNewDeck()))).toEqual(HAND_TYPE_FOUR_OF_A_KIND);
     }
   });
 
-  it('will return a full house for HAND_TYPE_FULL_HOUSE for a new deck of cards 1000 times', () => {
-    for (let i = 0; i < 1000; i += 1) {
+  it(`will return a full house for HAND_TYPE_FULL_HOUSE for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
       expect(calcHandType(generateHandOfHandType(HAND_TYPE_FULL_HOUSE, createNewDeck()))).toEqual(HAND_TYPE_FULL_HOUSE);
     }
   });
@@ -52,3 +56,15 @@ describe('generateHandOfHandType', () => {
     expect(calcHandType(generateHandOfHandType(HAND_TYPE_FULL_HOUSE, deck))).toEqual(HAND_TYPE_FULL_HOUSE);
   });
 });
+
+// describe('createSolutionHands', () => {
+//   it(`will return 4 hands for a consistent solution ${iterateN} times`, () => {
+//     for (let i = 0; i < iterateN; i += 1) {
+//       // get the hands of a solution
+//       const solutionHands = createSolutionHands();
+
+//       // there should be 4 of them
+//       expect(solutionHands.length).toEqual(4);
+//     }
+//   });
+// });

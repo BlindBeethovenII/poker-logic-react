@@ -399,6 +399,20 @@ const getNumbersFromCards = (number, cards) => {
   return numberCards;
 };
 
+// helper function
+const cardsEqual = (card1, card2) => card1.number === card2.number && card1.suit === card2.suit;
+
+// helper function
+const numberUniqueCards = (cards) => {
+  const cardIds = new Set();
+
+  for (let i = 0; i < cards.length; i += 1) {
+    cardIds.add(cards[i].id);
+  }
+
+  return cardIds.size;
+};
+
 // generate a straight flush from the given shuffled cards
 // NOTE: The given cards are NOT updated here
 const generateStraightFlush = (cards) => {
@@ -577,7 +591,7 @@ export const createNewDeck = () => {
 // create the hands of a solution
 // the approach here makes sures each hand is of a different hand type
 export const createSolutionHands = () => {
-  const cards = createNewDeck();
+  let cards = createNewDeck();
 
   // the hand types
   let handTypes = [
@@ -604,21 +618,28 @@ export const createSolutionHands = () => {
 
     // check we got something
     if (!nextHand) {
-      console.error(`createSolutionHands could not generate the hand type handTypes[i] from cards ${JSON.stringify(cards)}`);
-
       // TODO - try again here???
-      return null;
+      throw new Error(`createSolutionHands could not generate the hand type handTypes[i] from cards ${JSON.stringify(cards)}`);
     }
 
     // remember this hand
     hands.push(nextHand);
 
-    // remove nextHand cards
-    cards.shift();
-    cards.shift();
-    cards.shift();
-    cards.shift();
-    cards.shift();
+    // remove nextHand cards from the cards we can select from now
+    cards = cards.filter((card) => !cardsEqual(card, nextHand[0])
+      && !cardsEqual(card, nextHand[1])
+      && !cardsEqual(card, nextHand[2])
+      && !cardsEqual(card, nextHand[3])
+      && !cardsEqual(card, nextHand[4]));
+  }
+
+  // cards used in solution
+  const handsCards = [...hands[0], ...hands[1], ...hands[2], ...hands[3]];
+  const nUnique = numberUniqueCards(handsCards);
+
+  if (nUnique !== 20) {
+    // TODO - try again here???
+    throw new Error(`createSolutionHands should have 20 unique cards, but it has ${nUnique} - this should never happen!!!`);
   }
 
   return sortHands(hands);
