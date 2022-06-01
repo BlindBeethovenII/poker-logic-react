@@ -49,7 +49,7 @@ const AvailableCardsInSuit = (props) => {
   const cards = [];
   NUMBERS.forEach((number, i) => {
     const card = createCard(suit, number);
-    cards.push(<Card key={card.id} col={i - 1} row={row} card={card} small faded={!cardInSolutionHands(card)} />);
+    cards.push(<Card key={card.id} col={11 - i} row={row} card={card} small faded={!cardInSolutionHands(card)} />);
   });
 
   return cards;
