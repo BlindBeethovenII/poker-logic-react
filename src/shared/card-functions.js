@@ -379,12 +379,12 @@ export const sortHands = (handsParam) => {
       }
 
       if (thisHandType === nextHandType) {
-        console.error(`sortHands found two hands of the hand type ${nextHandType}`);
+        throw new Error(`sortHands found two hands of the hand type ${nextHandType}`);
       }
     }
   }
 
-  logIfDevEnv(`sortHands hard types in order ${handTypes}`);
+  // logIfDevEnv(`sortHands hard types in order ${handTypes}`);
 
   return hands;
 };
@@ -819,10 +819,10 @@ const generateHighCard = (cards) => {
   }
 
   // The approach is to keep shuffling the cards, taking the first 5, until a high card hand is found
-  // NOTE: This algorithm assumes there are 5 cards of different numbers, which are not also another hand type - otherwise this will loop for ever
+  // NOTE: We do this a fix number of times - otherwise this will loop for ever
 
   // loop until we find a good hand
-  for (;;) {
+  for (let i = 0; i < 1000; i += 1) {
     const shuffledCards = shuffle(cards);
 
     // take the first 5 cards and sort
@@ -833,12 +833,16 @@ const generateHighCard = (cards) => {
       return hand;
     }
   }
+
+  logIfDevEnv(`generateHighCard couldn't find a high card hand from the cards ${JSON.stringify(cards)}`);
+
+  return null;
 };
 
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
-  // logIfDevEnv(`generateHandOfHandType handType=${handType}`);
+  logIfDevEnv(`generateHandOfHandType handType=${handType}`);
 
   if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
     return generateStraightFlush(cards);
@@ -914,26 +918,31 @@ export const createSolutionHands = () => {
 
   // logIfDevEnv(`handTypes = ${handTypes}`);
 
-  // generate the hands
+  // generate the hands - we now work through all the possible hand types, as I found sometimes a certain hand type could not be generated with the cards left
   const hands = [];
-  for (let i = 0; i < 4; i += 1) {
+  for (let i = 0; i < handTypes.length && hands.length < 4; i += 1) {
     const nextHand = generateHandOfHandType(handTypes[i], cards);
 
     // check we got something
     if (!nextHand) {
-      // TODO - try again here???
-      throw new Error(`createSolutionHands could not generate the hand type ${handTypes[i]} from cards ${JSON.stringify(cards)}`);
+      logIfDevEnv(`createSolutionHands could not generate the hand type ${handTypes[i]} from cards ${JSON.stringify(cards)}`);
+    } else {
+      // remember this hand
+      hands.push(nextHand);
+
+      // remove the cards of nextHand from the cards we can select from now
+      cards = cards.filter((card) => !cardsEqual(card, nextHand[0])
+        && !cardsEqual(card, nextHand[1])
+        && !cardsEqual(card, nextHand[2])
+        && !cardsEqual(card, nextHand[3])
+        && !cardsEqual(card, nextHand[4]));
     }
+  }
 
-    // remember this hand
-    hands.push(nextHand);
-
-    // remove nextHand cards from the cards we can select from now
-    cards = cards.filter((card) => !cardsEqual(card, nextHand[0])
-      && !cardsEqual(card, nextHand[1])
-      && !cardsEqual(card, nextHand[2])
-      && !cardsEqual(card, nextHand[3])
-      && !cardsEqual(card, nextHand[4]));
+  // check we have 4 hands
+  if (hands.length !== 4) {
+    // TODO - try again here???
+    throw new Error('createSolutionHands could not generate 4 hands - this should never happen!!!');
   }
 
   // cards used in solution

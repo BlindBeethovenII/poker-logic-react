@@ -3,7 +3,7 @@ import {
   createNewDeck,
   createCard,
   calcHandType,
-  // createSolutionHands,
+  createSolutionHands,
 } from './card-functions';
 
 import {
@@ -32,7 +32,7 @@ import {
 } from './constants';
 
 // how many times to iterate in tests
-const iterateN = 1000;
+const iterateN = 10000;
 
 describe('generateHandOfHandType', () => {
   it(`will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a new deck of cards ${iterateN} times`, () => {
@@ -184,14 +184,14 @@ describe('generateHandOfHandType', () => {
   });
 });
 
-// describe('createSolutionHands', () => {
-//   it(`will return 4 hands for a consistent solution ${iterateN} times`, () => {
-//     for (let i = 0; i < iterateN; i += 1) {
-//       // get the hands of a solution
-//       const solutionHands = createSolutionHands();
+describe('createSolutionHands', () => {
+  it(`will return 4 hands for a consistent solution ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      // get the hands of a solution
+      const solutionHands = createSolutionHands();
 
-//       // there should be 4 of them
-//       expect(solutionHands.length).toEqual(4);
-//     }
-//   });
-// });
+      // there should be 4 of them
+      expect(solutionHands.length).toEqual(4);
+    }
+  });
+});
