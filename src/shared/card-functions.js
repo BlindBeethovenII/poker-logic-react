@@ -656,6 +656,147 @@ const generateStraight = (cards) => {
   return null;
 };
 
+// generate three of a kind from the given shuffled cards, make sure it is not 4 of a kind or a full house
+// NOTE: The given cards are NOT updated here
+const generateThreeOfAKind = (cards) => {
+  // randomly order the numbers
+  const numbers = shuffle(NUMBERS);
+
+  // work through each number
+  for (let i = 0; i < numbers.length; i += 1) {
+    const numberCards = getUnsortedNumbersFromCards(numbers[i], cards);
+
+    // if there are at least of them then we have found our three of a kind
+    if (numberCards.length >= 3) {
+      // take the first three of these
+      const hand = [numberCards[0], numberCards[1], numberCards[2]];
+
+      // add in two further cards, of different numbers, which are not of this number
+      // Note: we assume here that cards has at least two other possible cards
+      const number1 = hand[0].number;
+      let number2 = null;
+
+      for (let j = 0; j < cards.length; j += 1) {
+        const card = cards[j];
+        if (card.number !== number1) {
+          // now decide if we are looking for the first or these or the second
+          if (number2 === null) {
+            // we want this one
+            hand.push(card);
+
+            // and remember its number
+            number2 = card.number;
+          } else if (card.number !== number2) {
+            // okay - we have the second fill card
+            hand.push(card);
+            return sortHand(hand);
+          }
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generateThreeOfAKind couldn't find three of a kind from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
+// generate two pair from the given shuffled cards, make sure it is not 3 of a kind or more
+// NOTE: The given cards are NOT updated here
+const generateTwoPair = (cards) => {
+  // randomly order the numbers
+  const numbers = shuffle(NUMBERS);
+
+  const hand = [];
+  let number1 = null;
+  let number2 = null;
+
+  // work through each number
+  for (let i = 0; i < numbers.length; i += 1) {
+    const numberCards = getUnsortedNumbersFromCards(numbers[i], cards);
+
+    // if there are at least of two then we have found a pair
+    if (numberCards.length >= 2) {
+      // take the first two of these
+      hand.push(numberCards[0]);
+      hand.push(numberCards[1]);
+
+      if (number1 === null) {
+        // this is the first pair - remember its number then continue to look for the second pair
+        number1 = numberCards[0].number;
+      } else {
+        // this is the second pair
+        // remember its number
+        number2 = numberCards[0].number;
+
+        // find the 5th card, which is not number1 or number2
+        // NOTE: this assumes there is one
+        for (let j = 0; j < cards.length; j += 1) {
+          const card = cards[j];
+          if (card.number !== number1 && card.number !== number2) {
+            // found it
+            hand.push(card);
+            return sortHand(hand);
+          }
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generateTwoPair couldn't find two pairs from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
+// generate a pair from the given shuffled cards, make sure it is not 3 of a kind or more
+// NOTE: The given cards are NOT updated here
+const generatePair = (cards) => {
+  // randomly order the numbers
+  const numbers = shuffle(NUMBERS);
+
+  // work through each number
+  for (let i = 0; i < numbers.length; i += 1) {
+    const numberCards = getUnsortedNumbersFromCards(numbers[i], cards);
+
+    // if there are at least of two then we have found a pair
+    if (numberCards.length >= 2) {
+      // take the first two of these
+      const hand = [numberCards[0], numberCards[1]];
+
+      // there will be 4 different numbers
+      const number1 = numberCards[0].number;
+      let number2 = null;
+      let number3 = null;
+      let number4 = null;
+
+      // find 3 different numbers to add to the hand
+      // NOTE: this assumes they exist
+      for (let j = 0; j < cards.length; j += 1) {
+        const card = cards[j];
+        if (card.number !== number1 && card.number !== number2 && card.number !== number3 && card.number !== number4) {
+          // found it
+          hand.push(card);
+
+          // decide where we are up to
+          if (number2 === null) {
+            number2 = card.number;
+          } else if (number3 === null) {
+            number3 = card.number;
+          } else if (number4 === null) {
+            number4 = card.number;
+          } else {
+            return sortHand(hand);
+          }
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generatePair couldn't find two pairs from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
@@ -679,6 +820,18 @@ export const generateHandOfHandType = (handType, cards) => {
 
   if (handType === HAND_TYPE_STRAIGHT) {
     return generateStraight(cards);
+  }
+
+  if (handType === HAND_TYPE_THREE_OF_A_KIND) {
+    return generateThreeOfAKind(cards);
+  }
+
+  if (handType === HAND_TYPE_TWO_PAIR) {
+    return generateTwoPair(cards);
+  }
+
+  if (handType === HAND_TYPE_PAIR) {
+    return generatePair(cards);
   }
 
   return sortHand([

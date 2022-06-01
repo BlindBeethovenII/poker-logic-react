@@ -25,9 +25,9 @@ import {
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_FLUSH,
   HAND_TYPE_STRAIGHT,
-  // export const HAND_TYPE_THREE_OF_A_KIND = 4;
-  // export const HAND_TYPE_TWO_PAIR = 3;
-  // export const HAND_TYPE_PAIR = 2;
+  HAND_TYPE_THREE_OF_A_KIND,
+  HAND_TYPE_TWO_PAIR,
+  HAND_TYPE_PAIR,
   // export const HAND_TYPE_HIGH_CARD = 1;
 } from './constants';
 
@@ -157,6 +157,24 @@ describe('generateHandOfHandType', () => {
       createCard(SUIT_SPADES, NUMBER_A),
     ];
     expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT, deck))).toEqual(HAND_TYPE_STRAIGHT);
+  });
+
+  it(`will return a three of a kind for HAND_TYPE_THREE_OF_A_KIND for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_THREE_OF_A_KIND, createNewDeck()))).toEqual(HAND_TYPE_THREE_OF_A_KIND);
+    }
+  });
+
+  it(`will return two pairs for HAND_TYPE_TWO_PAIR for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_TWO_PAIR, createNewDeck()))).toEqual(HAND_TYPE_TWO_PAIR);
+    }
+  });
+
+  it(`will return a pair for HAND_TYPE_PAIR for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_PAIR, createNewDeck()))).toEqual(HAND_TYPE_PAIR);
+    }
   });
 });
 
