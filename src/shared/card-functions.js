@@ -392,8 +392,11 @@ const getSortedSuitFromCards = (suit, cards) => {
   return sortSuit(suitCards);
 };
 
-// return an array of the cards of the given number (not in order)
-const getNumbersFromCards = (number, cards) => {
+// return an array of the cards of the given suit not in order (relies on the cards not being in order)
+const getUnsortedSuitFromCards = (suit, cards) => cards.filter((card) => card.suit === suit);
+
+// return an array of the cards of the given number not in order (relies on the cards not being in order)
+const getUnsortedNumbersFromCards = (number, cards) => {
   const numberCards = cards.filter((card) => card.number === number);
 
   return numberCards;
@@ -473,7 +476,7 @@ const generateFourOfAKind = (cards) => {
 
   // work through each number
   for (let i = 0; i < numbers.length; i += 1) {
-    const numberCards = getNumbersFromCards(numbers[i], cards);
+    const numberCards = getUnsortedNumbersFromCards(numbers[i], cards);
 
     // if there are 4 of them then we have found our four of a kind
     if (numberCards.length === 4) {
@@ -507,7 +510,7 @@ const generateFullHouse = (cards) => {
   const numberCards3or4 = [];
   const numberCards2 = [];
   for (let i = 0; i < numbers.length; i += 1) {
-    const numberCards = getNumbersFromCards(numbers[i], cards);
+    const numberCards = getUnsortedNumbersFromCards(numbers[i], cards);
     if (numberCards.length >= 3) {
       numberCards3or4.push(numberCards);
     } else if (numberCards.length === 2) {
@@ -550,6 +553,44 @@ const generateFullHouse = (cards) => {
   return null;
 };
 
+// generate a flush, making sure it is not a straight flush, from the given shuffled cards
+// NOTE: The given cards are NOT updated here
+const generateFlush = (cards) => {
+  // randomly order the suits
+  const suits = shuffle([SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS, SUIT_CLUBS]);
+
+  // work through each suit
+  for (let i = 0; i < suits.length; i += 1) {
+    const suitCards = getUnsortedSuitFromCards(suits[i], cards);
+
+    // we need at least 5 cards before we are even interested in this suit
+    if (suitCards.length >= 5) {
+      // if there are exactly 5 cards and it is not a straight flush, then we can use this
+      if (suitCards.length === 5) {
+        const possibleHand1 = sortHand(suitCards);
+        if (calcHandType(possibleHand1) !== HAND_TYPE_STRAIGHT_FLUSH) {
+          return possibleHand1;
+        }
+      }
+
+      // there must be 6 or more cards
+      // so it must be possible to select 5 that are not a straight flush
+      // keep shuffling them, and taking the first 5 until a non straight flush is found
+      for (;;) {
+        const shuffledCards = shuffle(suitCards);
+        const possibleHand1 = sortHand([shuffledCards[0], shuffledCards[1], shuffledCards[2], shuffledCards[3], shuffledCards[4]]);
+        if (calcHandType(possibleHand1) !== HAND_TYPE_STRAIGHT_FLUSH) {
+          return possibleHand1;
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generateFlush couldn't find flush from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
@@ -565,6 +606,10 @@ export const generateHandOfHandType = (handType, cards) => {
 
   if (handType === HAND_TYPE_FULL_HOUSE) {
     return generateFullHouse(cards);
+  }
+
+  if (handType === HAND_TYPE_FLUSH) {
+    return generateFlush(cards);
   }
 
   return sortHand([

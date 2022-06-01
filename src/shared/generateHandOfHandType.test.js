@@ -14,10 +14,17 @@ import {
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
+  NUMBER_5,
   NUMBER_2,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
+  HAND_TYPE_FLUSH,
+  // export const HAND_TYPE_STRAIGHT = 5;
+  // export const HAND_TYPE_THREE_OF_A_KIND = 4;
+  // export const HAND_TYPE_TWO_PAIR = 3;
+  // export const HAND_TYPE_PAIR = 2;
+  // export const HAND_TYPE_HIGH_CARD = 1;
 } from './constants';
 
 // how many times to iterate in tests
@@ -52,6 +59,28 @@ describe('generateHandOfHandType', () => {
       createCard(SUIT_HEARTS, NUMBER_2),
       createCard(SUIT_DIAMONDS, NUMBER_K),
       createCard(SUIT_CLUBS, NUMBER_K),
+    ];
+    expect(calcHandType(generateHandOfHandType(HAND_TYPE_FULL_HOUSE, deck))).toEqual(HAND_TYPE_FULL_HOUSE);
+  });
+
+  it(`will return a flush for HAND_TYPE_FLUSH for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_FLUSH, createNewDeck()))).toEqual(HAND_TYPE_FLUSH);
+    }
+  });
+
+  it('will return a flush for HAND_TYPE_FLUSH for a deck with just one flush in it', () => {
+    const deck = [
+      createCard(SUIT_CLUBS, NUMBER_Q),
+      createCard(SUIT_CLUBS, NUMBER_J),
+      createCard(SUIT_DIAMONDS, NUMBER_Q),
+      createCard(SUIT_SPADES, NUMBER_2),
+      createCard(SUIT_HEARTS, NUMBER_Q),
+      createCard(SUIT_CLUBS, NUMBER_2),
+      createCard(SUIT_HEARTS, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_K),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_5),
     ];
     expect(calcHandType(generateHandOfHandType(HAND_TYPE_FULL_HOUSE, deck))).toEqual(HAND_TYPE_FULL_HOUSE);
   });
