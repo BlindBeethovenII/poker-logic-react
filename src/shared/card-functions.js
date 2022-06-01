@@ -10,14 +10,19 @@ import CardSuitClubsImage from '../images/cards/clubs.png';
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
-  NUMBER_A,
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
-  NUMBER_2,
-  NUMBER_3,
-  NUMBER_4,
+  NUMBER_10,
+  NUMBER_9,
+  NUMBER_8,
+  NUMBER_7,
+  NUMBER_6,
   NUMBER_5,
+  NUMBER_4,
+  NUMBER_3,
+  NUMBER_2,
+  NUMBER_A,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -33,7 +38,6 @@ import {
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
-  NUMBER_10,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -591,6 +595,67 @@ const generateFlush = (cards) => {
   return null;
 };
 
+// generate a straight from the given shuffled cards, checking it is not a straight flush
+// NOTE: The given cards are NOT updated here
+const generateStraight = (cards) => {
+  // here are the possible numbers that can start a 5 card straight, shuffled
+  const numbers = shuffle([NUMBER_A, NUMBER_K, NUMBER_Q, NUMBER_J, NUMBER_10, NUMBER_9, NUMBER_8, NUMBER_7, NUMBER_6, NUMBER_5]);
+
+  // work through each number
+  for (let i = 0; i < numbers.length; i += 1) {
+    // special code to work out the 5 numbers, to cope with AKQJ10
+    const number1 = numbers[i];
+    let number2 = number1 - 1;
+    let number3 = number1 - 2;
+    let number4 = number1 - 3;
+    let number5 = number1 - 4;
+    if (number1 === NUMBER_A) {
+      number2 = NUMBER_K;
+      number3 = NUMBER_Q;
+      number4 = NUMBER_J;
+      number5 = NUMBER_10;
+    }
+
+    // get all the cards for each of these numbers - each are in a random suit order
+    const number1Cards = getUnsortedNumbersFromCards(number1, cards);
+    const number2Cards = getUnsortedNumbersFromCards(number2, cards);
+    const number3Cards = getUnsortedNumbersFromCards(number3, cards);
+    const number4Cards = getUnsortedNumbersFromCards(number4, cards);
+    const number5Cards = getUnsortedNumbersFromCards(number5, cards);
+
+    // we need at least 1 card for each number
+    if (number1Cards.length > 0 && number2Cards.length > 0 && number3Cards.length > 0 && number4Cards.length > 0 && number5Cards.length > 0) {
+      // go through all combinations, returning first (if any) that is not a straight flush
+      for (let i1 = 0; i1 < number1Cards.length; i1 += 1) {
+        const number1Card = number1Cards[i1];
+        for (let i2 = 0; i2 < number2Cards.length; i2 += 1) {
+          const number2Card = number2Cards[i2];
+          for (let i3 = 0; i3 < number3Cards.length; i3 += 1) {
+            const number3Card = number3Cards[i3];
+            for (let i4 = 0; i4 < number4Cards.length; i4 += 1) {
+              const number4Card = number4Cards[i4];
+              for (let i5 = 0; i5 < number5Cards.length; i5 += 1) {
+                const number5Card = number5Cards[i5];
+                const possibleHand = sortHand([number1Card, number2Card, number3Card, number4Card, number5Card]);
+                const handType = calcHandType(possibleHand);
+                if (handType === HAND_TYPE_STRAIGHT && handType !== HAND_TYPE_STRAIGHT_FLUSH) {
+                  return possibleHand;
+                }
+
+                // console.log(`discarding ${JSON.stringify(possibleHand)}`);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  logIfDevEnv(`generateStraight couldn't find straight from the cards ${JSON.stringify(cards)}`);
+
+  return null;
+};
+
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
@@ -610,6 +675,10 @@ export const generateHandOfHandType = (handType, cards) => {
 
   if (handType === HAND_TYPE_FLUSH) {
     return generateFlush(cards);
+  }
+
+  if (handType === HAND_TYPE_STRAIGHT) {
+    return generateStraight(cards);
   }
 
   return sortHand([

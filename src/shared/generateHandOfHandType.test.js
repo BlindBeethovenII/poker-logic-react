@@ -14,13 +14,17 @@ import {
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
+  NUMBER_10,
   NUMBER_5,
+  NUMBER_4,
+  NUMBER_3,
   NUMBER_2,
+  NUMBER_A,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_FLUSH,
-  // export const HAND_TYPE_STRAIGHT = 5;
+  HAND_TYPE_STRAIGHT,
   // export const HAND_TYPE_THREE_OF_A_KIND = 4;
   // export const HAND_TYPE_TWO_PAIR = 3;
   // export const HAND_TYPE_PAIR = 2;
@@ -35,6 +39,38 @@ describe('generateHandOfHandType', () => {
     for (let i = 0; i < iterateN; i += 1) {
       expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT_FLUSH, createNewDeck()))).toEqual(HAND_TYPE_STRAIGHT_FLUSH);
     }
+  });
+
+  it('will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a deck with AKQJ10 of a suit in it', () => {
+    const deck = [
+      createCard(SUIT_CLUBS, NUMBER_Q),
+      createCard(SUIT_CLUBS, NUMBER_J),
+      createCard(SUIT_DIAMONDS, NUMBER_Q),
+      createCard(SUIT_SPADES, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_10),
+      createCard(SUIT_HEARTS, NUMBER_Q),
+      createCard(SUIT_HEARTS, NUMBER_2),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_A),
+    ];
+    expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT_FLUSH, deck))).toEqual(HAND_TYPE_STRAIGHT_FLUSH);
+  });
+
+  it('will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a deck with 5432A of a suit in it', () => {
+    const deck = [
+      createCard(SUIT_CLUBS, NUMBER_5),
+      createCard(SUIT_CLUBS, NUMBER_3),
+      createCard(SUIT_DIAMONDS, NUMBER_Q),
+      createCard(SUIT_SPADES, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_4),
+      createCard(SUIT_HEARTS, NUMBER_Q),
+      createCard(SUIT_HEARTS, NUMBER_2),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_A),
+    ];
+    expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT_FLUSH, deck))).toEqual(HAND_TYPE_STRAIGHT_FLUSH);
   });
 
   it(`will return four of a kind for HAND_TYPE_FOUR_OF_A_KIND for a new deck of cards ${iterateN} times`, () => {
@@ -83,6 +119,44 @@ describe('generateHandOfHandType', () => {
       createCard(SUIT_CLUBS, NUMBER_5),
     ];
     expect(calcHandType(generateHandOfHandType(HAND_TYPE_FULL_HOUSE, deck))).toEqual(HAND_TYPE_FULL_HOUSE);
+  });
+
+  it(`will return a straight for HAND_TYPE_STRAIGHT for a new deck of cards ${iterateN} times`, () => {
+    for (let i = 0; i < iterateN; i += 1) {
+      expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT, createNewDeck()))).toEqual(HAND_TYPE_STRAIGHT);
+    }
+  });
+
+  it('will return a straight for HAND_TYPE_STRAIGHT for a deck with AKQJ10 in it', () => {
+    const deck = [
+      createCard(SUIT_CLUBS, NUMBER_Q),
+      createCard(SUIT_CLUBS, NUMBER_J),
+      createCard(SUIT_DIAMONDS, NUMBER_Q),
+      createCard(SUIT_SPADES, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_10),
+      createCard(SUIT_HEARTS, NUMBER_Q),
+      createCard(SUIT_HEARTS, NUMBER_2),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_K),
+      createCard(SUIT_SPADES, NUMBER_A),
+    ];
+    expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT, deck))).toEqual(HAND_TYPE_STRAIGHT);
+  });
+
+  it('will return a straight for HAND_TYPE_STRAIGHT for a deck with 5432A of a suit in it', () => {
+    const deck = [
+      createCard(SUIT_CLUBS, NUMBER_Q),
+      createCard(SUIT_CLUBS, NUMBER_3),
+      createCard(SUIT_DIAMONDS, NUMBER_5),
+      createCard(SUIT_SPADES, NUMBER_2),
+      createCard(SUIT_CLUBS, NUMBER_4),
+      createCard(SUIT_HEARTS, NUMBER_Q),
+      createCard(SUIT_HEARTS, NUMBER_2),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_CLUBS, NUMBER_2),
+      createCard(SUIT_SPADES, NUMBER_A),
+    ];
+    expect(calcHandType(generateHandOfHandType(HAND_TYPE_STRAIGHT, deck))).toEqual(HAND_TYPE_STRAIGHT);
   });
 });
 
