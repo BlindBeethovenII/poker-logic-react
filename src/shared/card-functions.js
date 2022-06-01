@@ -575,16 +575,23 @@ const generateFlush = (cards) => {
         if (calcHandType(possibleHand1) !== HAND_TYPE_STRAIGHT_FLUSH) {
           return possibleHand1;
         }
-      }
+      } else {
+        // there must be 6 or more cards
+        // so it must be possible to select 5 that are not a straight flush
+        // keep shuffling them, and taking the first 5 until a non straight flush is found
+        // one got stuck here - so generating log if get to 1000 iterations
+        let count = 0;
+        for (;;) {
+          const shuffledCards = shuffle(suitCards);
+          const possibleHand1 = sortHand([shuffledCards[0], shuffledCards[1], shuffledCards[2], shuffledCards[3], shuffledCards[4]]);
+          if (calcHandType(possibleHand1) !== HAND_TYPE_STRAIGHT_FLUSH) {
+            return possibleHand1;
+          }
 
-      // there must be 6 or more cards
-      // so it must be possible to select 5 that are not a straight flush
-      // keep shuffling them, and taking the first 5 until a non straight flush is found
-      for (;;) {
-        const shuffledCards = shuffle(suitCards);
-        const possibleHand1 = sortHand([shuffledCards[0], shuffledCards[1], shuffledCards[2], shuffledCards[3], shuffledCards[4]]);
-        if (calcHandType(possibleHand1) !== HAND_TYPE_STRAIGHT_FLUSH) {
-          return possibleHand1;
+          count += 1;
+          if (count === 1000) {
+            logIfDevEnv(`generateFlush at iteration 1000 the cards are ${JSON.stringify(suitCards)}`);
+          }
         }
       }
     }
@@ -842,7 +849,7 @@ const generateHighCard = (cards) => {
 // generate hand of named hand type from given shuffled cards
 // NOTE: The given cards are is NOT updated
 export const generateHandOfHandType = (handType, cards) => {
-  logIfDevEnv(`generateHandOfHandType handType=${handType}`);
+  // logIfDevEnv(`generateHandOfHandType handType=${handType}`);
 
   if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
     return generateStraightFlush(cards);

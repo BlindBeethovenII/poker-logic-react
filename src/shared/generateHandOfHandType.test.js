@@ -32,7 +32,7 @@ import {
 } from './constants';
 
 // how many times to iterate in tests
-const iterateN = 10000;
+const iterateN = 1000;
 
 describe('generateHandOfHandType', () => {
   it(`will return a straight flush for HAND_TYPE_STRAIGHT_FLUSH for a new deck of cards ${iterateN} times`, () => {
