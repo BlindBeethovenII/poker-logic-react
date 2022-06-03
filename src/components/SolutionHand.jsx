@@ -23,7 +23,7 @@ const SolutionHand = (props) => {
 
   const cards = [];
   solutionHand.forEach((card, i) => {
-    cards.push(<Card key={card.id} col={i + 1} row={solutionHandIndex} card={card} />);
+    cards.push(<Card key={card.id} col={i + 8.2} row={solutionHandIndex + 2.95} card={card} />);
   });
 
   return cards;
