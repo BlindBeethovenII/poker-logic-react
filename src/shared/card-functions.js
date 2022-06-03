@@ -890,22 +890,30 @@ export const generateHandOfHandType = (handType, cards) => {
   throw new Error(`generateHandOfHandType did not understand handType ${handType}`);
 };
 
-// create a new deck of shuffled cards
-export const createNewDeck = () => {
-  // create a deck of cards
+// create a new deck of shuffled cards, excluding the given missing number
+export const createNewDeck = (missingNumber) => {
+  // create a deck of cards - ignoring the missing number
   const deck = [];
-  SUITS.map((suit) =>
-    NUMBERS.map((number) =>
-      deck.push(createCard(suit, number))));
+  SUITS.forEach((suit) =>
+    NUMBERS.forEach((number) => {
+      if (number !== missingNumber) {
+        deck.push(createCard(suit, number));
+      }
+    }));
 
   // and shuffle them
   return (shuffle(deck));
 };
 
-// create the hands of a solution
+// create a solution, with its hands and missingNumber
 // the approach here makes sures each hand is of a different hand type
-export const createSolutionHands = () => {
-  let cards = createNewDeck();
+export const createSolution = () => {
+  // select a random missing number for this new deck
+  const missingNumber = shuffle(NUMBERS)[0];
+
+  // logIfDevEnv(`createSolution missing number is ${missingNumber}`);
+
+  let cards = createNewDeck(missingNumber);
 
   // the hand types
   let handTypes = [
@@ -961,5 +969,5 @@ export const createSolutionHands = () => {
     throw new Error(`createSolutionHands should have 20 unique cards, but it has ${nUnique} - this should never happen!!!`);
   }
 
-  return sortHands(hands);
+  return { solutionHands: sortHands(hands), missingNumber };
 };
