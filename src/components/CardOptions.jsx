@@ -35,14 +35,11 @@ const CardOptions = () => {
   // TODO
   const id = 'test';
 
-  // the number options - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number
+  // the number options - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
   const [numberOptions, setNumberOptions] = useState([true, true, true, true, true, true, true, true, true, true, true, true, true]);
 
   // the suit options - S, H, D, C - true means visible - if only one true then that is the selected number
   const [suitOptions, setSuitOptions] = useState([true, true, true, true]);
-
-  // unselect the missing number - TODO - do this at creation - OR? do we need to understand the missingNumber so other way?
-  // numberOptions[missingNumber - 1] = false;
 
   // draw these
   const left = colToLeft(1);
@@ -74,11 +71,16 @@ const CardOptions = () => {
     top,
   };
 
+  const preventDefault = (e) => {
+    e.preventDefault();
+  };
+
   const blankDiv = (
     <div
       key={`${id}-blank`}
       id={`${id}-blank`}
       style={blankDivStyle}
+      onContextMenu={preventDefault}
     >
       {cardblank}
     </div>
@@ -86,12 +88,23 @@ const CardOptions = () => {
 
   components.push(blankDiv);
 
-  // now work through the suits and draw each, drawing faded if not selected
+  // keep track of which internal col/row we are next placing the internal component in
   let internalCol = 0;
   let internalRow = 0;
+
+  // we show different things if there is only one suit option and/or one number option
+  // helper function to count
+  const countAvailableOptionsReducer = (accumulator, currentValue) => accumulator + (currentValue ? 1 : 0);
+  const suitOptionsCount = suitOptions.reduce(countAvailableOptionsReducer);
+  // console.log(`suitOptionsCount = ${suitOptionsCount}`);
+
+  // now work through the suits and draw each, drawing faded if not selected
   for (let suitIndex = 0; suitIndex < 4; suitIndex += 1) {
     const suit = cardSuitIndexToSuit(suitIndex);
     const faded = !suitOptions[suitIndex];
+
+    // is this the single suit option?
+    const theSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitIndex]);
 
     let height = '21px';
     if (suit === SUIT_SPADES) {
@@ -111,33 +124,43 @@ const CardOptions = () => {
 
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
 
+    // left offset depends on if we are the singleSuitOption, with the single suit option always in internal col index 3
+    const leftOffset = theSingleSuitOption ? 3 * colInternalSize : internalCol * colInternalSize;
+
     const suitDivStyle = {
       position: 'absolute',
       zIndex: 0,
-      left: left + (internalCol * colInternalSize),
+      left: left + leftOffset,
       top: top + (internalRow * rowInternalSize),
     };
 
-    // toggle the selected value of the suit
-    const suitToggleSelected = (e) => {
-      logIfDevEnv(`suitToggleSelected ${suit}`);
-
-      // stop the context menu appearing
-      e.preventDefault();
-
-      // toggle corresponding suit index
-      const newSuitOptions = [...suitOptions];
-      newSuitOptions[suitIndex] = !suitOptions[suitIndex];
-      setSuitOptions(newSuitOptions);
-    };
-
     // set this suit as the only selected suit
-    const suitSelectThisOnly = () => {
-      logIfDevEnv(`suitSelectThisOnly ${suit}`);
+    const suitSelectThisOptionOnly = () => {
+      logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
 
       const newSuitOptions = [false, false, false, false];
       newSuitOptions[suitIndex] = true;
       setSuitOptions(newSuitOptions);
+    };
+
+    // toggle the selected value of the suit
+    const suitToggleOption = (e) => {
+      logIfDevEnv(`suitToggleOption ${suit}`);
+
+      // stop the context menu appearing
+      e.preventDefault();
+
+      // if this is the single suit option, then toggle means make all options available again
+      if (theSingleSuitOption) {
+        const newSuitOptions = [true, true, true, true];
+        newSuitOptions[suitIndex] = true;
+        setSuitOptions(newSuitOptions);
+      } else {
+        // toggle corresponding suit index
+        const newSuitOptions = [...suitOptions];
+        newSuitOptions[suitIndex] = !suitOptions[suitIndex];
+        setSuitOptions(newSuitOptions);
+      }
     };
 
     const suitDiv = (
@@ -147,15 +170,18 @@ const CardOptions = () => {
         id={`${id}-${suit}`}
         style={suitDivStyle}
         role="button"
-        onClick={suitSelectThisOnly}
-        onKeyDown={suitSelectThisOnly}
-        onContextMenu={suitToggleSelected}
+        onClick={suitSelectThisOptionOnly}
+        onKeyDown={suitSelectThisOptionOnly}
+        onContextMenu={suitToggleOption}
       >
         {cardsuit}
       </div>
     );
 
-    components.push(suitDiv);
+    // only keep a component if more than one option, or this is the single suit option
+    if (suitOptionsCount > 1 || theSingleSuitOption) {
+      components.push(suitDiv);
+    }
 
     // move to the next position
     internalCol += 1;
@@ -217,8 +243,19 @@ const CardOptions = () => {
         top: top + (internalRow * rowInternalSize),
       };
 
-      const numberToggleSelected = (e) => {
-        logIfDevEnv(`numberToggleSelected ${number}`);
+      // set this number as the only selected number
+      const numberSelectThisOptionOnly = () => {
+        logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
+
+        const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+        newNumberOptions[numberIndex] = true;
+        // and the missing number entry is always true as well (which we assume in 'only one number selected' count)
+        newNumberOptions[missingNumber - 1] = true;
+        setNumberOptions(newNumberOptions);
+      };
+
+      const numberToggleOption = (e) => {
+        logIfDevEnv(`numberToggleOption ${number}`);
 
         // stop the context menu appearing
         e.preventDefault();
@@ -229,15 +266,6 @@ const CardOptions = () => {
         setNumberOptions(newNumberOptions);
       };
 
-      // set this number as the only selected number
-      const numberSelectThisOnly = () => {
-        logIfDevEnv(`numberSelectThisOnly ${number}`);
-
-        const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-        newNumberOptions[numberIndex] = true;
-        setNumberOptions(newNumberOptions);
-      };
-
       const numberDiv = (
         // eslint-disable-next-line jsx-a11y/interactive-supports-focus
         <div
@@ -245,9 +273,9 @@ const CardOptions = () => {
           id={`${id}-${number}`}
           style={numberDivStyle}
           role="button"
-          onClick={numberSelectThisOnly}
-          onKeyDown={numberSelectThisOnly}
-          onContextMenu={numberToggleSelected}
+          onClick={numberSelectThisOptionOnly}
+          onKeyDown={numberSelectThisOptionOnly}
+          onContextMenu={numberToggleOption}
         >
           {cardnumber}
         </div>
