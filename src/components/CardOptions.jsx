@@ -9,7 +9,6 @@ import {
   rowToTop,
   cardNumberToString,
   cardSuitToImage,
-  cardSuitToFillColour,
   cardSuitIndexToSuit,
 } from '../shared/card-functions';
 
@@ -203,11 +202,11 @@ const CardOptions = () => {
       const cardnumberstyle = {
         position: 'absolute',
         left: '0px',
-        top: '0px',
-        width: '20px',
-        height: '20px',
+        top: isSingleNumberOption ? '40px' : '0px',
+        width: isSingleNumberOption ? '40px' : '20px',
+        height: isSingleNumberOption ? '40px' : '20px',
         fontWeight: 'bold',
-        fontSize: '18px',
+        fontSize: isSingleNumberOption ? '36px' : '18px',
         letterSpacing: '-0.1em',
         userSelect: 'none',
         MozUserSelect: 'none',
@@ -229,21 +228,30 @@ const CardOptions = () => {
       if (number === NUMBER_K) {
         textX = 4;
       }
+
+      // if only number, go back to how the proper card has it
+      if (isSingleNumberOption) {
+        textX = number === NUMBER_10 ? 4 : 10;
+      }
+
       const cardnumber = (
         <div style={cardnumberstyle}>
           <svg width="60px" height="40px">
-            <text x={textX} y={15} fill={cardSuitToFillColour(SUIT_SPADES)}>
+            <text x={textX} y={isSingleNumberOption ? 30 : 15}>
               {cardNumberToString(number)}
             </text>
           </svg>
         </div>
       );
 
+      const leftOffset = isSingleNumberOption ? 0 : (internalCol * colInternalSize) - 2;
+      const topOffset = isSingleNumberOption ? 0 : (internalRow * rowInternalSize);
+
       const numberDivStyle = {
         position: 'absolute',
         zIndex: 0,
-        left: left + (internalCol * colInternalSize) - 2,
-        top: top + (internalRow * rowInternalSize),
+        left: left + leftOffset,
+        top: top + topOffset,
       };
 
       // set this number as the only selected number

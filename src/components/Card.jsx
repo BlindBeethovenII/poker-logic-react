@@ -11,7 +11,6 @@ import {
   rowToTopSmall,
   cardNumberToString,
   cardSuitToImage,
-  cardSuitToFillColour,
 } from '../shared/card-functions';
 
 import {
@@ -83,6 +82,7 @@ const Card = (props) => {
   };
 
   const cardblank = <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />;
+
   let textX = small ? 5 : 10;
   if (number === NUMBER_10) {
     textX = small ? 2 : 4;
@@ -90,7 +90,7 @@ const Card = (props) => {
   const cardnumber = (
     <div style={cardnumberstyle}>
       <svg width="60px" height="40px">
-        <text x={textX} y={small ? 15 : 30} fill={cardSuitToFillColour(suit)}>
+        <text x={textX} y={small ? 15 : 30}>
           {cardNumberToString(number)}
         </text>
       </svg>
