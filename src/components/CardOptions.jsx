@@ -103,7 +103,7 @@ const CardOptions = () => {
         MozUserSelect: 'none',
         WebkitUserSelect: 'none',
         msUserSelect: 'none',
-        opacity: faded ? 0.5 : 1,
+        opacity: faded ? 0.2 : 1,
       };
 
       let textX = 5;
@@ -166,7 +166,7 @@ const CardOptions = () => {
       top: suit === SUIT_SPADES ? '2px' : '0px',
       width: '20px',
       height,
-      opacity: faded ? 0.5 : 1,
+      opacity: faded ? 0.2 : 1,
     };
 
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
