@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 // import PropTypes from 'prop-types';
 
@@ -34,7 +34,7 @@ const CardOptions = () => {
   const id = 'test';
 
   // the number options - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number
-  const numberOptions = [true, true, false, true, true, false, true, true, true, true, false, true, true];
+  const [numberOptions, setNumberOptions] = useState([true, true, false, true, true, false, true, true, true, true, false, true, true]);
 
   // the suit options - S, H, D, C - true means visible - if only one true then that is the selected number
   const suitOptions = [true, false, true, true];
@@ -165,7 +165,7 @@ const CardOptions = () => {
       if (number === NUMBER_J) {
         textX = 7;
       }
-      if (number === NUMBER_Q) {
+      if (number === NUMBER_Q && missingNumber !== NUMBER_J) {
         textX = 3;
       }
       if (number === NUMBER_K) {
@@ -188,11 +188,24 @@ const CardOptions = () => {
         top: top + (internalRow * rowInternalSize),
       };
 
+      const numberToggleSelected = () => {
+        console.log(`numberToggleSelected ${number}`);
+
+        // toggle corresponding number index
+        const newNumberOptions = [...numberOptions];
+        newNumberOptions[numberIndex] = !numberOptions[numberIndex];
+        setNumberOptions(newNumberOptions);
+      };
+
       const numberDiv = (
+        // eslint-disable-next-line jsx-a11y/interactive-supports-focus
         <div
           key={`${id}-${number}`}
           id={`${id}-${number}`}
           style={numberDivStyle}
+          role="button"
+          onClick={numberToggleSelected}
+          onKeyDown={numberToggleSelected}
         >
           {cardnumber}
         </div>
