@@ -119,8 +119,11 @@ const CardOptions = () => {
     };
 
     // toggle the selected value of the suit
-    const suitToggleSelected = () => {
+    const suitToggleSelected = (e) => {
       logIfDevEnv(`suitToggleSelected ${suit}`);
+
+      // stop the context menu appearing
+      e.preventDefault();
 
       // toggle corresponding suit index
       const newSuitOptions = [...suitOptions];
@@ -144,9 +147,9 @@ const CardOptions = () => {
         id={`${id}-${suit}`}
         style={suitDivStyle}
         role="button"
-        onClick={suitToggleSelected}
-        onKeyDown={suitToggleSelected}
-        onDoubleClick={suitSelectThisOnly}
+        onClick={suitSelectThisOnly}
+        onKeyDown={suitSelectThisOnly}
+        onContextMenu={suitToggleSelected}
       >
         {cardsuit}
       </div>
@@ -214,8 +217,11 @@ const CardOptions = () => {
         top: top + (internalRow * rowInternalSize),
       };
 
-      const numberToggleSelected = () => {
+      const numberToggleSelected = (e) => {
         logIfDevEnv(`numberToggleSelected ${number}`);
+
+        // stop the context menu appearing
+        e.preventDefault();
 
         // toggle corresponding number index
         const newNumberOptions = [...numberOptions];
@@ -239,9 +245,9 @@ const CardOptions = () => {
           id={`${id}-${number}`}
           style={numberDivStyle}
           role="button"
-          onClick={numberToggleSelected}
-          onKeyDown={numberToggleSelected}
-          onDoubleClick={numberSelectThisOnly}
+          onClick={numberSelectThisOnly}
+          onKeyDown={numberSelectThisOnly}
+          onContextMenu={numberToggleSelected}
         >
           {cardnumber}
         </div>
