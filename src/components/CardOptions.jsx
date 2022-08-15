@@ -106,18 +106,21 @@ const CardOptions = () => {
     // is this the single suit option?
     const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitIndex]);
 
-    let height = '21px';
+    // also care if we the single suit option when there is only one number option left (remember missing number option always true)
+    const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 2;
+
+    let height = isSingleSuitAndNumberOption ? '42px' : '21px';
     if (suit === SUIT_SPADES) {
-      height = '19px';
+      height = isSingleSuitAndNumberOption ? '38px' : '19px';
     } else if (suit === SUIT_CLUBS) {
-      height = '20px';
+      height = isSingleSuitAndNumberOption ? '40px' : '20px';
     }
 
     const cardsuitstyle = {
       position: 'absolute',
-      left: '0px',
+      left: isSingleSuitAndNumberOption ? '22px' : '0px',
       top: suit === SUIT_SPADES ? '2px' : '0px',
-      width: '20px',
+      width: isSingleSuitAndNumberOption ? '40px' : '20px',
       height,
       opacity: faded ? 0.2 : 1,
     };
@@ -125,7 +128,13 @@ const CardOptions = () => {
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
 
     // left offset depends on if we are the singleSuitOption, with the single suit option always in internal col index 3
-    const leftOffset = isSingleSuitOption ? 3 * colInternalSize : internalCol * colInternalSize;
+    // or if there is just a single suit and numbe option left
+    let leftOffset = internalCol * colInternalSize;
+    if (isSingleSuitAndNumberOption) {
+      leftOffset = 0;
+    } else if (isSingleSuitOption) {
+      leftOffset = 3 * colInternalSize;
+    }
 
     const suitDivStyle = {
       position: 'absolute',
