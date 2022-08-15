@@ -17,6 +17,9 @@ import {
   SUIT_SPADES,
   SUIT_CLUBS,
   NUMBER_10,
+  NUMBER_J,
+  NUMBER_Q,
+  NUMBER_K,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -81,74 +84,9 @@ const CardOptions = () => {
 
   components.push(blankDiv);
 
-  // work through the numbers and draw each, remembering to skip the missing number
-  // draw faded if not selected
+  // now work through the suits and draw each, drawing faded if not selected
   let internalCol = 0;
   let internalRow = 0;
-  for (let numberIndex = 0; numberIndex < 13; numberIndex += 1) {
-    const number = numberIndex + 1;
-    if (number !== missingNumber) {
-      const faded = !numberOptions[numberIndex];
-
-      const cardnumberstyle = {
-        position: 'absolute',
-        left: '0px',
-        top: '0px',
-        width: '20px',
-        height: '20px',
-        fontWeight: 'bold',
-        fontSize: '18px',
-        letterSpacing: '-0.1em',
-        userSelect: 'none',
-        MozUserSelect: 'none',
-        WebkitUserSelect: 'none',
-        msUserSelect: 'none',
-        opacity: faded ? 0.2 : 1,
-      };
-
-      let textX = 5;
-      if (number === NUMBER_10) {
-        textX = 2;
-      }
-      const cardnumber = (
-        <div style={cardnumberstyle}>
-          <svg width="60px" height="40px">
-            <text x={textX} y={15} fill={cardSuitToFillColour(SUIT_SPADES)}>
-              {cardNumberToString(number)}
-            </text>
-          </svg>
-        </div>
-      );
-
-      const numberDivStyle = {
-        position: 'absolute',
-        zIndex: 0,
-        left: left + (internalCol * colInternalSize) - 2,
-        top: top + (internalRow * rowInternalSize),
-      };
-
-      const numberDiv = (
-        <div
-          key={`${id}-${number}`}
-          id={`${id}-${number}`}
-          style={numberDivStyle}
-        >
-          {cardnumber}
-        </div>
-      );
-
-      components.push(numberDiv);
-
-      // move to the next position
-      internalCol += 1;
-      if (internalCol > 3) {
-        internalCol = 0;
-        internalRow += 1;
-      }
-    }
-  }
-
-  // now work through the suits and draw each, drawing faded if not selected
   for (let suitIndex = 0; suitIndex < 4; suitIndex += 1) {
     const suit = cardSuitIndexToSuit(suitIndex);
     const faded = !suitOptions[suitIndex];
@@ -195,6 +133,79 @@ const CardOptions = () => {
     if (internalCol > 3) {
       internalCol = 0;
       internalRow += 1;
+    }
+  }
+
+  // work through the numbers and draw each, remembering to skip the missing number, drawing faded if not selected
+  for (let numberIndex = 0; numberIndex < 13; numberIndex += 1) {
+    const number = numberIndex + 1;
+    if (number !== missingNumber) {
+      const faded = !numberOptions[numberIndex];
+
+      const cardnumberstyle = {
+        position: 'absolute',
+        left: '0px',
+        top: '0px',
+        width: '20px',
+        height: '20px',
+        fontWeight: 'bold',
+        fontSize: '18px',
+        letterSpacing: '-0.1em',
+        userSelect: 'none',
+        MozUserSelect: 'none',
+        WebkitUserSelect: 'none',
+        msUserSelect: 'none',
+        opacity: faded ? 0.2 : 1,
+      };
+
+      let textX = 5;
+      if (number === NUMBER_10) {
+        textX = 2;
+      }
+      if (number === NUMBER_J) {
+        textX = 7;
+      }
+      if (number === NUMBER_Q) {
+        textX = 3;
+      }
+      if (number === NUMBER_K) {
+        textX = 4;
+      }
+      const cardnumber = (
+        <div style={cardnumberstyle}>
+          <svg width="60px" height="40px">
+            <text x={textX} y={15} fill={cardSuitToFillColour(SUIT_SPADES)}>
+              {cardNumberToString(number)}
+            </text>
+          </svg>
+        </div>
+      );
+
+      const numberDivStyle = {
+        position: 'absolute',
+        zIndex: 0,
+        left: left + (internalCol * colInternalSize) - 2,
+        top: top + (internalRow * rowInternalSize),
+      };
+
+      const numberDiv = (
+        <div
+          key={`${id}-${number}`}
+          id={`${id}-${number}`}
+          style={numberDivStyle}
+        >
+          {cardnumber}
+        </div>
+      );
+
+      components.push(numberDiv);
+
+      // move to the next position
+      internalCol += 1;
+      if (internalCol > 3) {
+        internalCol = 0;
+        internalRow += 1;
+      }
     }
   }
 
