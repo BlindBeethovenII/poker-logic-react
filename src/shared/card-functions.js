@@ -82,6 +82,13 @@ export const cardSuitToFillColour = (suit) => {
   return 'red';
 };
 
+export const cardSuitIndexToSuit = (suitIndex) => {
+  if (suitIndex === 3) return SUIT_CLUBS;
+  if (suitIndex === 2) return SUIT_DIAMONDS;
+  if (suitIndex === 1) return SUIT_HEARTS;
+  return SUIT_SPADES;
+};
+
 // the simple algorithm to generate the player and opponent card id from the card's suit and number
 export const generateCardId = (suit, number) => `card_${suit}_${number}`;
 
