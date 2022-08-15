@@ -22,6 +22,8 @@ import {
   NUMBER_K,
 } from '../shared/constants';
 
+import logIfDevEnv from '../shared/logIfDevEnv';
+
 import GameStateContext from '../contexts/GameStateContext';
 
 const CardOptions = () => {
@@ -116,12 +118,22 @@ const CardOptions = () => {
       top: top + (internalRow * rowInternalSize),
     };
 
+    // toggle the selected value of the suit
     const suitToggleSelected = () => {
-      console.log(`suitToggleSelected ${suit}`);
+      logIfDevEnv(`suitToggleSelected ${suit}`);
 
       // toggle corresponding suit index
       const newSuitOptions = [...suitOptions];
       newSuitOptions[suitIndex] = !suitOptions[suitIndex];
+      setSuitOptions(newSuitOptions);
+    };
+
+    // set this suit as the only selected suit
+    const suitSelectThisOnly = () => {
+      logIfDevEnv(`suitSelectThisOnly ${suit}`);
+
+      const newSuitOptions = [false, false, false, false];
+      newSuitOptions[suitIndex] = true;
       setSuitOptions(newSuitOptions);
     };
 
@@ -134,6 +146,7 @@ const CardOptions = () => {
         role="button"
         onClick={suitToggleSelected}
         onKeyDown={suitToggleSelected}
+        onDoubleClick={suitSelectThisOnly}
       >
         {cardsuit}
       </div>
@@ -202,11 +215,20 @@ const CardOptions = () => {
       };
 
       const numberToggleSelected = () => {
-        console.log(`numberToggleSelected ${number}`);
+        logIfDevEnv(`numberToggleSelected ${number}`);
 
         // toggle corresponding number index
         const newNumberOptions = [...numberOptions];
         newNumberOptions[numberIndex] = !numberOptions[numberIndex];
+        setNumberOptions(newNumberOptions);
+      };
+
+      // set this number as the only selected number
+      const numberSelectThisOnly = () => {
+        logIfDevEnv(`numberSelectThisOnly ${number}`);
+
+        const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+        newNumberOptions[numberIndex] = true;
         setNumberOptions(newNumberOptions);
       };
 
@@ -219,6 +241,7 @@ const CardOptions = () => {
           role="button"
           onClick={numberToggleSelected}
           onKeyDown={numberToggleSelected}
+          onDoubleClick={numberSelectThisOnly}
         >
           {cardnumber}
         </div>
