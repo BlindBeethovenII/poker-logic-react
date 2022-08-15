@@ -96,7 +96,8 @@ const CardOptions = () => {
   // helper function to count
   const countAvailableOptionsReducer = (accumulator, currentValue) => accumulator + (currentValue ? 1 : 0);
   const suitOptionsCount = suitOptions.reduce(countAvailableOptionsReducer);
-  // console.log(`suitOptionsCount = ${suitOptionsCount}`);
+  const numberOptionsCount = numberOptions.reduce(countAvailableOptionsReducer);
+  // console.log(`numberOptionsCount = ${numberOptionsCount}`);
 
   // now work through the suits and draw each, drawing faded if not selected
   for (let suitIndex = 0; suitIndex < 4; suitIndex += 1) {
@@ -104,7 +105,7 @@ const CardOptions = () => {
     const faded = !suitOptions[suitIndex];
 
     // is this the single suit option?
-    const theSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitIndex]);
+    const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitIndex]);
 
     let height = '21px';
     if (suit === SUIT_SPADES) {
@@ -125,7 +126,7 @@ const CardOptions = () => {
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
 
     // left offset depends on if we are the singleSuitOption, with the single suit option always in internal col index 3
-    const leftOffset = theSingleSuitOption ? 3 * colInternalSize : internalCol * colInternalSize;
+    const leftOffset = isSingleSuitOption ? 3 * colInternalSize : internalCol * colInternalSize;
 
     const suitDivStyle = {
       position: 'absolute',
@@ -151,9 +152,8 @@ const CardOptions = () => {
       e.preventDefault();
 
       // if this is the single suit option, then toggle means make all options available again
-      if (theSingleSuitOption) {
+      if (isSingleSuitOption) {
         const newSuitOptions = [true, true, true, true];
-        newSuitOptions[suitIndex] = true;
         setSuitOptions(newSuitOptions);
       } else {
         // toggle corresponding suit index
@@ -179,7 +179,7 @@ const CardOptions = () => {
     );
 
     // only keep a component if more than one option, or this is the single suit option
-    if (suitOptionsCount > 1 || theSingleSuitOption) {
+    if (suitOptionsCount > 1 || isSingleSuitOption) {
       components.push(suitDiv);
     }
 
@@ -196,6 +196,9 @@ const CardOptions = () => {
     const number = numberIndex + 1;
     if (number !== missingNumber) {
       const faded = !numberOptions[numberIndex];
+
+      // is this the single number option? remember the missing number option is always true
+      const isSingleNumberOption = (numberOptionsCount === 2 && numberOptions[numberIndex]);
 
       const cardnumberstyle = {
         position: 'absolute',
@@ -260,10 +263,16 @@ const CardOptions = () => {
         // stop the context menu appearing
         e.preventDefault();
 
-        // toggle corresponding number index
-        const newNumberOptions = [...numberOptions];
-        newNumberOptions[numberIndex] = !numberOptions[numberIndex];
-        setNumberOptions(newNumberOptions);
+        // if this is the single number option, then toggle means make all options available again
+        if (isSingleNumberOption) {
+          const newNumberOptions = [true, true, true, true, true, true, true, true, true, true, true, true, true];
+          setNumberOptions(newNumberOptions);
+        } else {
+          // toggle corresponding number index
+          const newNumberOptions = [...numberOptions];
+          newNumberOptions[numberIndex] = !numberOptions[numberIndex];
+          setNumberOptions(newNumberOptions);
+        }
       };
 
       const numberDiv = (
@@ -281,7 +290,10 @@ const CardOptions = () => {
         </div>
       );
 
-      components.push(numberDiv);
+      // only keep a component if more than one option (remembering missing number option is always true), or this is the single number option
+      if (numberOptionsCount > 2 || isSingleNumberOption) {
+        components.push(numberDiv);
+      }
 
       // move to the next position
       internalCol += 1;
