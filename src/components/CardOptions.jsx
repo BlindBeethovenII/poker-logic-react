@@ -34,10 +34,10 @@ const CardOptions = () => {
   const id = 'test';
 
   // the number options - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number
-  const [numberOptions, setNumberOptions] = useState([true, true, false, true, true, false, true, true, true, true, false, true, true]);
+  const [numberOptions, setNumberOptions] = useState([true, true, true, true, true, true, true, true, true, true, true, true, true]);
 
   // the suit options - S, H, D, C - true means visible - if only one true then that is the selected number
-  const suitOptions = [true, false, true, true];
+  const [suitOptions, setSuitOptions] = useState([true, true, true, true]);
 
   // unselect the missing number - TODO - do this at creation - OR? do we need to understand the missingNumber so other way?
   // numberOptions[missingNumber - 1] = false;
@@ -116,11 +116,24 @@ const CardOptions = () => {
       top: top + (internalRow * rowInternalSize),
     };
 
+    const suitToggleSelected = () => {
+      console.log(`suitToggleSelected ${suit}`);
+
+      // toggle corresponding suit index
+      const newSuitOptions = [...suitOptions];
+      newSuitOptions[suitIndex] = !suitOptions[suitIndex];
+      setSuitOptions(newSuitOptions);
+    };
+
     const suitDiv = (
+      // eslint-disable-next-line jsx-a11y/interactive-supports-focus
       <div
         key={`${id}-${suit}`}
         id={`${id}-${suit}`}
         style={suitDivStyle}
+        role="button"
+        onClick={suitToggleSelected}
+        onKeyDown={suitToggleSelected}
       >
         {cardsuit}
       </div>
