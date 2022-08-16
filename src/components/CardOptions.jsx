@@ -26,7 +26,7 @@ import logIfDevEnv from '../shared/logIfDevEnv';
 import GameStateContext from '../contexts/GameStateContext';
 
 const CardOptions = (props) => {
-  const { handOptionIndex } = props;
+  const { handOptionIndex, solutionOptionIndex } = props;
 
   // get our stuff from the game state context
   const {
@@ -41,14 +41,14 @@ const CardOptions = (props) => {
   } = useContext(GameStateContext);
 
   // form our id based on our hand option index
-  const id = `hand-option-${handOptionIndex}-card-options`;
+  const id = `card-options-${solutionOptionIndex}-${handOptionIndex}`;
 
   // extract our suit and number options
   const { suitOptions, numberOptions } = handOptions[handOptionIndex];
 
   // draw the suit and number options, within a blank card, at this col/row position
   const left = colToLeft(handOptionIndex + 1);
-  const top = rowToTop(0);
+  const top = rowToTop(solutionOptionIndex);
 
   // internal column and row sizes
   const colInternalSize = 15;
@@ -325,9 +325,6 @@ const CardOptions = (props) => {
 
 CardOptions.propTypes = {
   handOptionIndex: PropTypes.number.isRequired,
-};
-
-CardOptions.defaultProps = {
 };
 
 export default CardOptions;
