@@ -12,6 +12,7 @@ import BorderRightImage from '../images/borders/right.png';
 import SolutionHand from './SolutionHand';
 import AvailableCardsInSuit from './AvailableCardsInSuit';
 import SolutionOptions from './SolutionOptions';
+import RestartButton from './RestartButton';
 
 import {
   SUIT_SPADES,
@@ -112,6 +113,7 @@ const PlayArea = () => (
     <AvailableCardsInSuit suit={SUIT_DIAMONDS} />
     <AvailableCardsInSuit suit={SUIT_CLUBS} />
     <SolutionOptions />
+    <RestartButton />
   </div>
 );
 

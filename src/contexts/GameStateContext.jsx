@@ -3,6 +3,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { createSolution } from '../shared/card-functions';
+import { createSolutionOptions } from '../shared/solution-functions';
 
 const GameStateContext = React.createContext({});
 
@@ -19,96 +20,7 @@ export const GameStateContextProvider = ({ children }) => {
   // each card options is on object of
   //   suitOptions: array of 4 bools - S, H, D, C - true means visible - if only one true then that is the selected number
   //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
-  const [solutionOptions, setSolutionOptions] = useState([
-    [
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-    ],
-    [
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-    ],
-    [
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-    ],
-    [
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-      {
-        suitOptions: [true, true, true, true],
-        numberOptions: [true, true, true, true, true, true, true, true, true, true, true, true, true],
-      },
-    ],
-  ]);
+  const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions());
 
   // setting functions for the card options
 
@@ -216,6 +128,9 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+
+    // reset the solution options
+    resetSolutionOptions: () => setSolutionOptions(createSolutionOptions()),
   }), [
     showWin,
     solution,
