@@ -31,7 +31,7 @@ const CardOptions = (props) => {
   // get our stuff from the game state context
   const {
     missingNumber,
-    cardOptions,
+    handOptions,
     setSuitOptionOnly,
     toggleSuitOption,
     resetSuitOptions,
@@ -43,8 +43,8 @@ const CardOptions = (props) => {
   // form our id based on our hand option index
   const id = `hand-option-${handOptionIndex}-card-options`;
 
-  // extract the suit and number options
-  const { suitOptions, numberOptions } = cardOptions;
+  // extract our suit and number options
+  const { suitOptions, numberOptions } = handOptions[handOptionIndex];
 
   // draw the suit and number options, within a blank card, at this col/row position
   const left = colToLeft(handOptionIndex + 1);
@@ -154,7 +154,7 @@ const CardOptions = (props) => {
     // set this suit as the only selected suit
     const suitSelectThisOptionOnly = () => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
-      setSuitOptionOnly(suitOptionsIndex);
+      setSuitOptionOnly(suitOptionsIndex, handOptionIndex);
     };
 
     // toggle the selected value of the suit
@@ -166,10 +166,10 @@ const CardOptions = (props) => {
 
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
-        resetSuitOptions();
+        resetSuitOptions(handOptionIndex);
       } else {
         // toggle corresponding suit index
-        toggleSuitOption(suitOptionsIndex);
+        toggleSuitOption(suitOptionsIndex, handOptionIndex);
       }
     };
 
@@ -271,7 +271,7 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        setNumberOptionOnly(numberOptionsIndex);
+        setNumberOptionOnly(numberOptionsIndex, handOptionIndex);
       };
 
       const numberToggleOption = (e) => {
@@ -282,10 +282,10 @@ const CardOptions = (props) => {
 
         // if this is the single number option, then toggle means make all options available again
         if (isSingleNumberOption) {
-          resetNumberOptions();
+          resetNumberOptions(handOptionIndex);
         } else {
           // toggle corresponding number index
-          toggleNumberOption(numberOptionsIndex);
+          toggleNumberOption(numberOptionsIndex, handOptionIndex);
         }
       };
 
