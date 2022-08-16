@@ -26,12 +26,12 @@ import logIfDevEnv from '../shared/logIfDevEnv';
 import GameStateContext from '../contexts/GameStateContext';
 
 const CardOptions = (props) => {
-  const { handOptionIndex, solutionOptionIndex } = props;
+  const { solutionOptionsIndex, handOptionsIndex } = props;
 
   // get our stuff from the game state context
   const {
     missingNumber,
-    handOptions,
+    solutionOptions,
     setSuitOptionOnly,
     toggleSuitOption,
     resetSuitOptions,
@@ -41,14 +41,14 @@ const CardOptions = (props) => {
   } = useContext(GameStateContext);
 
   // form our id based on our hand option index
-  const id = `card-options-${solutionOptionIndex}-${handOptionIndex}`;
+  const id = `card-options-${solutionOptionsIndex}-${handOptionsIndex}`;
 
   // extract our suit and number options
-  const { suitOptions, numberOptions } = handOptions[handOptionIndex];
+  const { suitOptions, numberOptions } = solutionOptions[solutionOptionsIndex][handOptionsIndex];
 
   // draw the suit and number options, within a blank card, at this col/row position
-  const left = colToLeft(handOptionIndex + 1);
-  const top = rowToTop(solutionOptionIndex);
+  const left = colToLeft(handOptionsIndex + 1);
+  const top = rowToTop(solutionOptionsIndex);
 
   // internal column and row sizes
   const colInternalSize = 15;
@@ -154,7 +154,7 @@ const CardOptions = (props) => {
     // set this suit as the only selected suit
     const suitSelectThisOptionOnly = () => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
-      setSuitOptionOnly(suitOptionsIndex, handOptionIndex);
+      setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
     };
 
     // toggle the selected value of the suit
@@ -166,10 +166,10 @@ const CardOptions = (props) => {
 
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
-        resetSuitOptions(handOptionIndex);
+        resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
       } else {
         // toggle corresponding suit index
-        toggleSuitOption(suitOptionsIndex, handOptionIndex);
+        toggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
       }
     };
 
@@ -271,7 +271,7 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        setNumberOptionOnly(numberOptionsIndex, handOptionIndex);
+        setNumberOptionOnly(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex);
       };
 
       const numberToggleOption = (e) => {
@@ -282,10 +282,10 @@ const CardOptions = (props) => {
 
         // if this is the single number option, then toggle means make all options available again
         if (isSingleNumberOption) {
-          resetNumberOptions(handOptionIndex);
+          resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
         } else {
           // toggle corresponding number index
-          toggleNumberOption(numberOptionsIndex, handOptionIndex);
+          toggleNumberOption(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex);
         }
       };
 
@@ -324,7 +324,8 @@ const CardOptions = (props) => {
 };
 
 CardOptions.propTypes = {
-  handOptionIndex: PropTypes.number.isRequired,
+  solutionOptionsIndex: PropTypes.number.isRequired,
+  handOptionsIndex: PropTypes.number.isRequired,
 };
 
 export default CardOptions;

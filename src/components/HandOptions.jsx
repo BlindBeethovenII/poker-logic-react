@@ -5,21 +5,21 @@ import PropTypes from 'prop-types';
 import CardOptions from './CardOptions';
 
 const HandOptions = (props) => {
-  const { solutionOptionIndex } = props;
+  const { solutionOptionsIndex } = props;
 
   return (
     <>
-      <CardOptions solutionOptionIndex={solutionOptionIndex} handOptionIndex={0} />
-      <CardOptions solutionOptionIndex={solutionOptionIndex} handOptionIndex={1} />
-      <CardOptions solutionOptionIndex={solutionOptionIndex} handOptionIndex={2} />
-      <CardOptions solutionOptionIndex={solutionOptionIndex} handOptionIndex={3} />
-      <CardOptions solutionOptionIndex={solutionOptionIndex} handOptionIndex={4} />
+      <CardOptions solutionOptionsIndex={solutionOptionsIndex} handOptionsIndex={0} />
+      <CardOptions solutionOptionsIndex={solutionOptionsIndex} handOptionsIndex={1} />
+      <CardOptions solutionOptionsIndex={solutionOptionsIndex} handOptionsIndex={2} />
+      <CardOptions solutionOptionsIndex={solutionOptionsIndex} handOptionsIndex={3} />
+      <CardOptions solutionOptionsIndex={solutionOptionsIndex} handOptionsIndex={4} />
     </>
   );
 };
 
 HandOptions.propTypes = {
-  solutionOptionIndex: PropTypes.number.isRequired,
+  solutionOptionsIndex: PropTypes.number.isRequired,
 };
 
 export default HandOptions;

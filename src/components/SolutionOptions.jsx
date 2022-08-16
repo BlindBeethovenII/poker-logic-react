@@ -4,10 +4,10 @@ import HandOptions from './HandOptions';
 
 const SolutionOptions = () => (
   <>
-    <HandOptions solutionOptionIndex={0} />
-    <HandOptions solutionOptionIndex={1} />
-    <HandOptions solutionOptionIndex={2} />
-    <HandOptions solutionOptionIndex={3} />
+    <HandOptions solutionOptionsIndex={0} />
+    <HandOptions solutionOptionsIndex={1} />
+    <HandOptions solutionOptionsIndex={2} />
+    <HandOptions solutionOptionsIndex={3} />
   </>
 );
 
