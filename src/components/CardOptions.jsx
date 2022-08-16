@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import CardBlankImage from '../images/cards/cardblank.png';
 
@@ -25,7 +25,9 @@ import logIfDevEnv from '../shared/logIfDevEnv';
 
 import GameStateContext from '../contexts/GameStateContext';
 
-const CardOptions = () => {
+const CardOptions = (props) => {
+  const { handOptionIndex } = props;
+
   // get our stuff from the game state context
   const {
     missingNumber,
@@ -38,15 +40,15 @@ const CardOptions = () => {
     resetNumberOptions,
   } = useContext(GameStateContext);
 
-  // TODO
-  const id = 'test';
+  // form our id based on our hand option index
+  const id = `hand-option-${handOptionIndex}-card-options`;
 
   // extract the suit and number options
   const { suitOptions, numberOptions } = cardOptions;
 
-  // draw these
-  const left = colToLeft(1);
-  const top = rowToTop(1);
+  // draw the suit and number options, within a blank card, at this col/row position
+  const left = colToLeft(handOptionIndex + 1);
+  const top = rowToTop(0);
 
   // internal column and row sizes
   const colInternalSize = 15;
@@ -171,7 +173,7 @@ const CardOptions = () => {
       }
     };
 
-    const suitDivId = `${id}-${suit}`;
+    const suitDivId = `${id}-suit-${suit}`;
 
     const suitDiv = (
       // eslint-disable-next-line jsx-a11y/interactive-supports-focus
@@ -287,7 +289,7 @@ const CardOptions = () => {
         }
       };
 
-      const numberDivId = `${id}-${number}`;
+      const numberDivId = `${id}-num-${number}`;
 
       const numberDiv = (
         // eslint-disable-next-line jsx-a11y/interactive-supports-focus
@@ -322,6 +324,7 @@ const CardOptions = () => {
 };
 
 CardOptions.propTypes = {
+  handOptionIndex: PropTypes.number.isRequired,
 };
 
 CardOptions.defaultProps = {
