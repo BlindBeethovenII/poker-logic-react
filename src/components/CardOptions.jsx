@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 // import PropTypes from 'prop-types';
 
@@ -26,19 +26,23 @@ import logIfDevEnv from '../shared/logIfDevEnv';
 import GameStateContext from '../contexts/GameStateContext';
 
 const CardOptions = () => {
-  // we need to know the missing number
-  const { missingNumber } = useContext(GameStateContext);
-
-  // TODO - get options from context
+  // get our stuff from the game state context
+  const {
+    missingNumber,
+    cardOptions,
+    setSuitOptionOnly,
+    toggleSuitOption,
+    resetSuitOptions,
+    setNumberOptionOnly,
+    toggleNumberOption,
+    resetNumberOptions,
+  } = useContext(GameStateContext);
 
   // TODO
   const id = 'test';
 
-  // the number options - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
-  const [numberOptions, setNumberOptions] = useState([true, true, true, true, true, true, true, true, true, true, true, true, true]);
-
-  // the suit options - S, H, D, C - true means visible - if only one true then that is the selected number
-  const [suitOptions, setSuitOptions] = useState([true, true, true, true]);
+  // extract the suit and number options
+  const { suitOptions, numberOptions } = cardOptions;
 
   // draw these
   const left = colToLeft(1);
@@ -74,10 +78,12 @@ const CardOptions = () => {
     e.preventDefault();
   };
 
+  const blankDivId = `${id}-blank`;
+
   const blankDiv = (
     <div
-      key={`${id}-blank`}
-      id={`${id}-blank`}
+      key={blankDivId}
+      id={blankDivId}
       style={blankDivStyle}
       onContextMenu={preventDefault}
     >
@@ -99,12 +105,12 @@ const CardOptions = () => {
   // console.log(`numberOptionsCount = ${numberOptionsCount}`);
 
   // now work through the suits and draw each, drawing faded if not selected
-  for (let suitIndex = 0; suitIndex < 4; suitIndex += 1) {
-    const suit = cardSuitIndexToSuit(suitIndex);
-    const faded = !suitOptions[suitIndex];
+  for (let suitOptionsIndex = 0; suitOptionsIndex < 4; suitOptionsIndex += 1) {
+    const suit = cardSuitIndexToSuit(suitOptionsIndex);
+    const faded = !suitOptions[suitOptionsIndex];
 
     // is this the single suit option?
-    const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitIndex]);
+    const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitOptionsIndex]);
 
     // also care if we the single suit option when there is only one number option left (remember missing number option always true)
     const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 2;
@@ -146,10 +152,7 @@ const CardOptions = () => {
     // set this suit as the only selected suit
     const suitSelectThisOptionOnly = () => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
-
-      const newSuitOptions = [false, false, false, false];
-      newSuitOptions[suitIndex] = true;
-      setSuitOptions(newSuitOptions);
+      setSuitOptionOnly(suitOptionsIndex);
     };
 
     // toggle the selected value of the suit
@@ -161,21 +164,20 @@ const CardOptions = () => {
 
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
-        const newSuitOptions = [true, true, true, true];
-        setSuitOptions(newSuitOptions);
+        resetSuitOptions();
       } else {
         // toggle corresponding suit index
-        const newSuitOptions = [...suitOptions];
-        newSuitOptions[suitIndex] = !suitOptions[suitIndex];
-        setSuitOptions(newSuitOptions);
+        toggleSuitOption(suitOptionsIndex);
       }
     };
+
+    const suitDivId = `${id}-${suit}`;
 
     const suitDiv = (
       // eslint-disable-next-line jsx-a11y/interactive-supports-focus
       <div
-        key={`${id}-${suit}`}
-        id={`${id}-${suit}`}
+        key={suitDivId}
+        id={suitDivId}
         style={suitDivStyle}
         role="button"
         onClick={suitSelectThisOptionOnly}
@@ -200,13 +202,13 @@ const CardOptions = () => {
   }
 
   // work through the numbers and draw each, remembering to skip the missing number, drawing faded if not selected
-  for (let numberIndex = 0; numberIndex < 13; numberIndex += 1) {
-    const number = numberIndex + 1;
+  for (let numberOptionsIndex = 0; numberOptionsIndex < 13; numberOptionsIndex += 1) {
+    const number = numberOptionsIndex + 1;
     if (number !== missingNumber) {
-      const faded = !numberOptions[numberIndex];
+      const faded = !numberOptions[numberOptionsIndex];
 
       // is this the single number option? remember the missing number option is always true
-      const isSingleNumberOption = (numberOptionsCount === 2 && numberOptions[numberIndex]);
+      const isSingleNumberOption = (numberOptionsCount === 2 && numberOptions[numberOptionsIndex]);
 
       const cardnumberstyle = {
         position: 'absolute',
@@ -267,11 +269,7 @@ const CardOptions = () => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-        newNumberOptions[numberIndex] = true;
-        // and the missing number entry is always true as well (which we assume in 'only one number selected' count)
-        newNumberOptions[missingNumber - 1] = true;
-        setNumberOptions(newNumberOptions);
+        setNumberOptionOnly(numberOptionsIndex);
       };
 
       const numberToggleOption = (e) => {
@@ -282,21 +280,20 @@ const CardOptions = () => {
 
         // if this is the single number option, then toggle means make all options available again
         if (isSingleNumberOption) {
-          const newNumberOptions = [true, true, true, true, true, true, true, true, true, true, true, true, true];
-          setNumberOptions(newNumberOptions);
+          resetNumberOptions();
         } else {
           // toggle corresponding number index
-          const newNumberOptions = [...numberOptions];
-          newNumberOptions[numberIndex] = !numberOptions[numberIndex];
-          setNumberOptions(newNumberOptions);
+          toggleNumberOption(numberOptionsIndex);
         }
       };
+
+      const numberDivId = `${id}-${number}`;
 
       const numberDiv = (
         // eslint-disable-next-line jsx-a11y/interactive-supports-focus
         <div
-          key={`${id}-${number}`}
-          id={`${id}-${number}`}
+          key={numberDivId}
+          id={numberDivId}
           style={numberDivStyle}
           role="button"
           onClick={numberSelectThisOptionOnly}
