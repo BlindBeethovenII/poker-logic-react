@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { createSolution } from '../shared/card-functions';
-import { createSolutionOptions } from '../shared/solution-functions';
+import { createSolutionOptions, getHint } from '../shared/solution-functions';
 
 const GameStateContext = React.createContext({});
 
@@ -108,6 +108,11 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
+  // find and apply the next hint
+  const findAndApplyNextHint = useCallback(() => {
+    console.log(`getHint returns ${JSON.stringify(getHint(solutionOptions, solution))}`);
+  }, [solutionOptions, solution]);
+
   // expose our state and state functions via the context
   // we are encouraged to do this via a useMemo now
   const context = useMemo(() => ({
@@ -131,6 +136,9 @@ export const GameStateContextProvider = ({ children }) => {
 
     // reset the solution options
     resetSolutionOptions: () => setSolutionOptions(createSolutionOptions()),
+
+    // hint stuff
+    findAndApplyNextHint,
   }), [
     showWin,
     solution,
@@ -141,6 +149,7 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    findAndApplyNextHint,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

@@ -13,6 +13,7 @@ import SolutionHand from './SolutionHand';
 import AvailableCardsInSuit from './AvailableCardsInSuit';
 import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
+import HintButton from './HintButton';
 
 import {
   SUIT_SPADES,
@@ -114,6 +115,7 @@ const PlayArea = () => (
     <AvailableCardsInSuit suit={SUIT_CLUBS} />
     <SolutionOptions />
     <RestartButton />
+    <HintButton />
   </div>
 );
 

@@ -918,7 +918,7 @@ export const createSolution = () => {
   // select a random missing number for this new deck
   const missingNumber = shuffle(NUMBERS)[0];
 
-  logIfDevEnv(`createSolution missing number is ${missingNumber}`);
+  // logIfDevEnv(`createSolution missing number is ${missingNumber}`);
 
   let cards = createNewDeck(missingNumber);
 
