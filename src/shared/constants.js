@@ -54,3 +54,5 @@ export const HAND_TYPE_THREE_OF_A_KIND = 4;
 export const HAND_TYPE_TWO_PAIR = 3;
 export const HAND_TYPE_PAIR = 2;
 export const HAND_TYPE_HIGH_CARD = 1;
+
+export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';

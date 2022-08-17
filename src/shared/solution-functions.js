@@ -1,6 +1,6 @@
 // useful solution functions
 
-import { NUMBERS } from './constants';
+import { NUMBERS, HINT_NUMBER_NOT_USED } from './constants';
 
 // create the initial solution options
 export const createSolutionOptions = () => [
@@ -123,9 +123,29 @@ export const getNumbersNotUsedInSolution = (solutionHands, missingNumber) => {
 };
 
 // look to see if a number is not used, and still in the solution options
-const getNumberNotUsedHint = (solutionOptions, solutionHands, missingNumber) => {
+export const getNumberNotUsedHint = (solutionOptions, solutionHands, missingNumber) => {
   const numbersNotUsed = getNumbersNotUsedInSolution(solutionHands, missingNumber);
-  return numbersNotUsed;
+
+  // for efficiency later, we will return an array of all such hints
+  const result = [];
+
+  // each card options that still has this number results in a hint to remove it
+  numbersNotUsed.forEach((number) => {
+    solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+      handOptions.forEach((cardOptions, handOptionsIndex) => {
+        if (cardOptions.numberOptions[number - 1]) {
+          result.push({
+            hint: HINT_NUMBER_NOT_USED,
+            number,
+            solutionOptionsIndex,
+            handOptionsIndex,
+          });
+        }
+      });
+    });
+  });
+
+  return result;
 };
 
 // get the next possible hint
