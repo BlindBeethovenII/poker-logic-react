@@ -113,9 +113,12 @@ export const GameStateContextProvider = ({ children }) => {
     const hints = getHint(solutionOptions, solution);
     console.log(`getHint returns ${JSON.stringify(hints)}`);
     if (hints?.length) {
-      // apply the first hint
-      const hint = hints[0];
-      setSolutionOptions(applyHint(solutionOptions, hint));
+      // apply all the hints
+      let newSolutionOptions = solutionOptions;
+      hints.forEach((hint) => {
+        newSolutionOptions = applyHint(newSolutionOptions, hint);
+      });
+      setSolutionOptions(newSolutionOptions);
     }
   }, [solutionOptions, solution]);
 
