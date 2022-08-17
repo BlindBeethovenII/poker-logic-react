@@ -18,7 +18,7 @@ describe('getNumberNotUsedHint', () => {
         // and one for each hand options index
         [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
           result.push({
-            hint: HINT_NUMBER_NOT_USED,
+            hintType: HINT_NUMBER_NOT_USED,
             number,
             solutionOptionsIndex,
             handOptionsIndex,
