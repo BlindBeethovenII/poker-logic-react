@@ -13,6 +13,7 @@ import SolutionHand from './SolutionHand';
 import AvailableCardsInSuit from './AvailableCardsInSuit';
 import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
+import NewSolutionButton from './NewSolutionButton';
 import HintButton from './HintButton';
 
 import {
@@ -115,6 +116,8 @@ const PlayArea = () => (
     <AvailableCardsInSuit suit={SUIT_CLUBS} />
     <SolutionOptions />
     <RestartButton />
+    <NewSolutionButton newSolutionIndex={0} />
+    <NewSolutionButton newSolutionIndex={1} />
     <HintButton />
   </div>
 );

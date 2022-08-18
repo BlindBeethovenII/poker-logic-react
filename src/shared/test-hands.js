@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 // interesting hands used in tests
 
 import { createCard } from './card-functions';
@@ -17,6 +16,7 @@ import {
   NUMBER_5,
   NUMBER_4,
   NUMBER_3,
+  NUMBER_2,
 } from './constants';
 
 export const solutionHands1 = [
@@ -49,3 +49,8 @@ export const solutionHands1 = [
     createCard(SUIT_SPADES, NUMBER_3),
   ],
 ];
+
+export const solution1 = {
+  solutionHands: solutionHands1,
+  missingNumber: NUMBER_2,
+};

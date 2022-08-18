@@ -3,6 +3,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { createSolution } from '../shared/card-functions';
+
 import {
   createSolutionOptions,
   getHint,
@@ -15,6 +16,8 @@ import {
   resetNumberOptionsInSolutionOptions,
 } from '../shared/solution-functions';
 
+import { solution1 } from '../shared/test-hands';
+
 const GameStateContext = React.createContext({});
 
 export const GameStateContextProvider = ({ children }) => {
@@ -23,7 +26,7 @@ export const GameStateContextProvider = ({ children }) => {
 
   // a solution - which is an object with {solutionHands, missingNumber}
   // TODO - include people in the solution
-  const [solution] = useState(() => createSolution());
+  const [solution, setSolution] = useState(() => createSolution());
 
   // solution options, being an array of 4 hand options
   // hand options, being an array of 5 card options
@@ -32,7 +35,9 @@ export const GameStateContextProvider = ({ children }) => {
   //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
   const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions());
 
-  // setting functions for the card options
+  // -------------------- //
+  // card options setters //
+  // -------------------- //
 
   // set the given suit options index as the only selected suit option
   const setSuitOptionOnly = useCallback((suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
@@ -70,6 +75,32 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
+  // ------------------------------------- //
+  // solution and solution options setters //
+  // ------------------------------------- //
+
+  // reset solution options
+  const resetSolutionOptions = () => setSolutionOptions(createSolutionOptions());
+
+  // get a new solution
+  const newSolution = useCallback((newSolutionIndex) => {
+    // a new solution
+    let nextNewSolution = null;
+    if (newSolutionIndex === 1) {
+      nextNewSolution = solution1;
+    } else {
+      nextNewSolution = createSolution();
+    }
+    setSolution(nextNewSolution);
+
+    // need to reset the solution options as well
+    resetSolutionOptions();
+  }, []);
+
+  // ----------- //
+  // hint system //
+  // ----------- //
+
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
     const hints = getHint(solutionOptions, solution);
@@ -83,6 +114,10 @@ export const GameStateContextProvider = ({ children }) => {
       setSolutionOptions(newSolutionOptions);
     }
   }, [solutionOptions, solution]);
+
+  // ----------- //
+  // the context //
+  // ----------- //
 
   // expose our state and state functions via the context
   // we are encouraged to do this via a useMemo now
@@ -105,8 +140,9 @@ export const GameStateContextProvider = ({ children }) => {
     toggleNumberOption,
     resetNumberOptions,
 
-    // reset the solution options
-    resetSolutionOptions: () => setSolutionOptions(createSolutionOptions()),
+    // solution and solution options stuff
+    resetSolutionOptions,
+    newSolution,
 
     // hint stuff
     findAndApplyNextHint,
@@ -120,6 +156,7 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    newSolution,
     findAndApplyNextHint,
   ]);
 
