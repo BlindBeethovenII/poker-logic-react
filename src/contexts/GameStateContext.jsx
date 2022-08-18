@@ -3,7 +3,17 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { createSolution } from '../shared/card-functions';
-import { createSolutionOptions, getHint, applyHint } from '../shared/solution-functions';
+import {
+  createSolutionOptions,
+  getHint,
+  applyHint,
+  setSuitOptionOnlyInSolutionOptions,
+  toggleSuitOptionInSolutionOptions,
+  resetSuitOptionsInSolutionOptions,
+  setNumberOptionOnlyInSolutionOptions,
+  toggleNumberOptionInSolutionOptions,
+  resetNumberOptionsInSolutionOptions,
+} from '../shared/solution-functions';
 
 const GameStateContext = React.createContext({});
 
@@ -26,85 +36,37 @@ export const GameStateContextProvider = ({ children }) => {
 
   // set the given suit options index as the only selected suit option
   const setSuitOptionOnly = useCallback((suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { numberOptions } = handOptions[handOptionsIndex];
-    const newSuitOptions = [false, false, false, false];
-    newSuitOptions[suitOptionsIndex] = true;
-    const newCardOptions = { suitOptions: newSuitOptions, numberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
   // toggle the given suit option index
   const toggleSuitOption = useCallback((suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
-    const newSuitOptions = [...suitOptions];
-    newSuitOptions[suitOptionsIndex] = !suitOptions[suitOptionsIndex];
-    const newCardOptions = { suitOptions: newSuitOptions, numberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
   // reset all the suit options
   const resetSuitOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { numberOptions } = handOptions[handOptionsIndex];
-    const newSuitOptions = [true, true, true, true];
-    const newCardOptions = { suitOptions: newSuitOptions, numberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
   // set the given number options index as the only selected number option
   const setNumberOptionOnly = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { suitOptions } = handOptions[handOptionsIndex];
-    const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-    newNumberOptions[numberOptionsIndex] = true;
-    // and the missing number entry is always true as well (which we assume in 'only one number selected' count)
-    newNumberOptions[solution.missingNumber - 1] = true;
-    const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions, solution);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions, solution]);
 
   // toggle the given number option index
   const toggleNumberOption = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
-    const newNumberOptions = [...numberOptions];
-    newNumberOptions[numberOptionsIndex] = !numberOptions[numberOptionsIndex];
-    const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = toggleNumberOptionInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
   // reset all the number options
   const resetNumberOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
-    const handOptions = solutionOptions[solutionOptionsIndex];
-    const { suitOptions } = handOptions[handOptionsIndex];
-    const newNumberOptions = [true, true, true, true, true, true, true, true, true, true, true, true, true];
-    const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
-    const newHandOptions = [...handOptions];
-    newHandOptions[handOptionsIndex] = newCardOptions;
-    const newSolutionOptions = [...solutionOptions];
-    newSolutionOptions[solutionOptionsIndex] = newHandOptions;
+    const newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
