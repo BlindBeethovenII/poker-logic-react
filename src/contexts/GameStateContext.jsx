@@ -26,7 +26,7 @@ export const GameStateContextProvider = ({ children }) => {
 
   // a solution - which is an object with {solutionHands, missingNumber}
   // TODO - include people in the solution
-  const [solution, setSolution] = useState(() => createSolution());
+  const [solution, setSolution] = useState(solution1);
 
   // solution options, being an array of 4 hand options
   // hand options, being an array of 5 card options
