@@ -1,26 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
-import { personToImage } from '../shared/people-functions';
-
-import GameStateContext from '../contexts/GameStateContext';
+import { personToPositionImage } from '../shared/people-functions';
 
 const SolutionPerson = (props) => {
   const {
     solutionPersonIndex,
   } = props;
-
-  const { solutionPeople } = useContext(GameStateContext);
-
-  // get our solution hand
-  const solutionPerson = solutionPeople[solutionPersonIndex];
-
-  if (!solutionPerson) {
-    // if there is no person then nothing to show
-    return null;
-  }
 
   // convert the cols and rows into left/top
   const left = colToLeft(0);
@@ -37,7 +25,7 @@ const SolutionPerson = (props) => {
     <div
       style={inPlaceDivStyle}
     >
-      <img src={personToImage(solutionPerson)} alt="cardsuit" />
+      <img src={personToPositionImage(solutionPersonIndex)} alt="solutionperson" />
     </div>
   );
 };
