@@ -6,8 +6,6 @@ import { createSolution } from '../shared/card-functions';
 
 import {
   createSolutionOptions,
-  getHint,
-  applyHint,
   setSuitOptionOnlyInSolutionOptions,
   toggleSuitOptionInSolutionOptions,
   resetSuitOptionsInSolutionOptions,
@@ -16,7 +14,12 @@ import {
   resetNumberOptionsInSolutionOptions,
 } from '../shared/solution-functions';
 
-import { solution1 } from '../shared/test-hands';
+import {
+  getHint,
+  applyHint,
+} from '../shared/hint-functions';
+
+import { solution1, clues1 } from '../shared/test-hands';
 
 const GameStateContext = React.createContext({});
 
@@ -34,6 +37,9 @@ export const GameStateContextProvider = ({ children }) => {
   //   suitOptions: array of 4 bools - S, H, D, C - true means visible - if only one true then that is the selected number
   //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
   const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions());
+
+  // clues
+  const [clues] = useState(clues1);
 
   // -------------------- //
   // card options setters //
@@ -146,6 +152,9 @@ export const GameStateContextProvider = ({ children }) => {
 
     // hint stuff
     findAndApplyNextHint,
+
+    // clues stuff
+    clues,
   }), [
     showWin,
     solution,
@@ -158,6 +167,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetNumberOptions,
     newSolution,
     findAndApplyNextHint,
+    clues,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

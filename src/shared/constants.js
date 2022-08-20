@@ -56,3 +56,5 @@ export const HAND_TYPE_PAIR = 2;
 export const HAND_TYPE_HIGH_CARD = 1;
 
 export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';
+
+export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';

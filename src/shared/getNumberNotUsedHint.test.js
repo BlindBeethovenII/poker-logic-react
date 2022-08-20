@@ -1,9 +1,14 @@
-import { getNumberNotUsedHint, createSolutionOptions, getNumbersNotUsedInSolution } from './solution-functions';
+import {
+  getNumberNotUsedHint,
+  createHintNumberNotUsed,
+} from './hint-functions';
 
 import {
-  NUMBER_2,
-  HINT_NUMBER_NOT_USED,
-} from './constants';
+  createSolutionOptions,
+  getNumbersNotUsedInSolution,
+} from './solution-functions';
+
+import { NUMBER_2 } from './constants';
 
 import { solutionHands1 } from './test-hands';
 
@@ -17,12 +22,7 @@ describe('getNumberNotUsedHint', () => {
       [0, 1, 2, 3].forEach((solutionOptionsIndex) => {
         // and one for each hand options index
         [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
-          result.push({
-            hintType: HINT_NUMBER_NOT_USED,
-            number,
-            solutionOptionsIndex,
-            handOptionsIndex,
-          });
+          result.push(createHintNumberNotUsed(number, solutionOptionsIndex, handOptionsIndex));
         });
       });
     });
