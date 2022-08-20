@@ -16,6 +16,7 @@ import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
 import NewSolutionButton from './NewSolutionButton';
 import HintButton from './HintButton';
+import Clues from './Clues';
 
 import {
   SUIT_SPADES,
@@ -124,6 +125,7 @@ const PlayArea = () => (
     <NewSolutionButton newSolutionIndex={0} />
     <NewSolutionButton newSolutionIndex={1} />
     <HintButton />
+    <Clues />
   </div>
 );
 

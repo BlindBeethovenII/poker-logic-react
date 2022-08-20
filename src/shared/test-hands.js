@@ -20,6 +20,9 @@ import {
   SUIT_HEARTS,
   SUIT_SPADES,
   HAND_TYPE_STRAIGHT_FLUSH,
+  HAND_TYPE_FOUR_OF_A_KIND,
+  HAND_TYPE_STRAIGHT,
+  HAND_TYPE_THREE_OF_A_KIND,
 } from './constants';
 
 export const solutionHands1 = [
@@ -60,4 +63,7 @@ export const solution1 = {
 
 export const clues1 = [
   createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
+  createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1),
+  createClueHandOfType(HAND_TYPE_STRAIGHT, 2),
+  createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),
 ];
