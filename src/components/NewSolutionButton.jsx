@@ -21,7 +21,7 @@ const Button = styled.button`
 const NewSolutionButton = (props) => {
   const { newSolutionIndex } = props;
 
-  const left = colToLeft(1.5 + (newSolutionIndex * 1.5));
+  const left = colToLeft(1.7 + (newSolutionIndex * 1.5));
   const top = rowToTop(4);
 
   const divstyle = {

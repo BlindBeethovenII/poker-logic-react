@@ -32,7 +32,7 @@ const RestartButton = () => {
 
   return (
     <div style={divstyle}>
-      <Button onClick={resetSolutionOptions}>Restart</Button>
+      <Button onClick={resetSolutionOptions}>Restart this Solution</Button>
     </div>
   );
 };

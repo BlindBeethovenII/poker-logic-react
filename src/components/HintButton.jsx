@@ -6,7 +6,7 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
-const left = colToLeft(4) + 40;
+const left = colToLeft(5);
 const top = rowToTop(4);
 
 const divstyle = {
