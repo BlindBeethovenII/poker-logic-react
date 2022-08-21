@@ -50,7 +50,7 @@ export const clueToText = (clue, clueIndex) => {
   const prefix = `Clue ${clueIndex + 1}:`;
   if (clueType === CLUE_HAND_OF_TYPE) {
     const { handType, solutionHandIndex } = clue;
-    return `${prefix} Position ${solutionHandIndex} has ${handTypeToText(handType)}`;
+    return `${prefix} Position ${solutionHandIndex + 1} has ${handTypeToText(handType)}`;
   }
 
   return `clueToText cannot cope with clueType ${clueType}`;

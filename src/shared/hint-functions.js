@@ -1,8 +1,8 @@
 // useful hint functions
 
-import { HINT_NUMBER_NOT_USED } from './constants';
-
 import { toggleNumberOptionInSolutionOptions, getNumbersNotUsedInSolution } from './solution-functions';
+
+import { HINT_NUMBER_NOT_USED, CLUE_HAND_OF_TYPE, HAND_TYPE_STRAIGHT_FLUSH } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
 
@@ -15,7 +15,7 @@ export const createHintNumberNotUsed = (number, solutionOptionsIndex, handOption
 });
 
 // look to see if a number is not used, and still in the solution options
-export const getNumberNotUsedHint = (solutionOptions, solutionHands, missingNumber) => {
+export const getNumberNotUsedHints = (solutionOptions, solutionHands, missingNumber) => {
   const numbersNotUsed = getNumbersNotUsedInSolution(solutionHands, missingNumber);
 
   // for efficiency later, we will return an array of all such hints
@@ -35,10 +35,38 @@ export const getNumberNotUsedHint = (solutionOptions, solutionHands, missingNumb
   return result;
 };
 
+export const getSuitsWithoutStraightFlushHints = () => {
+  const result = [];
+
+  return result;
+};
+
 // get the next possible hint
-export const getHint = (solutionOptions, solution) => {
+export const getHint = (solutionOptions, solution, clues) => {
   const { solutionHands, missingNumber } = solution;
-  return getNumberNotUsedHint(solutionOptions, solutionHands, missingNumber);
+
+  // first see if number not used - this returns an array
+  const numberNotUsedHints = getNumberNotUsedHints(solutionOptions, solutionHands, missingNumber);
+  if (numberNotUsedHints.length) {
+    return numberNotUsedHints;
+  }
+
+  // look through each clue indvidually
+  for (let i = 0; i < clues.length; i += 1) {
+    const clue = clues[i];
+    const { clueType, handType, solutionHandIndex } = clue;
+
+    // deal with straight flush clues - which have to be for the first hand
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH && solutionHandIndex === 0) {
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(solutionOptions, solutionHands);
+      if (suitsWithoutStraightFlushHints.length) {
+        return suitsWithoutStraightFlushHints;
+      }
+    }
+  }
+
+  // no other hints yet
+  return [];
 };
 
 const applyNumberNotUsedHint = (solutionOptions, hint) => {

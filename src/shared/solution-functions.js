@@ -1,5 +1,7 @@
 // useful solution functions
 
+import { createCard } from './card-functions';
+
 import {
   NUMBERS,
   SUIT_CLUBS,
@@ -259,6 +261,26 @@ export const cardInSolutionHands = (card, solutionHands) => {
   }));
   return result;
 };
+
+// helper function
+export const createCardsAvailableInSuit = (suit, solutionHands) => {
+  const cards = [];
+  NUMBERS.forEach((number) => {
+    const card = createCard(suit, number);
+    if (cardInSolutionHands(card, solutionHands)) {
+      cards.push(card);
+    }
+  });
+  return cards;
+};
+
+// cards available are suit sorted cards from the generated solution
+export const createCardsAvailable = (solutionHands) => [
+  createCardsAvailableInSuit(SUIT_SPADES, solutionHands),
+  createCardsAvailableInSuit(SUIT_HEARTS, solutionHands),
+  createCardsAvailableInSuit(SUIT_DIAMONDS, solutionHands),
+  createCardsAvailableInSuit(SUIT_CLUBS, solutionHands),
+];
 
 // helper function for reduce() to count the number of true booleans in an array of booleans
 const countBooleansReducer = (accumulator, currentValue) => accumulator + (currentValue ? 1 : 0);

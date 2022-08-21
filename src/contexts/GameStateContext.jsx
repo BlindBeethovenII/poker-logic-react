@@ -12,6 +12,7 @@ import {
   setNumberOptionOnlyInSolutionOptions,
   toggleNumberOptionInSolutionOptions,
   resetNumberOptionsInSolutionOptions,
+  createCardsAvailable,
 } from '../shared/solution-functions';
 
 import {
@@ -38,8 +39,11 @@ export const GameStateContextProvider = ({ children }) => {
   //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (missingNumber is always set to false)
   const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
 
+  // cards available are suit sorted cards from the generated solution
+  const [cardsAvailable] = useState(() => createCardsAvailable(solution.solutionHands));
+
   // clues
-  const [clues] = useState(clues1);
+  const [clues, setClues] = useState(clues1);
 
   // -------------------- //
   // card options setters //
@@ -92,12 +96,16 @@ export const GameStateContextProvider = ({ children }) => {
   const newSolution = useCallback((newSolutionIndex) => {
     // a new solution
     let nextNewSolution = null;
+    let nextClues = null;
     if (newSolutionIndex === 1) {
       nextNewSolution = solution1;
+      nextClues = clues1;
     } else {
       nextNewSolution = createSolution();
+      nextClues = [];
     }
     setSolution(nextNewSolution);
+    setClues(nextClues);
 
     // need to reset the solution options as well
     resetSolutionOptions();
@@ -109,7 +117,7 @@ export const GameStateContextProvider = ({ children }) => {
 
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
-    const hints = getHint(solutionOptions, solution);
+    const hints = getHint(solutionOptions, solution, clues);
     console.log(`getHint returns ${JSON.stringify(hints)}`);
     if (hints?.length) {
       // apply all the hints
@@ -119,7 +127,7 @@ export const GameStateContextProvider = ({ children }) => {
       });
       setSolutionOptions(newSolutionOptions);
     }
-  }, [solutionOptions, solution]);
+  }, [solutionOptions, solution, clues]);
 
   // ----------- //
   // the context //
@@ -145,9 +153,12 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
-
-    // solution and solution options stuff
     resetSolutionOptions,
+
+    // cards available
+    cardsAvailable,
+
+    // solution context functions
     newSolution,
 
     // hint stuff
@@ -165,6 +176,7 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    cardsAvailable,
     newSolution,
     findAndApplyNextHint,
     clues,

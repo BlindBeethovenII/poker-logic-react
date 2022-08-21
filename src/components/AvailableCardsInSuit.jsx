@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 
 import Card from './Card';
 
-import { createCard } from '../shared/card-functions';
-
-import { cardInSolutionHands, cardSelectedInSolutionOptions, convertSuitToSuitOptionsIndex } from '../shared/solution-functions';
-
-import { NUMBERS } from '../shared/constants';
+import { cardSelectedInSolutionOptions, convertSuitToSuitOptionsIndex } from '../shared/solution-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -17,17 +13,26 @@ const AvailableCardsInSuit = (props) => {
     suit,
   } = props;
 
-  const { solutionHands, solutionOptions } = useContext(GameStateContext);
+  const { solutionOptions, cardsAvailable } = useContext(GameStateContext);
 
-  // convert suit to row, which is the same as the suit options index
+  // convert suit to row, which is the same as the suit options index and cards available index
   const row = convertSuitToSuitOptionsIndex(suit);
 
+  const suitCardsAvailable = cardsAvailable[row];
+
   const cards = [];
-  NUMBERS.forEach((number, i) => {
-    const card = createCard(suit, number);
-    if (cardInSolutionHands(card, solutionHands)) {
-      cards.push(<Card key={card.id} col={11 - i + 0.65} row={row - 0.15} card={card} small faded={cardSelectedInSolutionOptions(card, solutionOptions)} />);
-    }
+  suitCardsAvailable.forEach((cardAvailable) => {
+    const { number } = cardAvailable;
+    cards.push(
+      <Card
+        key={cardAvailable.id}
+        col={12 - number + 0.65}
+        row={row - 0.15}
+        card={cardAvailable}
+        small
+        faded={cardSelectedInSolutionOptions(cardAvailable, solutionOptions)}
+      />,
+    );
   });
 
   return cards;

@@ -1,5 +1,5 @@
 import {
-  getNumberNotUsedHint,
+  getNumberNotUsedHints,
   createHintNumberNotUsed,
 } from './hint-functions';
 
@@ -12,7 +12,7 @@ import { NUMBER_2 } from './constants';
 
 import { solutionHands1 } from './test-hands';
 
-describe('getNumberNotUsedHint', () => {
+describe('getNumberNotUsedHints', () => {
   it('will return an array of hints for the numbers not used in the given hard-coded solution for the given full solutionOptions', () => {
     // we can compute what we expect by using getNumbersNotUsedInSolution() and the fact we are giving a full solution options
     const numbersNotUsed = getNumbersNotUsedInSolution(solutionHands1, NUMBER_2);
@@ -27,6 +27,6 @@ describe('getNumberNotUsedHint', () => {
       });
     });
 
-    expect(getNumberNotUsedHint(createSolutionOptions(), solutionHands1, NUMBER_2)).toEqual(result);
+    expect(getNumberNotUsedHints(createSolutionOptions(), solutionHands1, NUMBER_2)).toEqual(result);
   });
 });
