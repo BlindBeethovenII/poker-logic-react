@@ -35,8 +35,8 @@ export const GameStateContextProvider = ({ children }) => {
   // hand options, being an array of 5 card options
   // each card options is on object of
   //   suitOptions: array of 4 bools - S, H, D, C - true means visible - if only one true then that is the selected number
-  //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (ignoring the missingNumber entry, which is always true)
-  const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions());
+  //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (missingNumber is always set to false)
+  const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
 
   // clues
   const [clues] = useState(clues1);
@@ -65,9 +65,9 @@ export const GameStateContextProvider = ({ children }) => {
 
   // set the given number options index as the only selected number option
   const setNumberOptionOnly = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions, solution);
+    const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions, solution]);
+  }, [solutionOptions]);
 
   // toggle the given number option index
   const toggleNumberOption = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {

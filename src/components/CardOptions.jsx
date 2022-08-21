@@ -114,8 +114,8 @@ const CardOptions = (props) => {
     // is this the single suit option?
     const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitOptionsIndex]);
 
-    // also care if we the single suit option when there is only one number option left (remember missing number option always true)
-    const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 2;
+    // also care if we are the single suit option when there is only one number option left (remember missingNumber option always false)
+    const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 1;
 
     let height = isSingleSuitAndNumberOption ? '42px' : '21px';
     if (suit === SUIT_SPADES) {
@@ -203,14 +203,14 @@ const CardOptions = (props) => {
     }
   }
 
-  // work through the numbers and draw each, remembering to skip the missing number, drawing faded if not selected
+  // work through the numbers and draw each, remembering to skip the missingNumber, drawing faded if not selected
   for (let numberOptionsIndex = 0; numberOptionsIndex < 13; numberOptionsIndex += 1) {
     const number = numberOptionsIndex + 1;
     if (number !== missingNumber) {
       const faded = !numberOptions[numberOptionsIndex];
 
-      // is this the single number option? remember the missing number option is always true
-      const isSingleNumberOption = (numberOptionsCount === 2 && numberOptions[numberOptionsIndex]);
+      // is this the single number option? remember the missingNumber option is always false
+      const isSingleNumberOption = (numberOptionsCount === 1 && numberOptions[numberOptionsIndex]);
 
       const cardnumberstyle = {
         position: 'absolute',
@@ -306,8 +306,8 @@ const CardOptions = (props) => {
         </div>
       );
 
-      // only keep a component if more than one option (remembering missing number option is always true), or this is the single number option
-      if (numberOptionsCount > 2 || isSingleNumberOption) {
+      // only keep a component if more than one option (remembering missingNumber option is always false), or this is the single number option
+      if (numberOptionsCount > 1 || isSingleNumberOption) {
         components.push(numberDiv);
       }
 
