@@ -4,6 +4,7 @@ import { createCard } from './card-functions';
 
 import {
   NUMBERS,
+  NUMBERS_SORTED,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -263,9 +264,9 @@ export const cardInSolutionHands = (card, solutionHands) => {
 };
 
 // helper function
-export const createCardsAvailableInSuit = (suit, solutionHands) => {
+export const createCardsAvailableInSuitSorted = (suit, solutionHands) => {
   const cards = [];
-  NUMBERS.forEach((number) => {
+  NUMBERS_SORTED.forEach((number) => {
     const card = createCard(suit, number);
     if (cardInSolutionHands(card, solutionHands)) {
       cards.push(card);
@@ -276,10 +277,10 @@ export const createCardsAvailableInSuit = (suit, solutionHands) => {
 
 // cards available are suit sorted cards from the generated solution
 export const createCardsAvailable = (solutionHands) => [
-  createCardsAvailableInSuit(SUIT_SPADES, solutionHands),
-  createCardsAvailableInSuit(SUIT_HEARTS, solutionHands),
-  createCardsAvailableInSuit(SUIT_DIAMONDS, solutionHands),
-  createCardsAvailableInSuit(SUIT_CLUBS, solutionHands),
+  createCardsAvailableInSuitSorted(SUIT_SPADES, solutionHands),
+  createCardsAvailableInSuitSorted(SUIT_HEARTS, solutionHands),
+  createCardsAvailableInSuitSorted(SUIT_DIAMONDS, solutionHands),
+  createCardsAvailableInSuitSorted(SUIT_CLUBS, solutionHands),
 ];
 
 // helper function for reduce() to count the number of true booleans in an array of booleans

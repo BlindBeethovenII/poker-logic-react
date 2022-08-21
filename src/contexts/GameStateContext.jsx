@@ -117,7 +117,7 @@ export const GameStateContextProvider = ({ children }) => {
 
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
-    const hints = getHint(solutionOptions, solution, clues);
+    const hints = getHint(solutionOptions, solution, clues, cardsAvailable);
     console.log(`getHint returns ${JSON.stringify(hints)}`);
     if (hints?.length) {
       // apply all the hints
@@ -127,7 +127,7 @@ export const GameStateContextProvider = ({ children }) => {
       });
       setSolutionOptions(newSolutionOptions);
     }
-  }, [solutionOptions, solution, clues]);
+  }, [solutionOptions, solution, clues, cardsAvailable]);
 
   // ----------- //
   // the context //

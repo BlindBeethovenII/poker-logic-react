@@ -1,8 +1,21 @@
 // useful hint functions
 
-import { toggleNumberOptionInSolutionOptions, getNumbersNotUsedInSolution } from './solution-functions';
+import {
+  toggleNumberOptionInSolutionOptions,
+  toggleSuitOptionInSolutionOptions,
+  getNumbersNotUsedInSolution,
+  convertSuitToSuitOptionsIndex,
+} from './solution-functions';
 
-import { HINT_NUMBER_NOT_USED, CLUE_HAND_OF_TYPE, HAND_TYPE_STRAIGHT_FLUSH } from './constants';
+import { sortedSuitCardsContainStraight } from './card-functions';
+
+import {
+  HINT_NUMBER_NOT_USED,
+  CLUE_HAND_OF_TYPE,
+  HAND_TYPE_STRAIGHT_FLUSH,
+  SUITS,
+  HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
+} from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
 
@@ -35,14 +48,39 @@ export const getNumberNotUsedHints = (solutionOptions, solutionHands, missingNum
   return result;
 };
 
-export const getSuitsWithoutStraightFlushHints = () => {
+// create HINT_NUMBER_NOT_USED
+export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+export const getSuitsWithoutStraightFlushHints = (cardsAvailable, solutionHandIndex) => {
   const result = [];
+
+  SUITS.forEach((suit) => {
+    // convert suit name to suit options index which is the same as cards available index, to find the suits available cards
+    const row = convertSuitToSuitOptionsIndex(suit);
+
+    const suitCardsAvailable = cardsAvailable[row];
+
+    if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
+      // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
+      // the solutionOptionsIndex is the same as the solutionHandIndex here
+      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0));
+      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1));
+      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2));
+      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3));
+      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4));
+    }
+  });
 
   return result;
 };
 
 // get the next possible hint
-export const getHint = (solutionOptions, solution, clues) => {
+export const getHint = (solutionOptions, solution, clues, cardsAvailable) => {
   const { solutionHands, missingNumber } = solution;
 
   // first see if number not used - this returns an array
@@ -56,9 +94,11 @@ export const getHint = (solutionOptions, solution, clues) => {
     const clue = clues[i];
     const { clueType, handType, solutionHandIndex } = clue;
 
+    // TODO !!! Not cards available - but cards still available
+
     // deal with straight flush clues - which have to be for the first hand
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH && solutionHandIndex === 0) {
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(solutionOptions, solutionHands);
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsAvailable, solutionHandIndex);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
       }
@@ -75,12 +115,21 @@ const applyNumberNotUsedHint = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
+  const { suit, solutionOptionsIndex, handOptionsIndex } = hint;
+  logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
   switch (hintType) {
     case HINT_NUMBER_NOT_USED:
       return applyNumberNotUsedHint(solutionOptions, hint);
+
+    case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
+      return applyNoStraightFlushInSuitHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

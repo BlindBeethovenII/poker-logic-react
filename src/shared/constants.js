@@ -36,6 +36,21 @@ export const NUMBERS = [
   NUMBER_Q,
   NUMBER_K,
 ];
+export const NUMBERS_SORTED = [
+  NUMBER_A,
+  NUMBER_K,
+  NUMBER_Q,
+  NUMBER_J,
+  NUMBER_10,
+  NUMBER_9,
+  NUMBER_8,
+  NUMBER_7,
+  NUMBER_6,
+  NUMBER_5,
+  NUMBER_4,
+  NUMBER_3,
+  NUMBER_2,
+];
 export const NUMBER_NONE = -1;
 
 export const CARD_NONE = { suit: SUIT_NONE, number: NUMBER_NONE };
@@ -56,5 +71,6 @@ export const HAND_TYPE_PAIR = 2;
 export const HAND_TYPE_HIGH_CARD = 1;
 
 export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';
+export const HINT_NO_STRAIGHT_FLUSH_IN_SUIT = 'NO STRAIGHT FLUSH IN SUIT';
 
 export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';

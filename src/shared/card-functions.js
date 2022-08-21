@@ -978,3 +978,30 @@ export const createSolution = () => {
 
   return { solutionHands: sortHands(hands), missingNumber };
 };
+
+// return true if the sorted cards (A K down to 2) - which are known to all be of the same suit - contain a straight
+export const sortedSuitCardsContainStraight = (suitCardsAvailable) => {
+  // we take 5 cards at a time, returning true if one of them is a straight
+
+  // if we don't have 5 cards, then we can't be a straight
+  if (suitCardsAvailable.length < 5) {
+    return false;
+  }
+
+  for (let i = 0; i <= suitCardsAvailable.length - 5; i += 1) {
+    const hand = [
+      suitCardsAvailable[i],
+      suitCardsAvailable[i + 1],
+      suitCardsAvailable[i + 2],
+      suitCardsAvailable[i + 3],
+      suitCardsAvailable[i + 4],
+    ];
+
+    if (handIsStraight(hand)) {
+      return true;
+    }
+  }
+
+  // we didn't find one
+  return false;
+};
