@@ -321,3 +321,37 @@ export const cardSelectedInSolutionOptions = (card, solutionOptions) => {
   }));
   return result;
 };
+
+// return the cards still available in solution options from the given card array
+const cardsStillAvailableFromArray = (cards, solutionOptions) => {
+  const result = [];
+
+  cards.forEach((card) => {
+    let cardIsSelected = false;
+
+    solutionOptions.every((handOptions) => handOptions.every((cardOptions) => {
+      if (cardSelectedInCardOptions(card, cardOptions)) {
+        cardIsSelected = true;
+        // stop the loop
+        return false;
+      }
+      // continue the loop
+      return true;
+    }));
+
+    // if the card is not selected then it is still available
+    if (!cardIsSelected) {
+      result.push(card);
+    }
+  });
+
+  return result;
+};
+
+// return the cards that are still available in solution options
+export const getCardsStillAvailable = (cardsAvailable, solutionOptions) => [
+  cardsStillAvailableFromArray(cardsAvailable[0], solutionOptions),
+  cardsStillAvailableFromArray(cardsAvailable[1], solutionOptions),
+  cardsStillAvailableFromArray(cardsAvailable[2], solutionOptions),
+  cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions),
+];

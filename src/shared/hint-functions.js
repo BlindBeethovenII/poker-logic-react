@@ -5,6 +5,7 @@ import {
   toggleSuitOptionInSolutionOptions,
   getNumbersNotUsedInSolution,
   convertSuitToSuitOptionsIndex,
+  getCardsStillAvailable,
 } from './solution-functions';
 
 import { sortedSuitCardsContainStraight } from './card-functions';
@@ -56,23 +57,34 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
   handOptionsIndex,
 });
 
-export const getSuitsWithoutStraightFlushHints = (cardsAvailable, solutionHandIndex) => {
+export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandIndex, solutionOptions) => {
   const result = [];
 
   SUITS.forEach((suit) => {
-    // convert suit name to suit options index which is the same as cards available index, to find the suits available cards
+    // convert suit name to suit options index which is the same as cards still available index, to find the suits available cards
     const row = convertSuitToSuitOptionsIndex(suit);
 
-    const suitCardsAvailable = cardsAvailable[row];
+    const suitCardsAvailable = cardsStillAvailable[row];
 
     if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
+      // BUT only if that is still a card suit option
       // the solutionOptionsIndex is the same as the solutionHandIndex here
-      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0));
-      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1));
-      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2));
-      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3));
-      result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4));
+      if (solutionOptions[solutionHandIndex][0].suitOptions[row]) {
+        result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0));
+      }
+      if (solutionOptions[solutionHandIndex][1].suitOptions[row]) {
+        result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1));
+      }
+      if (solutionOptions[solutionHandIndex][2].suitOptions[row]) {
+        result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2));
+      }
+      if (solutionOptions[solutionHandIndex][3].suitOptions[row]) {
+        result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3));
+      }
+      if (solutionOptions[solutionHandIndex][4].suitOptions[row]) {
+        result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4));
+      }
     }
   });
 
@@ -89,16 +101,17 @@ export const getHint = (solutionOptions, solution, clues, cardsAvailable) => {
     return numberNotUsedHints;
   }
 
+  // which of the cards available are still available after the solutionOptions have been considered
+  const cardsStillAvailable = getCardsStillAvailable(cardsAvailable, solutionOptions);
+
   // look through each clue indvidually
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType, handType, solutionHandIndex } = clue;
 
-    // TODO !!! Not cards available - but cards still available
-
     // deal with straight flush clues - which have to be for the first hand
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH && solutionHandIndex === 0) {
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsAvailable, solutionHandIndex);
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandIndex, solutionOptions);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
       }
