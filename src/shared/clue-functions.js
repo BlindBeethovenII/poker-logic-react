@@ -1,5 +1,7 @@
 // useful clue functions
 
+import { calcHandType } from './card-functions';
+
 import {
   CLUE_HAND_OF_TYPE,
   HAND_TYPE_STRAIGHT_FLUSH,
@@ -54,4 +56,16 @@ export const clueToText = (clue, clueIndex) => {
   }
 
   return `clueToText cannot cope with clueType ${clueType}`;
+};
+
+export const createCluesForSolutionHands = (solutionHands) => {
+  const clues = [];
+
+  // add a HAND OF TYPE clue for each solution hand
+  clues.push(createClueHandOfType(calcHandType(solutionHands[0]), 0));
+  clues.push(createClueHandOfType(calcHandType(solutionHands[1]), 1));
+  clues.push(createClueHandOfType(calcHandType(solutionHands[2]), 2));
+  clues.push(createClueHandOfType(calcHandType(solutionHands[3]), 3));
+
+  return clues;
 };

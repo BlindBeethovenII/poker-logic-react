@@ -20,6 +20,8 @@ import {
   applyHint,
 } from '../shared/hint-functions';
 
+import { createCluesForSolutionHands } from '../shared/clue-functions';
+
 import { solution1, clues1 } from '../shared/test-hands';
 
 const GameStateContext = React.createContext({});
@@ -102,7 +104,7 @@ export const GameStateContextProvider = ({ children }) => {
       nextClues = clues1;
     } else {
       nextNewSolution = createSolution();
-      nextClues = [];
+      nextClues = createCluesForSolutionHands(nextNewSolution.solutionHands);
     }
     setSolution(nextNewSolution);
     setClues(nextClues);
