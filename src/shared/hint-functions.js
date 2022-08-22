@@ -6,6 +6,7 @@ import {
   getNumbersNotUsedInSolution,
   convertSuitToSuitOptionsIndex,
   getCardsStillAvailable,
+  getSuitOptionsValue,
 } from './solution-functions';
 
 import { sortedSuitCardsContainStraight } from './card-functions';
@@ -70,19 +71,19 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
       // BUT only if that is still a card suit option
       // the solutionOptionsIndex is the same as the solutionHandIndex here
-      if (solutionOptions[solutionHandIndex][0].suitOptions[row]) {
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 0, row)) {
         result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0));
       }
-      if (solutionOptions[solutionHandIndex][1].suitOptions[row]) {
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 1, row)) {
         result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1));
       }
-      if (solutionOptions[solutionHandIndex][2].suitOptions[row]) {
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 2, row)) {
         result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2));
       }
-      if (solutionOptions[solutionHandIndex][3].suitOptions[row]) {
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 3, row)) {
         result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3));
       }
-      if (solutionOptions[solutionHandIndex][4].suitOptions[row]) {
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 4, row)) {
         result.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4));
       }
     }

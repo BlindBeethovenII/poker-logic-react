@@ -355,3 +355,11 @@ export const getCardsStillAvailable = (cardsAvailable, solutionOptions) => [
   cardsStillAvailableFromArray(cardsAvailable[2], solutionOptions),
   cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions),
 ];
+
+// get the value of a specific suit options boolean
+export const getSuitOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, suitOptionsIndex) =>
+  solutionOptions[solutionHandIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
+
+// get the value of a specific number options boolean
+export const getNumberOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, numberOptionsIndex) =>
+  solutionOptions[solutionHandIndex][handOptionsIndex].numberOptions[numberOptionsIndex];
