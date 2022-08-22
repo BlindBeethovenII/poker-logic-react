@@ -124,6 +124,7 @@ const PlayArea = () => (
     <RestartButton />
     <NewSolutionButton newSolutionIndex={0} />
     <NewSolutionButton newSolutionIndex={1} />
+    <NewSolutionButton newSolutionIndex={2} />
     <HintButton />
     <Clues />
   </div>

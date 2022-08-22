@@ -34,7 +34,7 @@ const NewSolutionButton = (props) => {
 
   const { newSolution } = useContext(GameStateContext);
 
-  const buttonText = newSolutionIndex === 1 ? 'New Solution 1' : 'New Random Solution';
+  const buttonText = newSolutionIndex === 0 ? 'New Random Solution' : `New Solution ${newSolutionIndex}`;
 
   return (
     <div style={divstyle}>

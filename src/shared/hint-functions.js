@@ -58,6 +58,7 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
   handOptionsIndex,
 });
 
+// get the hints for the suits that cannot make a straight flush
 export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandIndex, solutionOptions) => {
   const result = [];
 

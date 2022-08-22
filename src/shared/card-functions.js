@@ -1002,6 +1002,17 @@ export const sortedSuitCardsContainStraight = (suitCardsAvailable) => {
     }
   }
 
+  // and look for the special case of A2345 - A will be first, then 5 4 3 2 the last 4
+  if (handIsStraight([
+    suitCardsAvailable[0],
+    suitCardsAvailable[suitCardsAvailable.length - 4],
+    suitCardsAvailable[suitCardsAvailable.length - 3],
+    suitCardsAvailable[suitCardsAvailable.length - 2],
+    suitCardsAvailable[suitCardsAvailable.length - 1],
+  ])) {
+    return true;
+  }
+
   // we didn't find one
   return false;
 };

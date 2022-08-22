@@ -22,7 +22,12 @@ import {
 
 import { createCluesForSolutionHands } from '../shared/clue-functions';
 
-import { solution1, clues1 } from '../shared/test-hands';
+import {
+  solution1,
+  clues1,
+  solution2,
+  clues2,
+} from '../shared/test-hands';
 
 const GameStateContext = React.createContext({});
 
@@ -102,6 +107,9 @@ export const GameStateContextProvider = ({ children }) => {
     if (newSolutionIndex === 1) {
       nextNewSolution = solution1;
       nextClues = clues1;
+    } else if (newSolutionIndex === 2) {
+      nextNewSolution = solution2;
+      nextClues = clues2;
     } else {
       nextNewSolution = createSolution();
       nextClues = createCluesForSolutionHands(nextNewSolution.solutionHands);
