@@ -40,7 +40,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
 
   // cards available are suit sorted cards from the generated solution
-  const [cardsAvailable] = useState(() => createCardsAvailable(solution.solutionHands));
+  const [cardsAvailable, setCardsAvailable] = useState(() => createCardsAvailable(solution.solutionHands));
 
   // clues
   const [clues, setClues] = useState(clues1);
@@ -109,6 +109,9 @@ export const GameStateContextProvider = ({ children }) => {
 
     // need to reset the solution options as well
     resetSolutionOptions();
+
+    // and find the cards available for this solution
+    setCardsAvailable(createCardsAvailable(nextNewSolution.solutionHands));
   }, []);
 
   // ----------- //
