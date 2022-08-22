@@ -16,7 +16,7 @@ import {
 } from '../shared/solution-functions';
 
 import {
-  getHint,
+  getHints,
   applyHint,
 } from '../shared/hint-functions';
 
@@ -130,8 +130,8 @@ export const GameStateContextProvider = ({ children }) => {
 
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
-    const hints = getHint(solutionOptions, solution, clues, cardsAvailable);
-    console.log(`getHint returns ${JSON.stringify(hints)}`);
+    const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
+    console.log(`getHints returns ${JSON.stringify(hints)}`);
     if (hints?.length) {
       // apply all the hints
       let newSolutionOptions = solutionOptions;

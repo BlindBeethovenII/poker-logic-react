@@ -286,16 +286,18 @@ export const createCardsAvailable = (solutionHands) => [
 // helper function for reduce() to count the number of true booleans in an array of booleans
 const countBooleansReducer = (accumulator, currentValue) => accumulator + (currentValue ? 1 : 0);
 
+export const countTrueBooleansInArray = (boolArray) => boolArray.reduce(countBooleansReducer, 0);
+
 // helper function
 const suitSelectedInSuitOptions = (suit, suitOptions) => {
-  const suitOptionsCount = suitOptions.reduce(countBooleansReducer);
+  const suitOptionsCount = countTrueBooleansInArray(suitOptions);
   // return true if there is only a single suit selected and it is our suit
   return suitOptionsCount === 1 && suitOptions[convertSuitToSuitOptionsIndex(suit)];
 };
 
 // helper function
 const numberSelectedInNumberOptions = (number, numberOptions) => {
-  const numberOptionsCount = numberOptions.reduce(countBooleansReducer);
+  const numberOptionsCount = countTrueBooleansInArray(numberOptions);
   // return true if there is only a single number selected and it is our number (remember missingNumber option always false)
   return numberOptionsCount === 1 && numberOptions[number - 1];
 };
@@ -356,10 +358,32 @@ export const getCardsStillAvailable = (cardsAvailable, solutionOptions) => [
   cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions),
 ];
 
-// get the value of a specific suit options boolean
+// get the value of a specific suit options boolean in the given solution options
 export const getSuitOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, suitOptionsIndex) =>
   solutionOptions[solutionHandIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
 
-// get the value of a specific number options boolean
+// get the value of a specific number options boolean in the given solution options
 export const getNumberOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, numberOptionsIndex) =>
   solutionOptions[solutionHandIndex][handOptionsIndex].numberOptions[numberOptionsIndex];
+
+// get the value of a specific suit options boolean in the given hand options
+export const getSuitOptionsValueInHandOptions = (handOptions, handOptionsIndex, suitOptionsIndex) =>
+  handOptions[handOptionsIndex].suitOptions[suitOptionsIndex];
+
+// get the value of a specific suit options boolean in the given card options
+export const getSuitOptionsValueInCardOptions = (cardOptions, suitOptionsIndex) =>
+  cardOptions.suitOptions[suitOptionsIndex];
+
+// count the number of cardOptions for which this this suitOptionsIndex is true in the given handOptions
+export const countSuitTrueInHandOptions = (handOptions, suitOptionsIndex) => {
+  const countIfSuitOptionTrue = (accumulator, currentValue) => accumulator + (currentValue.suitOptions[suitOptionsIndex] ? 1 : 0);
+  return handOptions.reduce(countIfSuitOptionTrue, 0);
+};
+
+// count the number of cardOptions for which this suitOptionsIndex is true in the whole solutionOptions
+export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex) => (
+  countSuitTrueInHandOptions(solutionOptions[0], suitOptionsIndex)
+  + countSuitTrueInHandOptions(solutionOptions[1], suitOptionsIndex)
+  + countSuitTrueInHandOptions(solutionOptions[2], suitOptionsIndex)
+  + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
+);
