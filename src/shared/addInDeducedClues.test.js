@@ -9,6 +9,7 @@ import {
   HAND_TYPE_FLUSH,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
+  HAND_TYPE_TWO_PAIR,
 } from './constants';
 
 describe('addInDeducedClues', () => {
@@ -120,6 +121,35 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_STRAIGHT, 1),
       createClueHandOfType(HAND_TYPE_PAIR, 2),
       createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
+
+  it('will add in high card for fourth hand, and third hand pair, if second hand is two pair, if those clues are not already in', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
+
+  it('will add third hand pair, if second hand is two pair, if those clues are not already in but not fourth hand high card if there', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });

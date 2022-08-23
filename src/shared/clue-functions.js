@@ -144,12 +144,25 @@ const getDeducedClues = (clues) => {
       }
     }
 
-    // if 3rd hand is pair then 4th hand is high
+    // if 3rd hand is pair then 4th hand is high card
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR && solutionHandIndex === 2) {
       const newClue = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
       // check we don't have the deduced clue already
       if (!clueExists(newClue, clues)) {
         result.push(newClue);
+      }
+    }
+
+    // if 2nd hand is two pair, then 3rd hand is pair and 4th hand is high card
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_TWO_PAIR && solutionHandIndex === 1) {
+      const newClue1 = createClueHandOfType(HAND_TYPE_PAIR, 2, clue);
+      const newClue2 = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
+      // check we don't have the deduced clue already
+      if (!clueExists(newClue1, clues)) {
+        result.push(newClue1);
+      }
+      if (!clueExists(newClue2, clues)) {
+        result.push(newClue2);
       }
     }
   }
