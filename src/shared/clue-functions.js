@@ -40,7 +40,7 @@ const handTypeToText = (handType) => {
     case HAND_TYPE_TWO_PAIR:
       return '2 Pairs';
     case HAND_TYPE_PAIR:
-      return '1 Pair';
+      return 'a Pair';
     case HAND_TYPE_HIGH_CARD:
       return 'a High Card';
     default:
