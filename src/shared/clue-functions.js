@@ -113,6 +113,19 @@ const getDeducedClues = (clues) => {
         result.push(newClue);
       }
     }
+
+    // if 3rd hand is full house then 1st hand is straight flush and 2nd is four of a hind
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE && solutionHandIndex === 2) {
+      const newClue1 = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
+      const newClue2 = createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, clue);
+      // check we don't have the deduced clues already
+      if (!clueExists(newClue1, clues)) {
+        result.push(newClue1);
+      }
+      if (!clueExists(newClue2, clues)) {
+        result.push(newClue2);
+      }
+    }
   }
 
   return result;
