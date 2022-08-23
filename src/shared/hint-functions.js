@@ -15,6 +15,8 @@ import {
 
 import { sortedSuitCardsContainStraight } from './card-functions';
 
+import { clueToString } from './clue-functions';
+
 import {
   SUITS,
   HAND_TYPE_STRAIGHT_FLUSH,
@@ -64,15 +66,16 @@ export const getNumberNotUsedHints = (solutionOptions, solutionHands, missingNum
 // ------------------------------ //
 
 // create HINT_NO_STRAIGHT_FLUSH_IN_SUIT
-export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, handOptionsIndex) => ({
+export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
   hintType: HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
   suit,
   solutionOptionsIndex,
   handOptionsIndex,
+  clues: [clue],
 });
 
 // get the hints for the suits that cannot make a straight flush
-export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandIndex, solutionOptions) => {
+export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandIndex, solutionOptions, clue) => {
   const hints = [];
 
   SUITS.forEach((suit) => {
@@ -86,19 +89,19 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
       // BUT only if that is still a card suit option
       // the solutionOptionsIndex is the same as the solutionHandIndex here
       if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 0, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0));
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0, clue));
       }
       if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 1, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1));
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1, clue));
       }
       if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 2, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2));
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2, clue));
       }
       if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 3, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3));
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3, clue));
       }
       if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 4, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4));
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4, clue));
       }
     }
   });
@@ -178,7 +181,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal with straight flush clues - which have to be for the first hand
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH && solutionHandIndex === 0) {
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandIndex, solutionOptions);
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
       }
@@ -200,8 +203,18 @@ const applyNumberNotUsedHint = (solutionOptions, hint) => {
 };
 
 const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
-  const { suit, solutionOptionsIndex, handOptionsIndex } = hint;
-  logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clues,
+  } = hint;
+
+  // this hint only uses one clue
+  const clue = clues[0];
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
