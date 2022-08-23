@@ -143,6 +143,15 @@ const getDeducedClues = (clues) => {
         result.push(newClue3);
       }
     }
+
+    // if 3rd hand is pair then 4th hand is high
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR && solutionHandIndex === 2) {
+      const newClue = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
+      // check we don't have the deduced clue already
+      if (!clueExists(newClue, clues)) {
+        result.push(newClue);
+      }
+    }
   }
 
   return result;
