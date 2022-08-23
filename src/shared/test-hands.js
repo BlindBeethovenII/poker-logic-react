@@ -65,7 +65,7 @@ export const solution1 = {
 };
 
 export const clues1 = [
-  createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
+  // createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0), -- this clue is now deduced
   createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1),
   createClueHandOfType(HAND_TYPE_STRAIGHT, 2),
   createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),

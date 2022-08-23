@@ -152,7 +152,7 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
 // get hints //
 // --------- //
 
-// get the next possible hint
+// get the next possible hints (being an array of hints of the same type)
 export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const { solutionHands, missingNumber } = solution;
 

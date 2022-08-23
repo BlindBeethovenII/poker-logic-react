@@ -20,7 +20,10 @@ import {
   applyHint,
 } from '../shared/hint-functions';
 
-import { createCluesForSolutionHands } from '../shared/clue-functions';
+import {
+  createCluesForSolutionHands,
+  addInDeducedClues,
+} from '../shared/clue-functions';
 
 import {
   solution1,
@@ -50,7 +53,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [cardsAvailable, setCardsAvailable] = useState(() => createCardsAvailable(solution.solutionHands));
 
   // clues
-  const [clues, setClues] = useState(clues1);
+  const [clues, setClues] = useState(() => addInDeducedClues(clues1));
 
   // -------------------- //
   // card options setters //
@@ -115,7 +118,7 @@ export const GameStateContextProvider = ({ children }) => {
       nextClues = createCluesForSolutionHands(nextNewSolution.solutionHands);
     }
     setSolution(nextNewSolution);
-    setClues(nextClues);
+    setClues(addInDeducedClues(nextClues));
 
     // need to reset the solution options as well
     resetSolutionOptions();
@@ -132,6 +135,7 @@ export const GameStateContextProvider = ({ children }) => {
   const findAndApplyNextHint = useCallback(() => {
     const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
     console.log(`getHints returns ${JSON.stringify(hints)}`);
+
     if (hints?.length) {
       // apply all the hints
       let newSolutionOptions = solutionOptions;

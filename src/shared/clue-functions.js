@@ -16,10 +16,11 @@ import {
 } from './constants';
 
 // create CLUE_HAND_OF_TYPE
-export const createClueHandOfType = (handType, solutionHandIndex) => ({
+export const createClueHandOfType = (handType, solutionHandIndex, deduced) => ({
   clueType: CLUE_HAND_OF_TYPE,
   handType,
   solutionHandIndex,
+  deduced,
 });
 
 const handTypeToText = (handType) => {
@@ -67,5 +68,63 @@ export const createCluesForSolutionHands = (solutionHands) => {
   clues.push(createClueHandOfType(calcHandType(solutionHands[2]), 2));
   clues.push(createClueHandOfType(calcHandType(solutionHands[3]), 3));
 
+  return clues;
+};
+
+// return true if the two given clues are fundamentally equal
+const cluesEqual = (clue1, clue2) => {
+  if (clue1.clueType === clue2.clueType) {
+    if (clue1.clueType === CLUE_HAND_OF_TYPE && clue1.handType === clue2.handType && clue1.solutionHandIndex === clue2.solutionHandIndex) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// return true if the given clue already exists in the given clues array
+const clueExists = (clue, clues) => {
+  // look through each clue indvidually
+  for (let i = 0; i < clues.length; i += 1) {
+    const nextClue = clues[i];
+    if (cluesEqual(clue, nextClue)) {
+      // found it
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// return array of deduced clues from the given clues, returning the empty array if none
+const getDeducedClues = (clues) => {
+  const result = [];
+
+  // look through each clue indvidually
+  for (let i = 0; i < clues.length; i += 1) {
+    const clue = clues[i];
+    const { clueType, handType, solutionHandIndex } = clue;
+
+    // if 2nd hand is 4 of a kind then 1st hand is straight flush
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND && solutionHandIndex === 1) {
+      const newClue = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
+      // check we don't have the deduced clue already
+      if (!clueExists(newClue, clues)) {
+        result.push(newClue);
+      }
+    }
+  }
+
+  return result;
+};
+
+// add any deduced clues to the given clues array
+export const addInDeducedClues = (clues) => {
+  const deducedClues = getDeducedClues(clues);
+  if (deducedClues.length) {
+    return [...clues, ...deducedClues];
+  }
+
+  // just return the original clues
   return clues;
 };

@@ -14,7 +14,10 @@ const Clues = () => {
 
   const cluesResult = [];
   clues.forEach((clue, i) => {
-    cluesResult.push(<Clue key={genKey(i)} clueText={clueToText(clue, i)} clueIndex={i} />);
+    // don't show deduced clues - the use has to work those out for themselves
+    if (!clue.deduced) {
+      cluesResult.push(<Clue key={genKey(i)} clueText={clueToText(clue, i)} clueIndex={i} />);
+    }
   });
 
   return cluesResult;
