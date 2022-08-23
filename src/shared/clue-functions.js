@@ -126,6 +126,23 @@ const getDeducedClues = (clues) => {
         result.push(newClue2);
       }
     }
+
+    // if 4th hand is a flush then 1st hand is straight flush and 2nd is four of a hind and 3rd hand is full house
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FLUSH && solutionHandIndex === 3) {
+      const newClue1 = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
+      const newClue2 = createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, clue);
+      const newClue3 = createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, clue);
+      // check we don't have the deduced clues already
+      if (!clueExists(newClue1, clues)) {
+        result.push(newClue1);
+      }
+      if (!clueExists(newClue2, clues)) {
+        result.push(newClue2);
+      }
+      if (!clueExists(newClue3, clues)) {
+        result.push(newClue3);
+      }
+    }
   }
 
   return result;

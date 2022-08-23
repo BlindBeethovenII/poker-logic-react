@@ -6,6 +6,7 @@ import {
   HAND_TYPE_STRAIGHT,
   HAND_TYPE_THREE_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
+  HAND_TYPE_FLUSH,
 } from './constants';
 
 describe('addInDeducedClues', () => {
@@ -59,6 +60,33 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2),
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),
       createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
+
+  it('will add in straight flush for first hand, four of a kind for second, and full house for third, if fourth is flush, if those clues not already in', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_FLUSH, 3),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_FLUSH, 3),
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
+
+  it('will add in four of a kind for second, and full house for third, if fourth is flush, and first hand straight flush is already there', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
+      createClueHandOfType(HAND_TYPE_FLUSH, 3),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
+      createClueHandOfType(HAND_TYPE_FLUSH, 3),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
