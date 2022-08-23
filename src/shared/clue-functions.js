@@ -165,6 +165,23 @@ const getDeducedClues = (clues) => {
         result.push(newClue2);
       }
     }
+
+    // if 1st hand is three of a kind, then 2nd hand is two pair, 3rd hand is pair and 4th hand is high card
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_THREE_OF_A_KIND && solutionHandIndex === 0) {
+      const newClue1 = createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, clue);
+      const newClue2 = createClueHandOfType(HAND_TYPE_PAIR, 2, clue);
+      const newClue3 = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
+      // check we don't have the deduced clue already
+      if (!clueExists(newClue1, clues)) {
+        result.push(newClue1);
+      }
+      if (!clueExists(newClue2, clues)) {
+        result.push(newClue2);
+      }
+      if (!clueExists(newClue3, clues)) {
+        result.push(newClue3);
+      }
+    }
   }
 
   return result;

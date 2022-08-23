@@ -153,4 +153,31 @@ describe('addInDeducedClues', () => {
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
+
+  it('will add in high card for fourth hand, and third hand pair, and second hand two pair, if first hand is three of a kind, if those clues are not already in', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
+
+  it('will add third hand pair and second hand two pair, if first hand is three of a kind, if those clues are not already in but not fourth hand high card if there', () => {
+    const clues = [
+      createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
+    ];
+    const expectedResult = [
+      createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+    ];
+    expect(addInDeducedClues(clues)).toEqual(expectedResult);
+  });
 });
