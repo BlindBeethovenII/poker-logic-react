@@ -371,12 +371,12 @@ export const countNumberAvailable = (number, cardsAvailable) => countNumberAvail
   + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[3]);
 
 // get the value of a specific suit options boolean in the given solution options
-export const getSuitOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, suitOptionsIndex) =>
-  solutionOptions[solutionHandIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
+export const getSuitOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, suitOptionsIndex) =>
+  solutionOptions[solutionOptionsIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
 
 // get the value of a specific number options boolean in the given solution options
-export const getNumberOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, numberOptionsIndex) =>
-  solutionOptions[solutionHandIndex][handOptionsIndex].numberOptions[numberOptionsIndex];
+export const getNumberOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, numberOptionsIndex) =>
+  solutionOptions[solutionOptionsIndex][handOptionsIndex].numberOptions[numberOptionsIndex];
 
 // get the value of a specific suit options boolean in the given hand options
 export const getSuitOptionsValueInHandOptions = (handOptions, handOptionsIndex, suitOptionsIndex) =>

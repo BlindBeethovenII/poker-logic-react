@@ -16,10 +16,10 @@ import {
 } from './constants';
 
 // create CLUE_HAND_OF_TYPE
-export const createClueHandOfType = (handType, solutionHandIndex, deduced) => ({
+export const createClueHandOfType = (handType, solutionHandsIndex, deduced) => ({
   clueType: CLUE_HAND_OF_TYPE,
   handType,
-  solutionHandIndex,
+  solutionHandsIndex,
   deduced,
 });
 
@@ -52,9 +52,9 @@ const handTypeToText = (handType) => {
 export const clueToString = (clue) => {
   const { clueType } = clue;
   if (clueType === CLUE_HAND_OF_TYPE) {
-    const { handType, solutionHandIndex, deduced } = clue;
+    const { handType, solutionHandsIndex, deduced } = clue;
     const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
-    return `Position ${solutionHandIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
+    return `Position ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
@@ -85,7 +85,7 @@ export const createCluesForSolutionHands = (solutionHands) => {
 // return true if the two given clues are fundamentally equal
 const cluesEqual = (clue1, clue2) => {
   if (clue1.clueType === clue2.clueType) {
-    if (clue1.clueType === CLUE_HAND_OF_TYPE && clue1.handType === clue2.handType && clue1.solutionHandIndex === clue2.solutionHandIndex) {
+    if (clue1.clueType === CLUE_HAND_OF_TYPE && clue1.handType === clue2.handType && clue1.solutionHandsIndex === clue2.solutionHandsIndex) {
       return true;
     }
   }
@@ -114,10 +114,10 @@ const getDeducedClues = (clues) => {
   // look through each clue indvidually
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
-    const { clueType, handType, solutionHandIndex } = clue;
+    const { clueType, handType, solutionHandsIndex } = clue;
 
     // if 2nd hand is 4 of a kind then 1st hand is straight flush
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND && solutionHandIndex === 1) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND && solutionHandsIndex === 1) {
       const newClue = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
       // check we don't have the deduced clue already
       if (!clueExists(newClue, clues)) {
@@ -126,7 +126,7 @@ const getDeducedClues = (clues) => {
     }
 
     // if 3rd hand is full house then 1st hand is straight flush and 2nd is four of a hind
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE && solutionHandIndex === 2) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE && solutionHandsIndex === 2) {
       const newClue1 = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
       const newClue2 = createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, clue);
       // check we don't have the deduced clues already
@@ -139,7 +139,7 @@ const getDeducedClues = (clues) => {
     }
 
     // if 4th hand is a flush then 1st hand is straight flush and 2nd is four of a hind and 3rd hand is full house
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FLUSH && solutionHandIndex === 3) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FLUSH && solutionHandsIndex === 3) {
       const newClue1 = createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, clue);
       const newClue2 = createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, clue);
       const newClue3 = createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, clue);
@@ -156,7 +156,7 @@ const getDeducedClues = (clues) => {
     }
 
     // if 3rd hand is pair then 4th hand is high card
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR && solutionHandIndex === 2) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR && solutionHandsIndex === 2) {
       const newClue = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
       // check we don't have the deduced clue already
       if (!clueExists(newClue, clues)) {
@@ -165,7 +165,7 @@ const getDeducedClues = (clues) => {
     }
 
     // if 2nd hand is two pair, then 3rd hand is pair and 4th hand is high card
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_TWO_PAIR && solutionHandIndex === 1) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_TWO_PAIR && solutionHandsIndex === 1) {
       const newClue1 = createClueHandOfType(HAND_TYPE_PAIR, 2, clue);
       const newClue2 = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);
       // check we don't have the deduced clue already
@@ -178,7 +178,7 @@ const getDeducedClues = (clues) => {
     }
 
     // if 1st hand is three of a kind, then 2nd hand is two pair, 3rd hand is pair and 4th hand is high card
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_THREE_OF_A_KIND && solutionHandIndex === 0) {
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_THREE_OF_A_KIND && solutionHandsIndex === 0) {
       const newClue1 = createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, clue);
       const newClue2 = createClueHandOfType(HAND_TYPE_PAIR, 2, clue);
       const newClue3 = createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, clue);

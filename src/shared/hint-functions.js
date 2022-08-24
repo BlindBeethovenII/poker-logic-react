@@ -11,6 +11,8 @@ import {
   countSuitTrueInSolutionOptions,
   countTrueBooleansInArray,
   getSuitOptionsValueInCardOptions,
+  countNumberAvailable,
+  setNumberOptionOnlyInSolutionOptions,
 } from './solution-functions';
 
 import { sortedSuitCardsContainStraight } from './card-functions';
@@ -78,7 +80,7 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
 });
 
 // get the hints for the suits that cannot make a straight flush
-export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandIndex, solutionOptions, clue) => {
+export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   SUITS.forEach((suit) => {
@@ -90,21 +92,21 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
     if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
       // BUT only if that is still a card suit option
-      // the solutionOptionsIndex is the same as the solutionHandIndex here
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 0, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0, clue));
+      // the solutionOptionsIndex is the same as the solutionHandsIndex here
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 0, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 0, clue));
       }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 1, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1, clue));
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 1, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 1, clue));
       }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 2, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2, clue));
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 2, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 2, clue));
       }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 3, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3, clue));
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 3, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 3, clue));
       }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 4, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4, clue));
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 4, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 4, clue));
       }
     }
   });
@@ -159,49 +161,38 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
 // ------------------------------------------ //
 
 // create HINT_FOUR_OF_A_KIND_NUMBER
-export const createHintFourOfAKindNUmber = (numbers, solutionOptionsIndex, handOptionsIndex) => ({
+export const createHintFourOfAKindNumber = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
   hintType: HINT_FOUR_OF_A_KIND_NUMBER,
   numbers,
   solutionOptionsIndex,
   handOptionsIndex,
+  clues: [clue],
 });
 
 // if there are n cards of a suit in cardsAvailable and also only n cards in solutionOptions with that suit option
 // then all those cards must be that suit
-export const getFourOfAKindNUmberHints = (cardsStillAvailable, solutionHandIndex, solutionOptions, clue) => {
+export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsIndex, clue) => {
   const hints = [];
 
-  // const numbersAvailable = [];
+  const numbersAvailable = [];
 
   // TODO improve the following to understand when a number has already been selected in the given solution HandIndex, and so won't appear in cardsStillAvailable
 
-  NUMBERS.forEach((suit) => {
-    // convert suit name to suit options index which is the same as cards still available index, to find the suits available cards
-    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-
-    const suitCardsAvailable = cardsStillAvailable[suitOptionsIndex];
-
-    if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
-      // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
-      // BUT only if that is still a card suit option
-      // the solutionOptionsIndex is the same as the solutionHandIndex here
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 0, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0, clue));
-      }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 1, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1, clue));
-      }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 2, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2, clue));
-      }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 3, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3, clue));
-      }
-      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 4, suitOptionsIndex)) {
-        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4, clue));
-      }
+  NUMBERS.forEach((number) => {
+    // if there are 4 cards of this number available, then it can be part of hint
+    if (countNumberAvailable(number, cardsStillAvailable) === 4) {
+      numbersAvailable.push(number);
     }
   });
+
+  // if we have at least one number which has 4 cards available, then we can create a hint - one for each of the first 4 cards of this solutionHandsIndex
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
+  if (numbersAvailable.length) {
+    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
+    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 1, clue));
+    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 2, clue));
+    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 3, clue));
+  }
 
   return hints;
 };
@@ -232,11 +223,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   // look through each clue indvidually
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
-    const { clueType, handType, solutionHandIndex } = clue;
+    const { clueType, handType, solutionHandsIndex } = clue;
 
     // deal with hand of type straight flush clue (which has to be for the first hand, but we don't care about that actually)
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandIndex, solutionOptions, clue);
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
       }
@@ -244,7 +235,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal with hand of type four of a kind
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
-      const fourOfAKindNUmberHints = getFourOfAKindNUmberHints(cardsStillAvailable, solutionHandIndex, solutionOptions, clue);
+      const fourOfAKindNUmberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, clue);
       if (fourOfAKindNUmberHints.length) {
         return fourOfAKindNUmberHints;
       }
@@ -287,6 +278,38 @@ const applySameNSuitCardsInSolutionOptionsHint = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+const applyFourOfAKindNUmberHint = (solutionOptions, hint) => {
+  const {
+    numbers,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clues,
+  } = hint;
+
+  // this hint only uses one clue
+  const clue = clues[0];
+
+  // we do something different if numbers is to a single number, as opposed to a number of numbers
+  if (numbers.length === 1) {
+    const number = numbers[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+    // we know this must be the number
+    const solutionOptions1 = setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+
+    // furthermore we know the suit based on the handOptionsIndex, as we order a four of a kind S, H, D, C
+    // so suitOptionsIndex is handOptionsIndex (weirdly :-)
+    return setSuitOptionOnlyInSolutionOptions(handOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions1);
+  }
+
+  // TODO
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`TODO applying HINT_FOUR_OF_A_KIND_NUMBER for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  return solutionOptions;
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -299,6 +322,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS:
       return applySameNSuitCardsInSolutionOptionsHint(solutionOptions, hint);
+
+    case HINT_FOUR_OF_A_KIND_NUMBER:
+      return applyFourOfAKindNUmberHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
