@@ -12,7 +12,7 @@ import {
   setNumberOptionOnlyInSolutionOptions,
   toggleNumberOptionInSolutionOptions,
   resetNumberOptionsInSolutionOptions,
-  createCardsAvailable,
+  getCardsAvailable,
 } from '../shared/solution-functions';
 
 import {
@@ -50,7 +50,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
 
   // cards available are suit sorted cards from the generated solution
-  const [cardsAvailable, setCardsAvailable] = useState(() => createCardsAvailable(solution.solutionHands));
+  const [cardsAvailable, setCardsAvailable] = useState(() => getCardsAvailable(solution.solutionHands));
 
   // clues
   const [clues, setClues] = useState(() => addInDeducedClues(clues1));
@@ -124,7 +124,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSolutionOptions();
 
     // and find the cards available for this solution
-    setCardsAvailable(createCardsAvailable(nextNewSolution.solutionHands));
+    setCardsAvailable(getCardsAvailable(nextNewSolution.solutionHands));
   }, []);
 
   // ----------- //

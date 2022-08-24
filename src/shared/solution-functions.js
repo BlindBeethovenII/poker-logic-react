@@ -264,7 +264,7 @@ export const cardInSolutionHands = (card, solutionHands) => {
 };
 
 // helper function
-export const createCardsAvailableInSuitSorted = (suit, solutionHands) => {
+export const getCardsAvailableInSuitSorted = (suit, solutionHands) => {
   const cards = [];
   NUMBERS_SORTED.forEach((number) => {
     const card = createCard(suit, number);
@@ -276,11 +276,11 @@ export const createCardsAvailableInSuitSorted = (suit, solutionHands) => {
 };
 
 // cards available are suit sorted cards from the generated solution
-export const createCardsAvailable = (solutionHands) => [
-  createCardsAvailableInSuitSorted(SUIT_SPADES, solutionHands),
-  createCardsAvailableInSuitSorted(SUIT_HEARTS, solutionHands),
-  createCardsAvailableInSuitSorted(SUIT_DIAMONDS, solutionHands),
-  createCardsAvailableInSuitSorted(SUIT_CLUBS, solutionHands),
+export const getCardsAvailable = (solutionHands) => [
+  getCardsAvailableInSuitSorted(SUIT_SPADES, solutionHands),
+  getCardsAvailableInSuitSorted(SUIT_HEARTS, solutionHands),
+  getCardsAvailableInSuitSorted(SUIT_DIAMONDS, solutionHands),
+  getCardsAvailableInSuitSorted(SUIT_CLUBS, solutionHands),
 ];
 
 // helper function for reduce() to count the number of true booleans in an array of booleans
@@ -357,6 +357,18 @@ export const getCardsStillAvailable = (cardsAvailable, solutionOptions) => [
   cardsStillAvailableFromArray(cardsAvailable[2], solutionOptions),
   cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions),
 ];
+
+// helper function
+const countNumberAvailableInSuitCardsAvailable = (number, suitCardsAvailable) => {
+  const countIfSameNumber = (accumulator, card) => accumulator + (card.number === number ? 1 : 0);
+  return suitCardsAvailable.reduce(countIfSameNumber, 0);
+};
+
+// count how many cards of this number are in the given cardsAvailable
+export const countNumberAvailable = (number, cardsAvailable) => countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[0])
+  + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[1])
+  + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[2])
+  + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[3]);
 
 // get the value of a specific suit options boolean in the given solution options
 export const getSuitOptionsValue = (solutionOptions, solutionHandIndex, handOptionsIndex, suitOptionsIndex) =>

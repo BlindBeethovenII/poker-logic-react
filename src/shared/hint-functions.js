@@ -23,7 +23,10 @@ import {
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
   HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
+  HINT_FOUR_OF_A_KIND_NUMBER,
   CLUE_HAND_OF_TYPE,
+  HAND_TYPE_FOUR_OF_A_KIND,
+  NUMBERS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -151,6 +154,58 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
   return hints;
 };
 
+// ------------------------------------------ //
+// HINT_FOUR_OF_A_KIND_NUMBER //
+// ------------------------------------------ //
+
+// create HINT_FOUR_OF_A_KIND_NUMBER
+export const createHintFourOfAKindNUmber = (numbers, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_FOUR_OF_A_KIND_NUMBER,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// if there are n cards of a suit in cardsAvailable and also only n cards in solutionOptions with that suit option
+// then all those cards must be that suit
+export const getFourOfAKindNUmberHints = (cardsStillAvailable, solutionHandIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // const numbersAvailable = [];
+
+  // TODO improve the following to understand when a number has already been selected in the given solution HandIndex, and so won't appear in cardsStillAvailable
+
+  NUMBERS.forEach((suit) => {
+    // convert suit name to suit options index which is the same as cards still available index, to find the suits available cards
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+    const suitCardsAvailable = cardsStillAvailable[suitOptionsIndex];
+
+    if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
+      // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
+      // BUT only if that is still a card suit option
+      // the solutionOptionsIndex is the same as the solutionHandIndex here
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 0, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 0, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 1, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 1, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 2, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 2, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 3, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 3, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandIndex, 4, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandIndex, 4, clue));
+      }
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -179,11 +234,19 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     const clue = clues[i];
     const { clueType, handType, solutionHandIndex } = clue;
 
-    // deal with straight flush clues - which have to be for the first hand
-    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH && solutionHandIndex === 0) {
+    // deal with hand of type straight flush clue (which has to be for the first hand, but we don't care about that actually)
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
       const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
+      }
+    }
+
+    // deal with hand of type four of a kind
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
+      const fourOfAKindNUmberHints = getFourOfAKindNUmberHints(cardsStillAvailable, solutionHandIndex, solutionOptions, clue);
+      if (fourOfAKindNUmberHints.length) {
+        return fourOfAKindNUmberHints;
       }
     }
   }
