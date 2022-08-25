@@ -13,9 +13,10 @@ import {
   getSuitOptionsValueInCardOptions,
   countNumberAvailable,
   setNumberOptionOnlyInSolutionOptions,
+  cardSelectedInSolutionOptions,
 } from './solution-functions';
 
-import { sortedSuitCardsContainStraight } from './card-functions';
+import { sortedSuitCardsContainStraight, createCard } from './card-functions';
 
 import { clueToString } from './clue-functions';
 
@@ -25,10 +26,14 @@ import {
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
   HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
-  HINT_FOUR_OF_A_KIND_NUMBER,
+  HINT_FOUR_OF_A_KIND_NUMBERS,
   CLUE_HAND_OF_TYPE,
   HAND_TYPE_FOUR_OF_A_KIND,
   NUMBERS,
+  SUIT_SPADES,
+  SUIT_HEARTS,
+  SUIT_DIAMONDS,
+  SUIT_CLUBS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -156,38 +161,65 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
   return hints;
 };
 
-// ------------------------------------------ //
-// HINT_FOUR_OF_A_KIND_NUMBER //
-// ------------------------------------------ //
+// --------------------------- //
+// HINT_FOUR_OF_A_KIND_NUMBERS //
+// --------------------------- //
 
-// create HINT_FOUR_OF_A_KIND_NUMBER
+// create HINT_FOUR_OF_A_KIND_NUMBERS
 export const createHintFourOfAKindNumber = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
-  hintType: HINT_FOUR_OF_A_KIND_NUMBER,
+  hintType: HINT_FOUR_OF_A_KIND_NUMBERS,
   numbers,
   solutionOptionsIndex,
   handOptionsIndex,
   clues: [clue],
 });
 
-// if there are n cards of a suit in cardsAvailable and also only n cards in solutionOptions with that suit option
-// then all those cards must be that suit
-export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsIndex, clue) => {
+// if there are 4 cards of a number in cardsStillAvailable then we can create a hint
+// note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
+export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const numbersAvailable = [];
 
-  // TODO improve the following to understand when a number has already been selected in the given solution HandIndex, and so won't appear in cardsStillAvailable
-
   NUMBERS.forEach((number) => {
-    // if there are 4 cards of this number available, then it can be part of hint
-    if (countNumberAvailable(number, cardsStillAvailable) === 4) {
+    // first count then number of cards of this number still available
+    let count = countNumberAvailable(number, cardsStillAvailable);
+
+    // and remember the four cards of this number might already be placed, so add those to the count
+    // note: this relies on solutionOptions being valid
+    SUITS.forEach((suit) => {
+      if (cardSelectedInSolutionOptions(createCard(suit, number), solutionOptions)) {
+        count += 1;
+      }
+    });
+
+    // found, if 4 are available or already in place
+    if (count === 4) {
       numbersAvailable.push(number);
     }
   });
 
   // if we have at least one number which has 4 cards available, then we can create a hint - one for each of the first 4 cards of this solutionHandsIndex
   // note that the solutionHandsIndex here is the solutionOptionsIndex
-  if (numbersAvailable.length) {
+  // don't create a hint if it is a single numbersAvailable and that card is already selected in the solution options
+  // note we rely on these cards being the first four cards S H D C
+  if (numbersAvailable.length === 1) {
+    // we have a single number, so need to check if card is set
+    const number = numbersAvailable[0];
+    if (!cardSelectedInSolutionOptions(createCard(SUIT_SPADES, number), solutionOptions)) {
+      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
+    }
+    if (!cardSelectedInSolutionOptions(createCard(SUIT_HEARTS, number), solutionOptions)) {
+      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 1, clue));
+    }
+    if (!cardSelectedInSolutionOptions(createCard(SUIT_DIAMONDS, number), solutionOptions)) {
+      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 2, clue));
+    }
+    if (!cardSelectedInSolutionOptions(createCard(SUIT_CLUBS, number), solutionOptions)) {
+      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 3, clue));
+    }
+  } else if (numbersAvailable.length > 1) {
+    // we have multiple numbers available - so don't need to check if card is set
     hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
     hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 1, clue));
     hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 2, clue));
@@ -235,7 +267,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal with hand of type four of a kind
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
-      const fourOfAKindNUmberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, clue);
+      const fourOfAKindNUmberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (fourOfAKindNUmberHints.length) {
         return fourOfAKindNUmberHints;
       }
@@ -293,7 +325,7 @@ const applyFourOfAKindNUmberHint = (solutionOptions, hint) => {
   if (numbers.length === 1) {
     const number = numbers[0];
     // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+    logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the number
     const solutionOptions1 = setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
@@ -306,7 +338,7 @@ const applyFourOfAKindNUmberHint = (solutionOptions, hint) => {
   // TODO
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`TODO applying HINT_FOUR_OF_A_KIND_NUMBER for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`TODO applying HINT_FOUR_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
   return solutionOptions;
 };
 
@@ -323,7 +355,7 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS:
       return applySameNSuitCardsInSolutionOptionsHint(solutionOptions, hint);
 
-    case HINT_FOUR_OF_A_KIND_NUMBER:
+    case HINT_FOUR_OF_A_KIND_NUMBERS:
       return applyFourOfAKindNUmberHint(solutionOptions, hint);
 
     default:
