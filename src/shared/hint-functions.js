@@ -181,7 +181,7 @@ export const getFourOfAKindSuitHints = (cardsStillAvailable, solutionHandsIndex,
 
   const handOptions = solutionOptions[solutionHandsIndex];
 
-  // Note: the following assumes solutionOptions is valid - if cardOptions.suitOptions true bool count was 1, then it must be the suit in question
+  // Note: the following assumes that solutionOptions is valid - if cardOptions.suitOptions true bool count was 1, then it must be the suit in question
 
   // if first card has more than one suit available then create hint to set to S
   if (countTrueBooleansInArray(handOptions[0].suitOptions) > 1) {
@@ -246,23 +246,19 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 
   // if we have at least one number which has 4 cards available, then we can create a hint - one for each of the first 4 cards of this solutionHandsIndex
   // note that the solutionHandsIndex here is the solutionOptionsIndex
-  // don't create a hint if it is a single numbersAvailable and that card is already selected in the solution options
+  // don't create a hint if it is a single numbersAvailable and that card is already set to that number in the solution options
   // note we rely on these cards being the first four cards S H D C
   if (numbersAvailable.length === 1) {
-    // we have a single number, so need to check if card is set
-    const number = numbersAvailable[0];
-    if (!cardSelectedInSolutionOptions(createCard(SUIT_SPADES, number), solutionOptions)) {
-      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
-    }
-    if (!cardSelectedInSolutionOptions(createCard(SUIT_HEARTS, number), solutionOptions)) {
-      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 1, clue));
-    }
-    if (!cardSelectedInSolutionOptions(createCard(SUIT_DIAMONDS, number), solutionOptions)) {
-      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 2, clue));
-    }
-    if (!cardSelectedInSolutionOptions(createCard(SUIT_CLUBS, number), solutionOptions)) {
-      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 3, clue));
-    }
+    const handOptions = solutionOptions[solutionHandsIndex];
+
+    // work through the first four cards in this hand
+    [0, 1, 2, 3].forEach((handOptionsIndex) => {
+      // if more than this number is allowed, then create the hind to set this card to this number
+      // Note: the following assumes that solutionOptions is valid - if cardOptions.numberOptions true bool count was 1, then it must be the number in question
+      if (countTrueBooleansInArray(handOptions[handOptionsIndex].numberOptions) > 1) {
+        hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+      }
+    });
   } else if (numbersAvailable.length > 1) {
     // we have multiple numbers available - so don't need to check if card is set
     hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
@@ -395,11 +391,7 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
     logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the number
-    const solutionOptions1 = setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-
-    // furthermore we know the suit based on the handOptionsIndex, as we order a four of a kind S, H, D, C
-    // so suitOptionsIndex is handOptionsIndex (weirdly :-)
-    return setSuitOptionOnlyInSolutionOptions(handOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions1);
+    return setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
   // TODO
