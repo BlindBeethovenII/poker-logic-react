@@ -16,6 +16,7 @@ import {
   getFirstSuitSet,
   getFirstNumberSet,
   cardOptionsHasSingleSelectedCard,
+  solutionOptionsValid,
 } from './solution-functions';
 
 import {
@@ -312,6 +313,13 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 // get the next possible hints (being an array of hints of the same type)
 export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const { solutionHands, missingNumber } = solution;
+
+  // first check that solution options are valid
+  if (!solutionOptionsValid(solutionOptions, solutionHands)) {
+    // TODO - provide a way for the user to go back to the last good solutionOptions
+    // for now just return no more hints
+    return [];
+  }
 
   // first see if number not used
   const numberNotUsedHints = getNumberNotUsedHints(solutionOptions, solutionHands, missingNumber);

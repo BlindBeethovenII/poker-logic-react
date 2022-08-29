@@ -1,6 +1,6 @@
 // useful solution functions
 
-import { createCard } from './card-functions';
+import { createCard, cardsEqual } from './card-functions';
 
 import {
   NUMBERS,
@@ -431,4 +431,114 @@ export const getFirstNumberSet = (numberOptions) => {
 export const cardOptionsHasSingleSelectedCard = (cardOptions) => {
   const { suitOptions, numberOptions } = cardOptions;
   return (countTrueBooleansInArray(suitOptions) === 1 && countTrueBooleansInArray(numberOptions) === 1);
+};
+
+// return the cards that are placed in the given handOptions
+const getPlacedCardsInHandOptions = (handOptions) => {
+  const result = [];
+
+  handOptions.forEach((cardOptions) => {
+    if (cardOptionsHasSingleSelectedCard(cardOptions)) {
+      const { suitOptions, numberOptions } = cardOptions;
+      result.push(createCard(getFirstSuitSet(suitOptions), getFirstNumberSet(numberOptions)));
+    }
+  });
+
+  return result;
+};
+
+// return true if the solutionOptions are still valid
+// that is, can the solutionHands still be placed in it
+// and are the placed cards in the corresponding solutionHand
+export const solutionOptionsValid = (solutionOptions, solutionHands) => {
+  // first check each placed cards are allowed in the corresponding solutionHand
+  // work through each solutionHandsIndex
+  for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    const handOptions = solutionOptions[solutionHandsIndex];
+
+    // get the placed cards in this handOptions
+    const placedCards = getPlacedCardsInHandOptions(handOptions);
+    for (let i = 0; i < placedCards.length; i += 1) {
+      const placedCard = placedCards[i];
+
+      // look for this card
+      let found = false;
+      for (let j = 0; j < solutionHand.length && !found; j += 1) {
+        const solutionHandCard = solutionHand[j];
+        if (cardsEqual(placedCard, solutionHandCard)) {
+          found = true;
+        }
+      }
+
+      // did we find it
+      if (!found) {
+        console.error(`solutionOptionsValid: placed card ${placedCard.id} is not a card in solutionHandsIndex ${solutionHandsIndex}`);
+        return false;
+      }
+    }
+  }
+
+  // now check that card of the solutionHand can still be placed somewhere
+  for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    const handOptions = solutionOptions[solutionHandsIndex];
+
+    // work through each card of the solutionHand
+    let found = false;
+    for (let i = 0; i < solutionHand.length && !found; i += 1) {
+      const { id, suit, number } = solutionHand[i];
+      const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+      // look through the handOptions to see if it can still be placed in at least one
+      for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length && !found; handOptionsIndex += 1) {
+        const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
+        if (suitOptions[suitOptionsIndex] && numberOptions[number - 1]) {
+          // yes it can be placed here
+          found = true;
+        }
+      }
+
+      // did we find a place for this solutionHand card?
+      if (!found) {
+        console.error(`solutionOptionsValid: solutionHand card ${id} cannot be placed any where in solutionOptionsIndex ${solutionHandsIndex}`);
+        return false;
+      }
+    }
+  }
+
+  // work through each solutionHandsIndex
+  // for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
+  //   const solutionHand = solutionHands[solutionHandsIndex];
+  //   const handOptions = solutionOptions[solutionHandsIndex];
+
+  //   // I think the following approach is sound
+  //   // TODO check this - I have a little worry at the back of my head - but can't find an example to expose that worry
+
+  //   // first go through each card in the solutionHand that has already been placed in the handOptions,
+  //   // remember the handOptionsIndex it is placed in, and the card that has been placed
+  //   // now for the remaining cards of the solutionHand, find the other possible handOptionsIndexes they can go in
+
+  //   // go through each card in the solutionHand and see which handOptions it can still be placed in
+  //   // remember the handOptionsIndex of each
+  //   // at the end, all 5 handOptionsIndex should be present - so we can fit the 5 cards in 5 different places
+  //   const possibleIndexes = [];
+  //   solutionHand.forEach((card) => {
+  //     for (let handOptionsIndex = 0; handOptionsIndex < 5; handOptionsIndex += 1) {
+  //       if (!possibleIndexes.includes(handOptionsIndex)) {
+  //         // no point in looking again at this index - a card can already go here
+  //       }
+  //     }
+  //   });
+
+  //   if (possibleIndexes.length < 5) {
+  //     console.error(`solutionOptionsValid solutionHandsIndex ${solutionHandsIndex} in invalid; only possible indexes are ${possibleIndexes}`);
+  //     return false;
+  //   }
+  // }
+
+  // TODO - I think there is another case to worry about!!!!
+
+  // everything is okay
+  return true;
 };

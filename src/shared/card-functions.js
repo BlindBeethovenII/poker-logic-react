@@ -414,7 +414,7 @@ const getUnsortedNumbersFromCards = (number, cards) => {
 };
 
 // helper function
-const cardsEqual = (card1, card2) => card1.number === card2.number && card1.suit === card2.suit;
+export const cardsEqual = (card1, card2) => card1.number === card2.number && card1.suit === card2.suit;
 
 // helper function
 const numberUniqueCards = (cards) => {
