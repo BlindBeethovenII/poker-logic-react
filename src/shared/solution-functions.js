@@ -5,6 +5,7 @@ import { createCard } from './card-functions';
 import {
   NUMBERS,
   NUMBERS_SORTED,
+  SUITS,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -400,6 +401,19 @@ export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex
   + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
 );
 
+// return the first suit that is set in the given suitOptions
+export const getFirstSuitSet = (suitOptions) => {
+  for (let i = 0; i < suitOptions.length; i += 1) {
+    if (suitOptions[i]) {
+      return SUITS[i];
+    }
+  }
+
+  // didn't find one - this should only be called if there is one
+  console.error('getFirstSuitSet did not find a set suit in suitOptions');
+  return 0;
+};
+
 // return the first number that is set in the given numberOptions
 export const getFirstNumberSet = (numberOptions) => {
   for (let i = 0; i < numberOptions.length; i += 1) {
@@ -411,4 +425,10 @@ export const getFirstNumberSet = (numberOptions) => {
   // didn't find one - this should only be called if there is one
   console.error('getFirstNumberSet did not find a set number in numberOptions');
   return 0;
+};
+
+// return true if the given cardOptions has just a single card selected
+export const cardOptionsHasSingleSelectedCard = (cardOptions) => {
+  const { suitOptions, numberOptions } = cardOptions;
+  return (countTrueBooleansInArray(suitOptions) === 1 && countTrueBooleansInArray(numberOptions) === 1);
 };

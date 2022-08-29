@@ -150,7 +150,7 @@ const sortHand = (handParam) => {
 };
 
 // sort a suit - this assumes all cards are in the same suit with no repeated cards
-const sortSuit = (cardsParam) => {
+export const sortSuit = (cardsParam) => {
   // copy of the given cards to get around eslint complaint about assigning to function params
   const cards = [];
   for (let len = 0; len < cardsParam.length; len += 1) {

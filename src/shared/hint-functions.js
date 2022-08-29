@@ -13,10 +13,16 @@ import {
   getSuitOptionsValueInCardOptions,
   countNumberAvailable,
   setNumberOptionOnlyInSolutionOptions,
+  getFirstSuitSet,
   getFirstNumberSet,
+  cardOptionsHasSingleSelectedCard,
 } from './solution-functions';
 
-import { sortedSuitCardsContainStraight } from './card-functions';
+import {
+  sortedSuitCardsContainStraight,
+  createCard,
+  sortSuit,
+} from './card-functions';
 
 import { clueToString } from './clue-functions';
 
@@ -93,7 +99,30 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
     // convert suit name to suit options index which is the same as cards still available index, to find the suits available cards
     const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
 
-    const suitCardsAvailable = cardsStillAvailable[suitOptionsIndex];
+    let suitCardsAvailable = [...cardsStillAvailable[suitOptionsIndex]];
+
+    const handOptions = solutionOptions[solutionHandsIndex];
+
+    let needToSortAgain = false;
+
+    // need to add back in in any cards that are already placed - as they are excluded from cardsStillAvailable
+    [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (cardOptionsHasSingleSelectedCard(cardOptions)) {
+        const { suitOptions, numberOptions } = cardOptions;
+        const setSuit = getFirstSuitSet(suitOptions);
+        // only interested if this is for our suit
+        if (setSuit === suit) {
+          suitCardsAvailable.push(createCard(suit, getFirstNumberSet(numberOptions)));
+          needToSortAgain = true;
+        }
+      }
+    });
+
+    if (needToSortAgain) {
+      // we added a card to the end, so we need to sort again
+      suitCardsAvailable = sortSuit(suitCardsAvailable);
+    }
 
     if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
