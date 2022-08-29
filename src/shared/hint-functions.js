@@ -34,6 +34,7 @@ import {
   SUIT_HEARTS,
   SUIT_DIAMONDS,
   SUIT_CLUBS,
+  HINT_FOUR_OF_A_KIND_SUIT,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -161,6 +162,50 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
   return hints;
 };
 
+// ------------------------ //
+// HINT_FOUR_OF_A_KIND_SUIT //
+// ------------------------ //
+
+// create HINT_FOUR_OF_A_KIND_SUIT
+export const createHintFourOfAKindSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_FOUR_OF_A_KIND_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clues: [clue],
+});
+
+// if there are 4 cards of a number in cardsStillAvailable then we can create hints for the S H D C suits of this four of a kind
+export const getFourOfAKindSuitHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // Note: the following assumes solutionOptions is valid - if cardOptions.suitOptions true bool count was 1, then it must be the suit in question
+
+  // if first card has more than one suit available then create hint to set to S
+  if (countTrueBooleansInArray(handOptions[0].suitOptions) > 1) {
+    hints.push(createHintFourOfAKindSuit(SUIT_SPADES, solutionHandsIndex, 0, clue));
+  }
+
+  // if second card has more than one suit available then create hint to set to H
+  if (countTrueBooleansInArray(handOptions[1].suitOptions) > 1) {
+    hints.push(createHintFourOfAKindSuit(SUIT_HEARTS, solutionHandsIndex, 1, clue));
+  }
+
+  // if first card has more than one suit available then create hint to set to D
+  if (countTrueBooleansInArray(handOptions[2].suitOptions) > 1) {
+    hints.push(createHintFourOfAKindSuit(SUIT_DIAMONDS, solutionHandsIndex, 2, clue));
+  }
+
+  // if first card has more than one suit available then create hint to set to C
+  if (countTrueBooleansInArray(handOptions[3].suitOptions) > 1) {
+    hints.push(createHintFourOfAKindSuit(SUIT_CLUBS, solutionHandsIndex, 3, clue));
+  }
+
+  return hints;
+};
+
 // --------------------------- //
 // HINT_FOUR_OF_A_KIND_NUMBERS //
 // --------------------------- //
@@ -267,9 +312,14 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal with hand of type four of a kind
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
-      const fourOfAKindNUmberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
-      if (fourOfAKindNUmberHints.length) {
-        return fourOfAKindNUmberHints;
+      const fourOfAKindSuitHints = getFourOfAKindSuitHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (fourOfAKindSuitHints.length) {
+        return fourOfAKindSuitHints;
+      }
+
+      const fourOfAKindNumberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (fourOfAKindNumberHints.length) {
+        return fourOfAKindNumberHints;
       }
     }
   }
@@ -310,7 +360,24 @@ const applySameNSuitCardsInSolutionOptionsHint = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-const applyFourOfAKindNUmberHint = (solutionOptions, hint) => {
+const applyFourOfAKindSuitHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clues,
+  } = hint;
+
+  // this hint only uses one clue
+  const clue = clues[0];
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -355,8 +422,11 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS:
       return applySameNSuitCardsInSolutionOptionsHint(solutionOptions, hint);
 
+    case HINT_FOUR_OF_A_KIND_SUIT:
+      return applyFourOfAKindSuitHint(solutionOptions, hint);
+
     case HINT_FOUR_OF_A_KIND_NUMBERS:
-      return applyFourOfAKindNUmberHint(solutionOptions, hint);
+      return applyFourOfAKindNumberHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
