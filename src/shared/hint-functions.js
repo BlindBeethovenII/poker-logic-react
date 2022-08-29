@@ -13,10 +13,10 @@ import {
   getSuitOptionsValueInCardOptions,
   countNumberAvailable,
   setNumberOptionOnlyInSolutionOptions,
-  cardSelectedInSolutionOptions,
+  getFirstNumberSet,
 } from './solution-functions';
 
-import { sortedSuitCardsContainStraight, createCard } from './card-functions';
+import { sortedSuitCardsContainStraight } from './card-functions';
 
 import { clueToString } from './clue-functions';
 
@@ -226,46 +226,52 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 
   const numbersAvailable = [];
 
-  NUMBERS.forEach((number) => {
-    // first count then number of cards of this number still available
-    let count = countNumberAvailable(number, cardsStillAvailable);
+  const handOptions = solutionOptions[solutionHandsIndex];
 
-    // and remember the four cards of this number might already be placed, so add those to the count
-    // note: this relies on solutionOptions being valid
-    SUITS.forEach((suit) => {
-      if (cardSelectedInSolutionOptions(createCard(suit, number), solutionOptions)) {
-        count += 1;
+  // because we are working from a valid solution
+  // if one of the first 4 cards has a single number set, then this must be the number for the other cards
+  if (countTrueBooleansInArray(handOptions[0].numberOptions) === 1) {
+    // first card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[0].numberOptions));
+  } else if (countTrueBooleansInArray(handOptions[1].numberOptions) === 1) {
+    // second card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[1].numberOptions));
+  } else if (countTrueBooleansInArray(handOptions[2].numberOptions) === 1) {
+    // third card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[2].numberOptions));
+  } else if (countTrueBooleansInArray(handOptions[3].numberOptions) === 1) {
+    // fourth card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[3].numberOptions));
+  }
+
+  // if we didn't find one that way, then look for the numbers with 4 cards still available
+  if (!numbersAvailable.length) {
+    NUMBERS.forEach((number) => {
+      // count the number of cards of this number still available
+      const count = countNumberAvailable(number, cardsStillAvailable);
+
+      // we've dealt with a number is set in the first 4 cards - so we don't have to add that to the count here now
+
+      // this number has 4 available, so it is part of the hint
+      if (count === 4) {
+        numbersAvailable.push(number);
       }
     });
-
-    // found, if 4 are available or already in place
-    if (count === 4) {
-      numbersAvailable.push(number);
-    }
-  });
+  }
 
   // if we have at least one number which has 4 cards available, then we can create a hint - one for each of the first 4 cards of this solutionHandsIndex
   // note that the solutionHandsIndex here is the solutionOptionsIndex
-  // don't create a hint if it is a single numbersAvailable and that card is already set to that number in the solution options
-  // note we rely on these cards being the first four cards S H D C
-  if (numbersAvailable.length === 1) {
-    const handOptions = solutionOptions[solutionHandsIndex];
+  // we don't create a hint if the number of numbers currently available in that numberOption is the same as our numbers
+  // note this relies on solutionOptions being valid here - that is, those numbers are the same numbers as we've found - as we are working with a valid solutionOptions
 
-    // work through the first four cards in this hand
-    [0, 1, 2, 3].forEach((handOptionsIndex) => {
-      // if more than this number is allowed, then create the hind to set this card to this number
-      // Note: the following assumes that solutionOptions is valid - if cardOptions.numberOptions true bool count was 1, then it must be the number in question
-      if (countTrueBooleansInArray(handOptions[handOptionsIndex].numberOptions) > 1) {
-        hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
-      }
-    });
-  } else if (numbersAvailable.length > 1) {
-    // we have multiple numbers available - so don't need to check if card is set
-    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 0, clue));
-    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 1, clue));
-    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 2, clue));
-    hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, 3, clue));
-  }
+  // work through the first four cards in this handOptions
+  [0, 1, 2, 3].forEach((handOptionsIndex) => {
+    // if more than this number is allowed, then create the hind to set this card to this number
+    // Note: the following assumes that solutionOptions is valid - if cardOptions.numberOptions true bool count was 1, then it must be the number in question
+    if (countTrueBooleansInArray(handOptions[handOptionsIndex].numberOptions) > numbersAvailable.length) {
+      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
 
   return hints;
 };
@@ -394,11 +400,22 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
     return setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
-  // TODO
-
   // eslint-disable-next-line max-len
   logIfDevEnv(`TODO applying HINT_FOUR_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-  return solutionOptions;
+
+  let newSolutionOptions = solutionOptions;
+
+  const { numberOptions } = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // given solution functions we have, we will toggle (to off) any other number that is currently set
+  NUMBERS.forEach((number) => {
+    if (!numbers.includes(number) && numberOptions[number - 1]) {
+      // this number is not part of the solution, so toggle off
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
 };
 
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions

@@ -399,3 +399,16 @@ export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex
   + countSuitTrueInHandOptions(solutionOptions[2], suitOptionsIndex)
   + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
 );
+
+// return the first number that is set in the given numberOptions
+export const getFirstNumberSet = (numberOptions) => {
+  for (let i = 0; i < numberOptions.length; i += 1) {
+    if (numberOptions[i]) {
+      return i + 1;
+    }
+  }
+
+  // didn't find one - this should only be called if there is one
+  console.error('getFirstNumberSet did not find a set number in numberOptions');
+  return 0;
+};
