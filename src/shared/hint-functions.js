@@ -50,6 +50,7 @@ import {
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
   HINT_PLACED_CARD_REMOVE_NUMBER,
+  HINT_NUMBER_USED_UP,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -419,6 +420,40 @@ export const getPlacedCardRemoveNumberHints = (solutionOptions) => {
   return hints;
 };
 
+// ------------------- //
+// HINT_NUMBER_USED_UP //
+// ------------------- //
+
+// create HINT_NUMBER_USED_UP
+export const createHintNumberUsedUp = (number, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_NUMBER_USED_UP,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// look to see if a number is now used up
+export const getNumberUsedUpHints = (cardsStillAvailable, cardsAvailable, solutionOptions) => {
+  const hints = [];
+
+  // consider each number
+  NUMBERS.forEach((number) => {
+    // we are interested if this number is in cardsAvailable but no longer in cardsStillAvailable
+    if (countNumberAvailable(number, cardsAvailable) > 0 && countNumberAvailable(number, cardsStillAvailable) === 0) {
+      // add a hint for each place this number is still available and not the placed number (as that was in the count)
+      solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+        handOptions.forEach((cardOptions, handOptionsIndex) => {
+          if (isNumberTrueInCardOptions(number, cardOptions) && !isNumberPlacedInCardOptions(number, cardOptions)) {
+            hints.push(createHintNumberUsedUp(number, solutionOptionsIndex, handOptionsIndex));
+          }
+        });
+      });
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -460,6 +495,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
   // which of the cards available are still available after the solutionOptions have been considered
   const cardsStillAvailable = getCardsStillAvailable(cardsAvailable, solutionOptions);
+
+  // see if a number from cards available is now used
+  const numberUsedUpHints = getNumberUsedUpHints(cardsStillAvailable, cardsAvailable, solutionOptions);
+  if (numberUsedUpHints.length) {
+    return numberUsedUpHints;
+  }
 
   // look through each clue indvidually
   for (let i = 0; i < clues.length; i += 1) {
@@ -612,6 +653,18 @@ const applyPlacedCardRemoveNumberHint = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+const applyNumberUsedUpHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  logIfDevEnv(`applying HINT_NUMBER_USED_UP for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -636,6 +689,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PLACED_CARD_REMOVE_NUMBER:
       return applyPlacedCardRemoveNumberHint(solutionOptions, hint);
+
+    case HINT_NUMBER_USED_UP:
+      return applyNumberUsedUpHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
