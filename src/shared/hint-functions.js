@@ -24,6 +24,7 @@ import {
   isSuitPlacedInCardOptions,
   isNumberPlaced,
   countSuitPlacedInSolutionOptions,
+  countNumberPlacedInSolutionOptions,
 } from './solution-functions';
 
 import {
@@ -53,6 +54,7 @@ import {
   HINT_PLACED_CARD_REMOVE_NUMBER,
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED,
+  HINT_ALL_OF_NUMBER_PLACED,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -497,6 +499,44 @@ export const getAllOfSuitPlacedHints = (cardsAvailable, solutionOptions) => {
   return hints;
 };
 
+// ------------------------- //
+// HINT_ALL_OF_NUMBER_PLACED //
+// ------------------------- //
+
+// create HINT_ALL_OF_NUMBER_PLACED
+export const createHintAllOfNumberPlaced = (number, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_ALL_OF_NUMBER_PLACED,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// if n cards available for a number, and solutionOptions has placed n of that number, then can remove all other instances of that number from solutionOptions
+export const getAllOfNumberPlacedHints = (cardsAvailable, solutionOptions) => {
+  const hints = [];
+
+  NUMBERS.forEach((number) => {
+    // count how many of this number are in cardsAvailable
+    const numberCardsAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // how many cards in solutionOptions have this number placed
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    if (numberCardsAvailableCount === numberPlacedCount) {
+      // create a hint for each cardOptions that has this number as true, but not as the placed number
+      solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+        handOptions.forEach((cardOptions, handOptionsIndex) => {
+          if (getNumberOptionsValueInCardOptions(cardOptions, number) && !isNumberPlacedInCardOptions(number, cardOptions)) {
+            hints.push(createHintAllOfNumberPlaced(number, solutionOptionsIndex, handOptionsIndex));
+          }
+        });
+      });
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -522,6 +562,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const allOfSuitPlacedHints = getAllOfSuitPlacedHints(cardsAvailable, solutionOptions);
   if (allOfSuitPlacedHints.length) {
     return allOfSuitPlacedHints;
+  }
+
+  // see if all n cards available for a number are placed for that number
+  const allOfNumberPlacedHints = getAllOfNumberPlacedHints(cardsAvailable, solutionOptions);
+  if (allOfNumberPlacedHints.length) {
+    return allOfNumberPlacedHints;
   }
 
   // see if the solution options only has n cards of a suit left where n is the number of cards of that suit in cardsAvailable
@@ -726,6 +772,18 @@ const applyAllOfSuitPlacedHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -756,6 +814,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_ALL_OF_SUIT_PLACED:
       return applyAllOfSuitPlacedHint(solutionOptions, hint);
+
+    case HINT_ALL_OF_NUMBER_PLACED:
+      return applyAllOfNumberPlacedHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
