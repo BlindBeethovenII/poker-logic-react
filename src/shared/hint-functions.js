@@ -89,7 +89,7 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
   suit,
   solutionOptionsIndex,
   handOptionsIndex,
-  clues: [clue],
+  clue,
 });
 
 // get the hints for the suits that cannot make a straight flush
@@ -202,7 +202,7 @@ export const createHintFourOfAKindSuit = (suit, solutionOptionsIndex, handOption
   suit,
   solutionOptionsIndex,
   handOptionsIndex,
-  clues: [clue],
+  clue,
 });
 
 // if there are 4 cards of a number in cardsStillAvailable then we can create hints for the S H D C suits of this four of a kind
@@ -246,7 +246,7 @@ export const createHintFourOfAKindNumber = (numbers, solutionOptionsIndex, handO
   numbers,
   solutionOptionsIndex,
   handOptionsIndex,
-  clues: [clue],
+  clue,
 });
 
 // if there are 4 cards of a number in cardsStillAvailable then we can create a hint
@@ -382,11 +382,8 @@ const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
     suit,
     solutionOptionsIndex,
     handOptionsIndex,
-    clues,
+    clue,
   } = hint;
-
-  // this hint only uses one clue
-  const clue = clues[0];
 
   // eslint-disable-next-line max-len
   logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
@@ -404,11 +401,8 @@ const applyFourOfAKindSuitHint = (solutionOptions, hint) => {
     suit,
     solutionOptionsIndex,
     handOptionsIndex,
-    clues,
+    clue,
   } = hint;
-
-  // this hint only uses one clue
-  const clue = clues[0];
 
   // eslint-disable-next-line max-len
   logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
@@ -421,11 +415,8 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
     numbers,
     solutionOptionsIndex,
     handOptionsIndex,
-    clues,
+    clue,
   } = hint;
-
-  // this hint only uses one clue
-  const clue = clues[0];
 
   // we do something different if numbers is to a single number, as opposed to a number of numbers
   if (numbers.length === 1) {
