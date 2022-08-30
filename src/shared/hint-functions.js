@@ -12,6 +12,7 @@ import {
   countSuitsInCardOptions,
   countNumbersInCardOptions,
   getSuitOptionsValueInCardOptions,
+  getNumberOptionsValueInCardOptions,
   countNumberAvailable,
   setNumberOptionOnlyInSolutionOptions,
   getFirstSuitSet,
@@ -20,6 +21,7 @@ import {
   solutionOptionsValid,
   isNumberTrueInCardOptions,
   isNumberPlacedInCardOptions,
+  isSuitPlacedInCardOptions,
 } from './solution-functions';
 
 import {
@@ -46,6 +48,7 @@ import {
   SUIT_CLUBS,
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
+  HINT_PLACED_CARD_REMOVE_NUMBER,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -309,9 +312,9 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
   return hints;
 };
 
-// --------------------------- //
+// ---------------------------- //
 // HINT_PLACED_CARD_REMOVE_SUIT //
-// --------------------------- //
+// ---------------------------- //
 
 // create HINT_PLACED_CARD_REMOVE_SUIT
 export const createHintPlacedCardRemoveSuit = (suit, solutionOptionsIndex, handOptionsIndex, placedCard) => ({
@@ -361,6 +364,57 @@ export const getPlacedCardRemoveSuitHints = (solutionOptions) => {
   return hints;
 };
 
+// ------------------------------ //
+// HINT_PLACED_CARD_REMOVE_NUMBER //
+// ------------------------------ //
+
+// create HINT_PLACED_CARD_REMOVE_NUMBER
+export const createHintPlacedCardRemoveNumber = (number, solutionOptionsIndex, handOptionsIndex, placedCard) => ({
+  hintType: HINT_PLACED_CARD_REMOVE_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  placedCard,
+});
+
+// if an available card has been placed, e.g. 6D, then if its suit, e.g. D, has been placed elsewhere than that cannot be the number, e.g. 6
+export const getPlacedCardRemoveNumberHints = (solutionOptions) => {
+  const hints = [];
+
+  // look through all the cardOptions to find a placed card
+  solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+    handOptions.forEach((cardOptions, handOptionsIndex) => {
+      if (isCardOptionsAPlacedCard(cardOptions)) {
+        // this cardOptions is a placed card
+        // form the placed card for the hint
+        const suit = getFirstSuitSet(cardOptions);
+        const number = getFirstNumberSet(cardOptions);
+        const placedCard = createCard(suit, number);
+
+        // go through all the card options again, looking for any that have the suit placed and the number still available
+        // Note: this relies on a valid solution options - that is, this number cannot be already be placed in two different places
+        solutionOptions.forEach((handOptions2, solutionOptionsIndex2) => {
+          handOptions2.forEach((cardOptions2, handOptionsIndex2) => {
+            // remember to ignore ours
+            if (solutionOptionsIndex !== solutionOptionsIndex2 || handOptionsIndex !== handOptionsIndex2) {
+              // if this suit is placed here
+              if (isSuitPlacedInCardOptions(suit, cardOptions2)) {
+                // if the number still available
+                if (getNumberOptionsValueInCardOptions(cardOptions2, number)) {
+                  // we can form the hint for this
+                  hints.push(createHintPlacedCardRemoveNumber(number, solutionOptionsIndex2, handOptionsIndex2, placedCard));
+                }
+              }
+            }
+          });
+        });
+      }
+    });
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -386,6 +440,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const placedCardRemoveSuitHints = getPlacedCardRemoveSuitHints(solutionOptions);
   if (placedCardRemoveSuitHints.length) {
     return placedCardRemoveSuitHints;
+  }
+
+  // see if can remove number in other card options for a placed card
+  const placedCardRemoveNumberHints = getPlacedCardRemoveNumberHints(solutionOptions);
+  if (placedCardRemoveNumberHints.length) {
+    return placedCardRemoveNumberHints;
   }
 
   // see if we the solution options only has n cards of a suit left where n is the number of cards of that suit in cardsAvailable
@@ -534,6 +594,20 @@ const applyPlacedCardRemoveSuitHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+const applyPlacedCardRemoveNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    placedCard,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_PLACED_CARD_REMOVE_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} because placed card ${placedCard.id}`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -555,6 +629,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PLACED_CARD_REMOVE_SUIT:
       return applyPlacedCardRemoveSuitHint(solutionOptions, hint);
+
+    case HINT_PLACED_CARD_REMOVE_NUMBER:
+      return applyPlacedCardRemoveNumberHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

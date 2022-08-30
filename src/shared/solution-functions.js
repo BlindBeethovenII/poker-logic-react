@@ -337,6 +337,12 @@ export const isNumberTrueInCardOptions = (number, cardOptions) => {
   return numberOptions[number - 1];
 };
 
+// return true if the given suit is placed in the given cardOptions
+export const isSuitPlacedInCardOptions = (suit, cardOptions) => {
+  const { suitOptions } = cardOptions;
+  return isSuitPlacedInSuitOptions(suit, suitOptions);
+};
+
 // return true if the given number is placed in the given cardOptions
 export const isNumberPlacedInCardOptions = (number, cardOptions) => {
   const { numberOptions } = cardOptions;
@@ -404,6 +410,10 @@ export const getSuitOptionsValueInHandOptions = (handOptions, handOptionsIndex, 
 // get the value of a specific suit options boolean in the given card options
 export const getSuitOptionsValueInCardOptions = (cardOptions, suitOptionsIndex) =>
   cardOptions.suitOptions[suitOptionsIndex];
+
+// get the value of a specific number options boolean in the given card options
+export const getNumberOptionsValueInCardOptions = (cardOptions, number) =>
+  cardOptions.numberOptions[number - 1];
 
 // count the number of cardOptions for which this this suitOptionsIndex is true in the given handOptions
 export const countSuitTrueInHandOptions = (handOptions, suitOptionsIndex) => {
