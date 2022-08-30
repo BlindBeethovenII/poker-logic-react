@@ -446,6 +446,40 @@ export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex
   + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
 );
 
+// count how many times the suit is placed in the given solutionOptions
+export const countSuitPlacedInSolutionOptions = (suit, solutionOptions) => {
+  let count = 0;
+  for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+    const handOptions = solutionOptions[solutionOptionsIndex];
+    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (isSuitPlacedInCardOptions(suit, cardOptions)) {
+        // found one
+        count += 1;
+      }
+    }
+  }
+
+  return count;
+};
+
+// count how many times the number is placed in the given solutionOptions
+export const countNumberPlacedInSolutionOptions = (number, solutionOptions) => {
+  let count = 0;
+  for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+    const handOptions = solutionOptions[solutionOptionsIndex];
+    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (isNumberPlacedInCardOptions(number, cardOptions)) {
+        // found one
+        count += 1;
+      }
+    }
+  }
+
+  return count;
+};
+
 // return the first suit that is set in the given cardOptions - there should be at least one set
 export const getFirstSuitSet = (cardOptions) => {
   const { suitOptions } = cardOptions;
