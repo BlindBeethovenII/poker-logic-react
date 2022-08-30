@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Card from './Card';
 
-import { cardSelectedInSolutionOptions, convertSuitToSuitOptionsIndex } from '../shared/solution-functions';
+import { isCardPlacedInSolutionOptions, convertSuitToSuitOptionsIndex } from '../shared/solution-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -30,7 +30,7 @@ const AvailableCardsInSuit = (props) => {
         row={row - 0.15}
         card={cardAvailable}
         small
-        faded={cardSelectedInSolutionOptions(cardAvailable, solutionOptions)}
+        faded={isCardPlacedInSolutionOptions(cardAvailable, solutionOptions)}
       />,
     );
   });

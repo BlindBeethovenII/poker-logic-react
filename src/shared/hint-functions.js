@@ -9,13 +9,14 @@ import {
   getCardsStillAvailable,
   getSuitOptionsValue,
   countSuitTrueInSolutionOptions,
-  countTrueBooleansInArray,
+  countSuitsInCardOptions,
+  countNumbersInCardOptions,
   getSuitOptionsValueInCardOptions,
   countNumberAvailable,
   setNumberOptionOnlyInSolutionOptions,
   getFirstSuitSet,
   getFirstNumberSet,
-  cardOptionsHasSingleSelectedCard,
+  cardOptionsIsPlacedCard,
   solutionOptionsValid,
 } from './solution-functions';
 
@@ -42,6 +43,7 @@ import {
   SUIT_DIAMONDS,
   SUIT_CLUBS,
   HINT_FOUR_OF_A_KIND_SUIT,
+  HINT_PLACED_CARD_REMOVE_SUIT,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -109,12 +111,11 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
     // need to add back in in any cards that are already placed - as they are excluded from cardsStillAvailable
     [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
       const cardOptions = handOptions[handOptionsIndex];
-      if (cardOptionsHasSingleSelectedCard(cardOptions)) {
-        const { suitOptions, numberOptions } = cardOptions;
-        const setSuit = getFirstSuitSet(suitOptions);
+      if (cardOptionsIsPlacedCard(cardOptions)) {
+        const setSuit = getFirstSuitSet(cardOptions);
         // only interested if this is for our suit
         if (setSuit === suit) {
-          suitCardsAvailable.push(createCard(suit, getFirstNumberSet(numberOptions)));
+          suitCardsAvailable.push(createCard(suit, getFirstNumberSet(cardOptions)));
           needToSortAgain = true;
         }
       }
@@ -181,7 +182,7 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
       // all the solution options that have this suit as true, and another suit as true, can now be set to true only for this suit
       solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
         handOptions.forEach((cardOptions, handOptionsIndex) => {
-          if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && countTrueBooleansInArray(cardOptions.suitOptions) > 1) {
+          if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && countSuitsInCardOptions(cardOptions) > 1) {
             hints.push(createHintSameNSuitCardsInSolutionOptions(suit, solutionOptionsIndex, handOptionsIndex));
           }
         });
@@ -214,22 +215,22 @@ export const getFourOfAKindSuitHints = (cardsStillAvailable, solutionHandsIndex,
   // Note: the following assumes that solutionOptions is valid - if cardOptions.suitOptions true bool count was 1, then it must be the suit in question
 
   // if first card has more than one suit available then create hint to set to S
-  if (countTrueBooleansInArray(handOptions[0].suitOptions) > 1) {
+  if (countSuitsInCardOptions(handOptions[0]) > 1) {
     hints.push(createHintFourOfAKindSuit(SUIT_SPADES, solutionHandsIndex, 0, clue));
   }
 
   // if second card has more than one suit available then create hint to set to H
-  if (countTrueBooleansInArray(handOptions[1].suitOptions) > 1) {
+  if (countSuitsInCardOptions(handOptions[1]) > 1) {
     hints.push(createHintFourOfAKindSuit(SUIT_HEARTS, solutionHandsIndex, 1, clue));
   }
 
   // if first card has more than one suit available then create hint to set to D
-  if (countTrueBooleansInArray(handOptions[2].suitOptions) > 1) {
+  if (countSuitsInCardOptions(handOptions[2]) > 1) {
     hints.push(createHintFourOfAKindSuit(SUIT_DIAMONDS, solutionHandsIndex, 2, clue));
   }
 
   // if first card has more than one suit available then create hint to set to C
-  if (countTrueBooleansInArray(handOptions[3].suitOptions) > 1) {
+  if (countSuitsInCardOptions(handOptions[3]) > 1) {
     hints.push(createHintFourOfAKindSuit(SUIT_CLUBS, solutionHandsIndex, 3, clue));
   }
 
@@ -260,18 +261,18 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 
   // because we are working from a valid solution
   // if one of the first 4 cards has a single number set, then this must be the number for the other cards
-  if (countTrueBooleansInArray(handOptions[0].numberOptions) === 1) {
+  if (countNumbersInCardOptions(handOptions[0]) === 1) {
     // first card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[0].numberOptions));
-  } else if (countTrueBooleansInArray(handOptions[1].numberOptions) === 1) {
+    numbersAvailable.push(getFirstNumberSet(handOptions[0]));
+  } else if (countNumbersInCardOptions(handOptions[1]) === 1) {
     // second card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[1].numberOptions));
-  } else if (countTrueBooleansInArray(handOptions[2].numberOptions) === 1) {
+    numbersAvailable.push(getFirstNumberSet(handOptions[1]));
+  } else if (countNumbersInCardOptions(handOptions[2]) === 1) {
     // third card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[2].numberOptions));
-  } else if (countTrueBooleansInArray(handOptions[3].numberOptions) === 1) {
+    numbersAvailable.push(getFirstNumberSet(handOptions[2]));
+  } else if (countNumbersInCardOptions(handOptions[3]) === 1) {
     // fourth card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[3].numberOptions));
+    numbersAvailable.push(getFirstNumberSet(handOptions[3]));
   }
 
   // if we didn't find one that way, then look for the numbers with 4 cards still available
@@ -296,11 +297,43 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 
   // work through the first four cards in this handOptions
   [0, 1, 2, 3].forEach((handOptionsIndex) => {
-    // if more than this number is allowed, then create the hind to set this card to this number
+    // if more than this number is allowed, then create the hint to set this card to this number
     // Note: the following assumes that solutionOptions is valid - if cardOptions.numberOptions true bool count was 1, then it must be the number in question
-    if (countTrueBooleansInArray(handOptions[handOptionsIndex].numberOptions) > numbersAvailable.length) {
+    if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
       hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
+  });
+
+  return hints;
+};
+
+// --------------------------- //
+// HINT_PLACED_CARD_REMOVE_SUIT //
+// --------------------------- //
+
+// create HINT_PLACED_CARD_REMOVE_SUIT
+export const createHintPlacedCardRemoveSuit = (suit, solutionOptionsIndex, handOptionsIndex, placedCard) => ({
+  hintType: HINT_PLACED_CARD_REMOVE_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  placedCard,
+});
+
+// if an available card has been placed, e.g. 6D, then if its number, e.g. 6, has been placed elsewhere than that cannot be the suit, e.g. D
+export const getPlacedCardRemoveSuitHints = (solutionOptions) => {
+  const hints = [];
+
+  // look through all the cardOptions to find a placed card
+  solutionOptions.forEach((handOptions) => {
+    handOptions.forEach((cardOptions) => {
+      if (cardOptionsIsPlacedCard(cardOptions)) {
+        // this cardOptions is a placed card
+        // TODO const { suitOptions, numberOptions } = cardOptions;
+        getFirstNumberSet(cardOptions);
+        hints.push(cardOptions);
+      }
+    });
   });
 
   return hints;

@@ -250,7 +250,7 @@ export const getNumbersNotUsedInSolution = (solutionHands, missingNumber) => {
 };
 
 // return true if given card is in the given solution hands
-export const cardInSolutionHands = (card, solutionHands) => {
+export const isCardInSolutionHands = (card, solutionHands) => {
   let result = false;
   solutionHands.every((solutionHand) => solutionHand.every((solutionHandCard) => {
     if (solutionHandCard.suit === card.suit && solutionHandCard.number === card.number) {
@@ -269,7 +269,7 @@ export const getCardsAvailableInSuitSorted = (suit, solutionHands) => {
   const cards = [];
   NUMBERS_SORTED.forEach((number) => {
     const card = createCard(suit, number);
-    if (cardInSolutionHands(card, solutionHands)) {
+    if (isCardInSolutionHands(card, solutionHands)) {
       cards.push(card);
     }
   });
@@ -289,32 +289,38 @@ const countBooleansReducer = (accumulator, currentValue) => accumulator + (curre
 
 export const countTrueBooleansInArray = (boolArray) => boolArray.reduce(countBooleansReducer, 0);
 
+// count suits available in the given cardOptions
+export const countSuitsInCardOptions = (cardOptions) => countTrueBooleansInArray(cardOptions.suitOptions);
+
+// count numbers available in the given cardOptions
+export const countNumbersInCardOptions = (cardOptions) => countTrueBooleansInArray(cardOptions.numberOptions);
+
 // helper function
-const suitSelectedInSuitOptions = (suit, suitOptions) => {
+const isSuitPlacedInSuitOptions = (suit, suitOptions) => {
   const suitOptionsCount = countTrueBooleansInArray(suitOptions);
   // return true if there is only a single suit selected and it is our suit
   return suitOptionsCount === 1 && suitOptions[convertSuitToSuitOptionsIndex(suit)];
 };
 
 // helper function
-const numberSelectedInNumberOptions = (number, numberOptions) => {
+const isNumberPlacedInNumberOptions = (number, numberOptions) => {
   const numberOptionsCount = countTrueBooleansInArray(numberOptions);
   // return true if there is only a single number selected and it is our number (remember missingNumber option always false)
   return numberOptionsCount === 1 && numberOptions[number - 1];
 };
 
 // helper function
-const cardSelectedInCardOptions = (card, cardOptions) => {
+const isCardPlacedInCardOptions = (card, cardOptions) => {
   const { suit, number } = card;
   const { suitOptions, numberOptions } = cardOptions;
-  return suitSelectedInSuitOptions(suit, suitOptions) && numberSelectedInNumberOptions(number, numberOptions);
+  return isSuitPlacedInSuitOptions(suit, suitOptions) && isNumberPlacedInNumberOptions(number, numberOptions);
 };
 
-// return true if given card is 'selected' in the given solution options
-export const cardSelectedInSolutionOptions = (card, solutionOptions) => {
+// return true if given card is placed in the given solution options
+export const isCardPlacedInSolutionOptions = (card, solutionOptions) => {
   let result = false;
   solutionOptions.every((handOptions) => handOptions.every((cardOptions) => {
-    if (cardSelectedInCardOptions(card, cardOptions)) {
+    if (isCardPlacedInCardOptions(card, cardOptions)) {
       result = true;
       // stop the loop
       return false;
@@ -330,11 +336,11 @@ const cardsStillAvailableFromArray = (cards, solutionOptions) => {
   const result = [];
 
   cards.forEach((card) => {
-    let cardIsSelected = false;
+    let cardIsPlaced = false;
 
     solutionOptions.every((handOptions) => handOptions.every((cardOptions) => {
-      if (cardSelectedInCardOptions(card, cardOptions)) {
-        cardIsSelected = true;
+      if (isCardPlacedInCardOptions(card, cardOptions)) {
+        cardIsPlaced = true;
         // stop the loop
         return false;
       }
@@ -342,8 +348,8 @@ const cardsStillAvailableFromArray = (cards, solutionOptions) => {
       return true;
     }));
 
-    // if the card is not selected then it is still available
-    if (!cardIsSelected) {
+    // if the card is not placed then it is still available
+    if (!cardIsPlaced) {
       result.push(card);
     }
   });
@@ -401,8 +407,9 @@ export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex
   + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
 );
 
-// return the first suit that is set in the given suitOptions
-export const getFirstSuitSet = (suitOptions) => {
+// return the first suit that is set in the given cardOptions - there should be at least one set
+export const getFirstSuitSet = (cardOptions) => {
+  const { suitOptions } = cardOptions;
   for (let i = 0; i < suitOptions.length; i += 1) {
     if (suitOptions[i]) {
       return SUITS[i];
@@ -410,12 +417,13 @@ export const getFirstSuitSet = (suitOptions) => {
   }
 
   // didn't find one - this should only be called if there is one
-  console.error('getFirstSuitSet did not find a set suit in suitOptions');
+  console.error('getFirstSuitSet did not find a set suit in the cardOptions suitOptions');
   return 0;
 };
 
-// return the first number that is set in the given numberOptions
-export const getFirstNumberSet = (numberOptions) => {
+// return the first number that is set in the given cardOptions - there should be at least one set
+export const getFirstNumberSet = (cardOptions) => {
+  const { numberOptions } = cardOptions;
   for (let i = 0; i < numberOptions.length; i += 1) {
     if (numberOptions[i]) {
       return i + 1;
@@ -423,24 +431,20 @@ export const getFirstNumberSet = (numberOptions) => {
   }
 
   // didn't find one - this should only be called if there is one
-  console.error('getFirstNumberSet did not find a set number in numberOptions');
+  console.error('getFirstNumberSet did not find a set number in the cardOptions numberOptions');
   return 0;
 };
 
-// return true if the given cardOptions has just a single card selected
-export const cardOptionsHasSingleSelectedCard = (cardOptions) => {
-  const { suitOptions, numberOptions } = cardOptions;
-  return (countTrueBooleansInArray(suitOptions) === 1 && countTrueBooleansInArray(numberOptions) === 1);
-};
+// return true if the given cardOptions is now a placed card
+export const cardOptionsIsPlacedCard = (cardOptions) => (countSuitsInCardOptions(cardOptions) === 1 && countNumbersInCardOptions(cardOptions) === 1);
 
 // return the cards that are placed in the given handOptions
 const getPlacedCardsInHandOptions = (handOptions) => {
   const result = [];
 
   handOptions.forEach((cardOptions) => {
-    if (cardOptionsHasSingleSelectedCard(cardOptions)) {
-      const { suitOptions, numberOptions } = cardOptions;
-      result.push(createCard(getFirstSuitSet(suitOptions), getFirstNumberSet(numberOptions)));
+    if (cardOptionsIsPlacedCard(cardOptions)) {
+      result.push(createCard(getFirstSuitSet(cardOptions), getFirstNumberSet(cardOptions)));
     }
   });
 
