@@ -78,14 +78,14 @@ export const GameStateContextProvider = ({ children }) => {
   }, [solutionOptions]);
 
   // set the given number options index as the only selected number option
-  const setNumberOptionOnly = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  const setNumberOptionOnly = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
+    const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
   // toggle the given number option index
-  const toggleNumberOption = useCallback((numberOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
-    const newSolutionOptions = toggleNumberOptionInSolutionOptions(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  const toggleNumberOption = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
+    const newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 

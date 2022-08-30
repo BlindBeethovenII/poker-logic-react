@@ -18,6 +18,7 @@ import {
   getFirstNumberSet,
   cardOptionsIsPlacedCard,
   solutionOptionsValid,
+  isNumberTrueInCardOptions,
 } from './solution-functions';
 
 import {
@@ -71,7 +72,7 @@ export const getNumberNotUsedHints = (solutionOptions, solutionHands, missingNum
   numbersNotUsed.forEach((number) => {
     solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
       handOptions.forEach((cardOptions, handOptionsIndex) => {
-        if (cardOptions.numberOptions[number - 1]) {
+        if (isNumberTrueInCardOptions(number, cardOptions)) {
           hints.push(createHintNumberNotUsed(number, solutionOptionsIndex, handOptionsIndex));
         }
       });
@@ -212,7 +213,7 @@ export const getFourOfAKindSuitHints = (cardsStillAvailable, solutionHandsIndex,
 
   const handOptions = solutionOptions[solutionHandsIndex];
 
-  // Note: the following assumes that solutionOptions is valid - if cardOptions.suitOptions true bool count was 1, then it must be the suit in question
+  // Note: the following assumes that solutionOptions is valid - if cardOptions suitOptions true bool count was 1, then it must be the suit in question
 
   // if first card has more than one suit available then create hint to set to S
   if (countSuitsInCardOptions(handOptions[0]) > 1) {
@@ -298,7 +299,7 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
   // work through the first four cards in this handOptions
   [0, 1, 2, 3].forEach((handOptionsIndex) => {
     // if more than this number is allowed, then create the hint to set this card to this number
-    // Note: the following assumes that solutionOptions is valid - if cardOptions.numberOptions true bool count was 1, then it must be the number in question
+    // Note: the following assumes that solutionOptions is valid - if cardOptions numberOptions true bool count was 1, then it must be the number in question
     if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
       hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
@@ -329,7 +330,7 @@ export const getPlacedCardRemoveSuitHints = (solutionOptions) => {
     handOptions.forEach((cardOptions) => {
       if (cardOptionsIsPlacedCard(cardOptions)) {
         // this cardOptions is a placed card
-        // TODO const { suitOptions, numberOptions } = cardOptions;
+        // TODO HERE !!!
         getFirstNumberSet(cardOptions);
         hints.push(cardOptions);
       }
@@ -407,7 +408,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 const applyNumberNotUsedHint = (solutionOptions, hint) => {
   const { number, solutionOptionsIndex, handOptionsIndex } = hint;
   logIfDevEnv(`applying HINT_NUMBER_NOT_USED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-  return toggleNumberOptionInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
 const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
@@ -458,7 +459,7 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
     logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the number
-    return setNumberOptionOnlyInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
   // eslint-disable-next-line max-len
@@ -466,13 +467,13 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
 
   let newSolutionOptions = solutionOptions;
 
-  const { numberOptions } = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
 
   // given solution functions we have, we will toggle (to off) any other number that is currently set
   NUMBERS.forEach((number) => {
-    if (!numbers.includes(number) && numberOptions[number - 1]) {
+    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
       // this number is not part of the solution, so toggle off
-      newSolutionOptions = toggleNumberOptionInSolutionOptions(number - 1, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
     }
   });
 

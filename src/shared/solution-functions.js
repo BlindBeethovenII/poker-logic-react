@@ -162,11 +162,11 @@ export const resetSuitOptionsInSolutionOptions = (solutionOptionsIndex, handOpti
 };
 
 // set the given number options index as the only selected number option
-export const setNumberOptionOnlyInSolutionOptions = (numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions) => {
+export const setNumberOptionOnlyInSolutionOptions = (number, solutionOptionsIndex, handOptionsIndex, solutionOptions) => {
   const handOptions = solutionOptions[solutionOptionsIndex];
   const { suitOptions } = handOptions[handOptionsIndex];
   const newNumberOptions = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-  newNumberOptions[numberOptionsIndex] = true;
+  newNumberOptions[number - 1] = true;
   const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
   const newHandOptions = [...handOptions];
   newHandOptions[handOptionsIndex] = newCardOptions;
@@ -176,11 +176,11 @@ export const setNumberOptionOnlyInSolutionOptions = (numberOptionsIndex, solutio
 };
 
 // toggle the given number option index
-export const toggleNumberOptionInSolutionOptions = (numberOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions) => {
+export const toggleNumberOptionInSolutionOptions = (number, solutionOptionsIndex, handOptionsIndex, solutionOptions) => {
   const handOptions = solutionOptions[solutionOptionsIndex];
   const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
   const newNumberOptions = [...numberOptions];
-  newNumberOptions[numberOptionsIndex] = !numberOptions[numberOptionsIndex];
+  newNumberOptions[number - 1] = !numberOptions[number - 1];
   const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
   const newHandOptions = [...handOptions];
   newHandOptions[handOptionsIndex] = newCardOptions;
@@ -329,6 +329,12 @@ export const isCardPlacedInSolutionOptions = (card, solutionOptions) => {
     return true;
   }));
   return result;
+};
+
+// return true if given number bool is true in the cardOptions numberOptions
+export const isNumberTrueInCardOptions = (number, cardOptions) => {
+  const { numberOptions } = cardOptions;
+  return numberOptions[number - 1];
 };
 
 // return the cards still available in solution options from the given card array

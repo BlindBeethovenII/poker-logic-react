@@ -271,7 +271,7 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        setNumberOptionOnly(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+        setNumberOptionOnly(numberOptionsIndex + 1, solutionOptionsIndex, handOptionsIndex);
       };
 
       const numberToggleOption = (e) => {
@@ -284,8 +284,8 @@ const CardOptions = (props) => {
         if (isSingleNumberOption) {
           resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
         } else {
-          // toggle corresponding number index
-          toggleNumberOption(numberOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+          // toggle corresponding number
+          toggleNumberOption(numberOptionsIndex + 1, solutionOptionsIndex, handOptionsIndex);
         }
       };
 
