@@ -349,6 +349,23 @@ export const isNumberPlacedInCardOptions = (number, cardOptions) => {
   return isNumberPlacedInNumberOptions(number, numberOptions);
 };
 
+// return true if the given number is placed in the given solutionOptions
+export const isNumberPlaced = (number, solutionOptions) => {
+  for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+    const handOptions = solutionOptions[solutionOptionsIndex];
+    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (isNumberPlacedInCardOptions(number, cardOptions)) {
+        // found one
+        return true;
+      }
+    }
+  }
+
+  // nope number not placed
+  return false;
+};
+
 // return the cards still available in solution options from the given card array
 const cardsStillAvailableFromArray = (cards, solutionOptions) => {
   const result = [];

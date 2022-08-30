@@ -22,6 +22,7 @@ import {
   isNumberTrueInCardOptions,
   isNumberPlacedInCardOptions,
   isSuitPlacedInCardOptions,
+  isNumberPlaced,
 } from './solution-functions';
 
 import {
@@ -290,7 +291,10 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
 
       // this number has 4 available, so it is part of the hint
       if (count === 4) {
-        numbersAvailable.push(number);
+        // need to check this number isn't placed anywhere yet - a placed number doesn't remove a corresponding card from cardsStillAvailable
+        if (!isNumberPlaced(number, solutionOptions)) {
+          numbersAvailable.push(number);
+        }
       }
     });
   }
