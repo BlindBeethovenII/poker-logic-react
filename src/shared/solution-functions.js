@@ -337,16 +337,22 @@ export const isNumberTrueInCardOptions = (number, cardOptions) => {
   return numberOptions[number - 1];
 };
 
+// return true if the given number is placed in the given cardOptions
+export const isNumberPlacedInCardOptions = (number, cardOptions) => {
+  const { numberOptions } = cardOptions;
+  return isNumberPlacedInNumberOptions(number, numberOptions);
+};
+
 // return the cards still available in solution options from the given card array
 const cardsStillAvailableFromArray = (cards, solutionOptions) => {
   const result = [];
 
   cards.forEach((card) => {
-    let cardIsPlaced = false;
+    let isCardPlaced = false;
 
     solutionOptions.every((handOptions) => handOptions.every((cardOptions) => {
       if (isCardPlacedInCardOptions(card, cardOptions)) {
-        cardIsPlaced = true;
+        isCardPlaced = true;
         // stop the loop
         return false;
       }
@@ -355,7 +361,7 @@ const cardsStillAvailableFromArray = (cards, solutionOptions) => {
     }));
 
     // if the card is not placed then it is still available
-    if (!cardIsPlaced) {
+    if (!isCardPlaced) {
       result.push(card);
     }
   });
@@ -388,8 +394,8 @@ export const getSuitOptionsValue = (solutionOptions, solutionOptionsIndex, handO
   solutionOptions[solutionOptionsIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
 
 // get the value of a specific number options boolean in the given solution options
-export const getNumberOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, numberOptionsIndex) =>
-  solutionOptions[solutionOptionsIndex][handOptionsIndex].numberOptions[numberOptionsIndex];
+export const getNumberOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, number) =>
+  solutionOptions[solutionOptionsIndex][handOptionsIndex].numberOptions[number - 1];
 
 // get the value of a specific suit options boolean in the given hand options
 export const getSuitOptionsValueInHandOptions = (handOptions, handOptionsIndex, suitOptionsIndex) =>
@@ -442,14 +448,14 @@ export const getFirstNumberSet = (cardOptions) => {
 };
 
 // return true if the given cardOptions is now a placed card
-export const cardOptionsIsPlacedCard = (cardOptions) => (countSuitsInCardOptions(cardOptions) === 1 && countNumbersInCardOptions(cardOptions) === 1);
+export const isCardOptionsAPlacedCard = (cardOptions) => (countSuitsInCardOptions(cardOptions) === 1 && countNumbersInCardOptions(cardOptions) === 1);
 
 // return the cards that are placed in the given handOptions
 const getPlacedCardsInHandOptions = (handOptions) => {
   const result = [];
 
   handOptions.forEach((cardOptions) => {
-    if (cardOptionsIsPlacedCard(cardOptions)) {
+    if (isCardOptionsAPlacedCard(cardOptions)) {
       result.push(createCard(getFirstSuitSet(cardOptions), getFirstNumberSet(cardOptions)));
     }
   });
