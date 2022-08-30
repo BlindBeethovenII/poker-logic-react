@@ -58,6 +58,7 @@ import {
   HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS,
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_THREE_OF_A_KIND,
+  HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -256,7 +257,7 @@ export const getFourOfAKindSuitHints = (cardsStillAvailable, solutionHandsIndex,
 // --------------------------- //
 
 // create HINT_FOUR_OF_A_KIND_NUMBERS
-export const createHintFourOfAKindNumber = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+export const createHintFourOfAKindNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
   hintType: HINT_FOUR_OF_A_KIND_NUMBERS,
   numbers,
   solutionOptionsIndex,
@@ -266,7 +267,7 @@ export const createHintFourOfAKindNumber = (numbers, solutionOptionsIndex, handO
 
 // if there are 4 cards of a number in cardsStillAvailable or already placed then we can create a hint
 // note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
-export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+export const getFourOfAKindNumbersHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const numbersAvailable = [];
@@ -317,7 +318,7 @@ export const getFourOfAKindNumberHints = (cardsStillAvailable, solutionHandsInde
     // if more than this number is allowed, then create the hint to set this card to this number - to remove the others
     // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
     if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
-      hints.push(createHintFourOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+      hints.push(createHintFourOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
 
@@ -545,7 +546,7 @@ export const getAllOfNumberPlacedHints = (cardsAvailable, solutionOptions) => {
 // --------------------------------------- //
 
 // create HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS
-export const createHintFullHouseThreeOfAKindNumber = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+export const createHintFullHouseThreeOfAKindNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
   hintType: HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS,
   numbers,
   solutionOptionsIndex,
@@ -555,7 +556,7 @@ export const createHintFullHouseThreeOfAKindNumber = (numbers, solutionOptionsIn
 
 // if there are 3 cards of a number in cardsStillAvailable or already placed then we can create a hint for the first 3 hands
 // note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
-export const getFullHouseThreeOfAKindNumberHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+export const getFullHouseThreeOfAKindNumbersHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const numbersAvailable = [];
@@ -602,7 +603,73 @@ export const getFullHouseThreeOfAKindNumberHints = (cardsStillAvailable, solutio
     // if more than this number is allowed in this cardOptions, then create the hint to set this card to this number
     // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
     if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
-      hints.push(createHintFullHouseThreeOfAKindNumber(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+      hints.push(createHintFullHouseThreeOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
+
+  return hints;
+};
+
+// --------------------------------- //
+// HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS //
+// --------------------------------- //
+
+// create HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS
+export const createHintPairOfAFullHouseNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if there are 2 cards of a number in cardsStillAvailable or already placed in position then we can create a hint for the pair hands of a full house
+// note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
+export const getPairOfAFullHouseNumbersHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // because we are working from a valid solution
+  // if either card in the pair has a single number set, then it must be the number for the other card in the pair
+  if (countNumbersInCardOptions(handOptions[3]) === 1) {
+    // fourth card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[3]));
+  } else if (countNumbersInCardOptions(handOptions[4]) === 1) {
+    // fifth card has a single number set
+    numbersAvailable.push(getFirstNumberSet(handOptions[4]));
+  }
+
+  // if we didn't find one that way, then look for the numbers with at least 2 cards still available
+  if (!numbersAvailable.length) {
+    NUMBERS.forEach((number) => {
+      // count the number of cards of this number still available
+      const numberAvailableCount = countNumberAvailable(number, cardsStillAvailable);
+
+      // we need to consider if this number has been placed anywhere yet, as a placed number doesn't remove a corresponding card from cardsStillAvailable
+      const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+      // note that this numberPlacedCount will not include any in pair of the full house, as the above will have found those
+      // so if we need at least 2 available after numberPlacedCount has been removed
+      if (numberAvailableCount - numberPlacedCount >= 2) {
+        numbersAvailable.push(number);
+      }
+    });
+  }
+
+  // if we have at least one number which has 2 cards available, then we can create a hint - one for each of the pair the full house at this solutionHandsIndex
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
+  // we don't create a hint if the number of numbers currently available in that numberOption is the same as our numbers
+  // note this relies on solutionOptions being valid here - that is, those numbers are the same numbers as we've found - as we are working with a valid solutionOptions
+
+  // work through the two cards of the pair in this handOptions
+  [3, 4].forEach((handOptionsIndex) => {
+    // if more than this number is allowed in this cardOptions, then create the hint to set this card to this number
+    // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
+    if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
+      hints.push(createHintPairOfAFullHouseNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
 
@@ -689,7 +756,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return fourOfAKindSuitHints;
       }
 
-      const fourOfAKindNumberHints = getFourOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      const fourOfAKindNumberHints = getFourOfAKindNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (fourOfAKindNumberHints.length) {
         return fourOfAKindNumberHints;
       }
@@ -697,9 +764,17 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal common aspects of full house and three of a kind
     if (clueType === CLUE_HAND_OF_TYPE && (handType === HAND_TYPE_FULL_HOUSE || handType === HAND_TYPE_THREE_OF_A_KIND)) {
-      const fullHouseThreeOfAKindNumberHints = getFullHouseThreeOfAKindNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      const fullHouseThreeOfAKindNumberHints = getFullHouseThreeOfAKindNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (fullHouseThreeOfAKindNumberHints.length) {
         return fullHouseThreeOfAKindNumberHints;
+      }
+    }
+
+    // deal full house
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE) {
+      const pairOfAFullHouseNumbersHints = getPairOfAFullHouseNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (pairOfAFullHouseNumbersHints.length) {
+        return pairOfAFullHouseNumbersHints;
       }
     }
   }
@@ -764,7 +839,7 @@ const applyFourOfAKindSuitHint = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
+const applyFourOfAKindNumbersHint = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -783,7 +858,7 @@ const applyFourOfAKindNumberHint = (solutionOptions, hint) => {
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`TODO applying HINT_FOUR_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   let newSolutionOptions = solutionOptions;
 
@@ -864,7 +939,7 @@ const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-const applyFullHouseThreeOfAKindNumberHints = (solutionOptions, hint) => {
+const applyFullHouseThreeOfAKindNumbersHints = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -883,7 +958,43 @@ const applyFullHouseThreeOfAKindNumberHints = (solutionOptions, hint) => {
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`TODO applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // given solution functions we have, we will toggle (to off) any other number that is currently set
+  NUMBERS.forEach((number) => {
+    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
+      // this number is not part of the solution, so toggle off
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
+};
+
+const applyPairOfAFullHouseNumbersHints = (solutionOptions, hint) => {
+  const {
+    numbers,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // we do something different if numbers is to a single number, as opposed to multiple numbers
+  if (numbers.length === 1) {
+    const number = numbers[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+    // we know this must be the number
+    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   let newSolutionOptions = solutionOptions;
 
@@ -917,7 +1028,7 @@ export const applyHint = (solutionOptions, hint) => {
       return applyFourOfAKindSuitHint(solutionOptions, hint);
 
     case HINT_FOUR_OF_A_KIND_NUMBERS:
-      return applyFourOfAKindNumberHint(solutionOptions, hint);
+      return applyFourOfAKindNumbersHint(solutionOptions, hint);
 
     case HINT_PLACED_CARD_REMOVE_SUIT:
       return applyPlacedCardRemoveSuitHint(solutionOptions, hint);
@@ -935,7 +1046,10 @@ export const applyHint = (solutionOptions, hint) => {
       return applyAllOfNumberPlacedHint(solutionOptions, hint);
 
     case HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS:
-      return applyFullHouseThreeOfAKindNumberHints(solutionOptions, hint);
+      return applyFullHouseThreeOfAKindNumbersHints(solutionOptions, hint);
+
+    case HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS:
+      return applyPairOfAFullHouseNumbersHints(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
