@@ -27,16 +27,10 @@ import {
   HAND_TYPE_PAIR,
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_TWO_PAIR,
+  HAND_TYPE_THREE_OF_A_KIND,
 } from './constants';
 
 export const solutionHands1 = [
-  [
-    createCard(SUIT_DIAMONDS, NUMBER_10),
-    createCard(SUIT_DIAMONDS, NUMBER_9),
-    createCard(SUIT_DIAMONDS, NUMBER_8),
-    createCard(SUIT_DIAMONDS, NUMBER_7),
-    createCard(SUIT_DIAMONDS, NUMBER_6),
-  ],
   [
     createCard(SUIT_SPADES, NUMBER_Q),
     createCard(SUIT_HEARTS, NUMBER_Q),
@@ -53,10 +47,17 @@ export const solutionHands1 = [
   ],
   [
     createCard(SUIT_SPADES, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
     createCard(SUIT_CLUBS, NUMBER_8),
     createCard(SUIT_CLUBS, NUMBER_7),
     createCard(SUIT_SPADES, NUMBER_6),
-    createCard(SUIT_HEARTS, NUMBER_5),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_10),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_7),
   ],
 ];
 
@@ -66,9 +67,9 @@ export const solution1 = {
 };
 
 export const clues1 = [
-  createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0), // note: this clue can be deduced
-  createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1),
-  createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2),
+  createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
+  createClueHandOfType(HAND_TYPE_FULL_HOUSE, 1),
+  createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 2),
   createClueHandOfType(HAND_TYPE_TWO_PAIR, 3),
 ];
 

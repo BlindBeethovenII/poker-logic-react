@@ -796,9 +796,9 @@ export const createHintPairOfAFullHouseNumbers = (numbers, solutionOptionsIndex,
   clue,
 });
 
-// if there are 2 cards of a number in cardsStillAvailable or already placed in position then we can create a hint for the pair hands of a full house
+// if there are 2 cards of a number in cardsAvailable or already placed in position then we can create a hint for the pair hands of a full house
 // note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
-export const getPairOfAFullHouseNumbersHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+export const getPairOfAFullHouseNumbersHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const numbersAvailable = [];
@@ -819,12 +819,12 @@ export const getPairOfAFullHouseNumbersHints = (cardsStillAvailable, solutionHan
   if (!numbersAvailable.length) {
     NUMBERS.forEach((number) => {
       // count the number of cards of this number still available
-      const numberAvailableCount = countNumberAvailable(number, cardsStillAvailable);
+      const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
 
       // we need to consider if this number has been placed anywhere yet, as a placed number doesn't remove a corresponding card from cardsStillAvailable
+      // note: numberPlacedCount will not include any in pair of the full house, as the above will have found those
       const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
 
-      // note that this numberPlacedCount will not include any in pair of the full house, as the above will have found those
       // so if we need at least 2 available after numberPlacedCount has been removed
       if (numberAvailableCount - numberPlacedCount >= 2) {
         numbersAvailable.push(number);
@@ -950,7 +950,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal full house
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE) {
-      const pairOfAFullHouseNumbersHints = getPairOfAFullHouseNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      const pairOfAFullHouseNumbersHints = getPairOfAFullHouseNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (pairOfAFullHouseNumbersHints.length) {
         return pairOfAFullHouseNumbersHints;
       }
