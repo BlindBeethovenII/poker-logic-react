@@ -313,14 +313,11 @@ export const getFourOfAKindNumbersHints = (cardsStillAvailable, solutionHandsInd
 
   // if we have at least one number which has 4 cards available, then we can create a hint - one for each of the first 4 cards of this solutionHandsIndex
   // note that the solutionHandsIndex here is the solutionOptionsIndex
-  // we don't create a hint if the number of numbers currently available in that numberOption is the same as our numbers
-  // note this relies on solutionOptions being valid here - that is, those numbers are the same numbers as we've found - as we are working with a valid solutionOptions
-
   // work through the first four cards in this handOptions
   [0, 1, 2, 3].forEach((handOptionsIndex) => {
-    // if more than this number is allowed, then create the hint to set this card to this number - to remove the others
-    // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
-    if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
+    // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
+    const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
+    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintFourOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
