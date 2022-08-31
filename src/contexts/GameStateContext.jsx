@@ -15,10 +15,9 @@ import {
   getCardsAvailable,
 } from '../shared/solution-functions';
 
-import {
-  getHints,
-  applyHint,
-} from '../shared/hint-functions';
+import { getHints } from '../shared/getHints';
+
+import { applyHint } from '../shared/applyHint';
 
 import {
   createCluesForSolutionHands,

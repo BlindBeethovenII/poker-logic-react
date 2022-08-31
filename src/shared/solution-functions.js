@@ -423,7 +423,7 @@ const numberInSuitCardsAvailable = (number, suitCardsAvailable) => {
   return false;
 };
 
-// get the suits of the given number in the given cardsAvailable
+// get the suits of the given number in the given cardsAvailable - in order
 export const getSuitsOfNumberInAvailable = (number, cardsAvailable) => {
   const result = [];
   if (numberInSuitCardsAvailable(number, cardsAvailable[0])) {

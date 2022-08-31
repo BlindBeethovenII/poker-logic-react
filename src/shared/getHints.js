@@ -1,9 +1,8 @@
-// useful hint functions
+// ****************************** //
+// getHints and support functions //
+// ****************************** //
 
 import {
-  toggleNumberOptionInSolutionOptions,
-  toggleSuitOptionInSolutionOptions,
-  setSuitOptionOnlyInSolutionOptions,
   getNumbersNotUsedInSolution,
   convertSuitToSuitOptionsIndex,
   getCardsStillAvailable,
@@ -14,7 +13,6 @@ import {
   getSuitOptionsValueInCardOptions,
   getNumberOptionsValueInCardOptions,
   countNumberAvailable,
-  setNumberOptionOnlyInSolutionOptions,
   getFirstSuitSet,
   getFirstNumberSet,
   isCardOptionsAPlacedCard,
@@ -33,8 +31,6 @@ import {
   createCard,
   sortSuit,
 } from './card-functions';
-
-import { clueToString } from './clue-functions';
 
 import {
   SUITS,
@@ -62,8 +58,6 @@ import {
   HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
   HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
 } from './constants';
-
-import logIfDevEnv from './logIfDevEnv';
 
 // -------------------- //
 // HINT_NUMBER_NOT_USED //
@@ -617,9 +611,9 @@ export const getFullHouseThreeOfAKindNumbersHints = (cardsStillAvailable, soluti
 // --------------------------------------- //
 
 // create HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS
-export const createHintFullHouseThreeOfAKindSuits = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+export const createHintFullHouseThreeOfAKindSuits = (suits, solutionOptionsIndex, handOptionsIndex, clue) => ({
   hintType: HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
-  numbers,
+  suits,
   solutionOptionsIndex,
   handOptionsIndex,
   clue,
@@ -628,7 +622,7 @@ export const createHintFullHouseThreeOfAKindSuits = (numbers, solutionOptionsInd
 // if there are 3 cards of a number in cardsStillAvailable or already placed then we can create a hint for the first 3 hands
 // note that the hint includes an array of such suits - the apply hint will set it to the single suit if this array is of length 1
 // note we rely on HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS already being applied - so if only a single number is possible it will be the only number by now
-export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOptions /* , clue */) => {
+export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const handOptions = solutionOptions[solutionHandsIndex];
@@ -649,9 +643,28 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
 
   if (number !== undefined) {
     // we found the number, so we can just consider the possible suits for the cards of this number
-    const suits = getSuitsOfNumberInAvailable(cardsAvailable);
-    // TODO
-    hints.push(suits);
+    const suits = getSuitsOfNumberInAvailable(number, cardsAvailable);
+
+    // there should be at least 3
+    if (suits.length < 3) {
+      console.error(`getFullHouseThreeOfAKindSuitsHints needs at least 3 suits for number ${number} but got ${suits}`);
+      return [];
+    }
+
+    // if there are three, then we know they go in this order in the first 3 hands
+    if (suits.length === 3) {
+      // work through the first 3 cards in this handOptions
+      [0, 1, 2].forEach((handOptionsIndex) => {
+        // because we are working from a valid option, if only one suit is an option - it must be the right one
+        // so only need a clue if cardOptions still allows more than one suit
+        if (countSuitsInCardOptions(handOptions[handOptionsIndex]) > 1) {
+          hints.push(createHintFullHouseThreeOfAKindSuits([suits[handOptionsIndex]], solutionHandsIndex, handOptionsIndex, clue));
+        }
+      });
+
+      // these are the hints - of course they might be empty if the first three suits are already set - which means this hint will never be applicable
+      return hints;
+    }
   }
 
   // TODO consider the case where there are multiple numbers still possible
@@ -848,7 +861,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return fullHouseThreeOfAKindNumbersHints;
       }
 
-      const fullHouseThreeOfAKindSuitsHints = getFullHouseThreeOfAKindNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      const fullHouseThreeOfAKindSuitsHints = getFullHouseThreeOfAKindSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (fullHouseThreeOfAKindSuitsHints.length) {
         return fullHouseThreeOfAKindSuitsHints;
       }
@@ -865,278 +878,4 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
   // no other hints yet
   return [];
-};
-
-// ---------- //
-// apply hint //
-// ---------- //
-
-const applyNumberNotUsedHint = (solutionOptions, hint) => {
-  const {
-    number,
-    solutionOptionsIndex,
-    handOptionsIndex,
-  } = hint;
-
-  logIfDevEnv(`applying HINT_NUMBER_NOT_USED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-
-  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
-  const {
-    suit,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    clue,
-  } = hint;
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applySameNSuitCardsInSolutionOptionsHint = (solutionOptions, hint) => {
-  const {
-    suit,
-    solutionOptionsIndex,
-    handOptionsIndex,
-  } = hint;
-
-  logIfDevEnv(`applying HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-
-  return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyFourOfAKindSuitHint = (solutionOptions, hint) => {
-  const {
-    suit,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    clue,
-  } = hint;
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-  return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyFourOfAKindNumbersHint = (solutionOptions, hint) => {
-  const {
-    numbers,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    clue,
-  } = hint;
-
-  // we do something different if numbers is to a single number, as opposed to multiple numbers
-  if (numbers.length === 1) {
-    const number = numbers[0];
-    // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-    // we know this must be the number
-    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-  }
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_FOUR_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-  let newSolutionOptions = solutionOptions;
-
-  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
-
-  // given solution functions we have, we will toggle (to off) any other number that is currently set
-  NUMBERS.forEach((number) => {
-    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
-      // this number is not part of the solution, so toggle off
-      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
-    }
-  });
-
-  return newSolutionOptions;
-};
-
-const applyPlacedCardRemoveSuitHint = (solutionOptions, hint) => {
-  const {
-    suit,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    placedCard,
-  } = hint;
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_PLACED_CARD_REMOVE_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} because placed card ${placedCard.id}`);
-
-  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyPlacedCardRemoveNumberHint = (solutionOptions, hint) => {
-  const {
-    number,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    placedCard,
-  } = hint;
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_PLACED_CARD_REMOVE_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} because placed card ${placedCard.id}`);
-
-  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyNumberUsedUpHint = (solutionOptions, hint) => {
-  const {
-    number,
-    solutionOptionsIndex,
-    handOptionsIndex,
-  } = hint;
-
-  logIfDevEnv(`applying HINT_NUMBER_USED_UP for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-
-  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyAllOfSuitPlacedHint = (solutionOptions, hint) => {
-  const {
-    suit,
-    solutionOptionsIndex,
-    handOptionsIndex,
-  } = hint;
-
-  logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-
-  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
-  const {
-    number,
-    solutionOptionsIndex,
-    handOptionsIndex,
-  } = hint;
-
-  logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
-
-  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-};
-
-const applyFullHouseThreeOfAKindNumbersHints = (solutionOptions, hint) => {
-  const {
-    numbers,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    clue,
-  } = hint;
-
-  // we do something different if numbers is to a single number, as opposed to multiple numbers
-  if (numbers.length === 1) {
-    const number = numbers[0];
-    // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-    // we know this must be the number
-    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-  }
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-  let newSolutionOptions = solutionOptions;
-
-  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
-
-  // given solution functions we have, we will toggle (to off) any other number that is currently set
-  NUMBERS.forEach((number) => {
-    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
-      // this number is not part of the solution, so toggle off
-      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
-    }
-  });
-
-  return newSolutionOptions;
-};
-
-const applyPairOfAFullHouseNumbersHints = (solutionOptions, hint) => {
-  const {
-    numbers,
-    solutionOptionsIndex,
-    handOptionsIndex,
-    clue,
-  } = hint;
-
-  // we do something different if numbers is to a single number, as opposed to multiple numbers
-  if (numbers.length === 1) {
-    const number = numbers[0];
-    // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-    // we know this must be the number
-    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-  }
-
-  // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
-
-  let newSolutionOptions = solutionOptions;
-
-  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
-
-  // given solution functions we have, we will toggle (to off) any other number that is currently set
-  NUMBERS.forEach((number) => {
-    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
-      // this number is not part of the solution, so toggle off
-      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
-    }
-  });
-
-  return newSolutionOptions;
-};
-
-// apply the given hint - this assumes it is a valid hint for the given solutionOptions
-export const applyHint = (solutionOptions, hint) => {
-  const { hintType } = hint;
-  switch (hintType) {
-    case HINT_NUMBER_NOT_USED:
-      return applyNumberNotUsedHint(solutionOptions, hint);
-
-    case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
-      return applyNoStraightFlushInSuitHint(solutionOptions, hint);
-
-    case HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS:
-      return applySameNSuitCardsInSolutionOptionsHint(solutionOptions, hint);
-
-    case HINT_FOUR_OF_A_KIND_SUIT:
-      return applyFourOfAKindSuitHint(solutionOptions, hint);
-
-    case HINT_FOUR_OF_A_KIND_NUMBERS:
-      return applyFourOfAKindNumbersHint(solutionOptions, hint);
-
-    case HINT_PLACED_CARD_REMOVE_SUIT:
-      return applyPlacedCardRemoveSuitHint(solutionOptions, hint);
-
-    case HINT_PLACED_CARD_REMOVE_NUMBER:
-      return applyPlacedCardRemoveNumberHint(solutionOptions, hint);
-
-    case HINT_NUMBER_USED_UP:
-      return applyNumberUsedUpHint(solutionOptions, hint);
-
-    case HINT_ALL_OF_SUIT_PLACED:
-      return applyAllOfSuitPlacedHint(solutionOptions, hint);
-
-    case HINT_ALL_OF_NUMBER_PLACED:
-      return applyAllOfNumberPlacedHint(solutionOptions, hint);
-
-    case HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS:
-      return applyFullHouseThreeOfAKindNumbersHints(solutionOptions, hint);
-
-    case HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS:
-      return applyPairOfAFullHouseNumbersHints(solutionOptions, hint);
-
-    default:
-      console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
-      return solutionOptions;
-  }
 };

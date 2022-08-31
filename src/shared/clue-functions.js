@@ -54,7 +54,7 @@ export const clueToString = (clue) => {
   if (clueType === CLUE_HAND_OF_TYPE) {
     const { handType, solutionHandsIndex, deduced } = clue;
     const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
-    return `Position ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
+    return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
