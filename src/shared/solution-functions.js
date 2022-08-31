@@ -3,6 +3,10 @@
 import { createCard, cardsEqual } from './card-functions';
 
 import {
+  INDEX_SUIT_CLUBS,
+  INDEX_SUIT_DIAMONDS,
+  INDEX_SUIT_HEARTS,
+  INDEX_SUIT_SPADES,
   NUMBERS,
   NUMBERS_SORTED,
   SUITS,
@@ -208,19 +212,24 @@ export const resetNumberOptionsInSolutionOptions = (solutionOptionsIndex, handOp
 
 // convert suit to suitOptionsIndex
 export const convertSuitToSuitOptionsIndex = (suit) => {
-  let result = -1;
   if (suit === SUIT_SPADES) {
-    result = 0;
-  } else if (suit === SUIT_HEARTS) {
-    result = 1;
-  } else if (suit === SUIT_DIAMONDS) {
-    result = 2;
-  } else if (suit === SUIT_CLUBS) {
-    result = 3;
-  } else {
-    console.error(`convertSuitToSuitOptionsIndex cannot cope with suit ${suit}`);
+    return INDEX_SUIT_SPADES;
   }
-  return result;
+
+  if (suit === SUIT_HEARTS) {
+    return INDEX_SUIT_HEARTS;
+  }
+
+  if (suit === SUIT_DIAMONDS) {
+    return INDEX_SUIT_DIAMONDS;
+  }
+
+  if (suit === SUIT_CLUBS) {
+    return INDEX_SUIT_CLUBS;
+  }
+
+  console.error(`convertSuitToSuitOptionsIndex cannot cope with suit ${suit}`);
+  return -1;
 };
 
 // returns an array of numbers not used, not including the missing number
@@ -289,10 +298,10 @@ const countBooleansReducer = (accumulator, currentValue) => accumulator + (curre
 
 export const countTrueBooleansInArray = (boolArray) => boolArray.reduce(countBooleansReducer, 0);
 
-// count suits available in the given cardOptions
+// count suits still set in the given cardOptions
 export const countSuitsInCardOptions = (cardOptions) => countTrueBooleansInArray(cardOptions.suitOptions);
 
-// count numbers available in the given cardOptions
+// count numbers still set in the given cardOptions
 export const countNumbersInCardOptions = (cardOptions) => countTrueBooleansInArray(cardOptions.numberOptions);
 
 // helper function
@@ -329,6 +338,12 @@ export const isCardPlacedInSolutionOptions = (card, solutionOptions) => {
     return true;
   }));
   return result;
+};
+
+// return true if given suit bool is true in the cardOptions suitOptions
+export const isSuitTrueInCardOptions = (suit, cardOptions) => {
+  const { suitOptions } = cardOptions;
+  return suitOptions[convertSuitToSuitOptionsIndex(suit)];
 };
 
 // return true if given number bool is true in the cardOptions numberOptions

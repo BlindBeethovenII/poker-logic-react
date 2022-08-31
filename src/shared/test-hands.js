@@ -56,7 +56,7 @@ export const solutionHands1 = [
     createCard(SUIT_CLUBS, NUMBER_8),
     createCard(SUIT_CLUBS, NUMBER_7),
     createCard(SUIT_SPADES, NUMBER_6),
-    createCard(SUIT_CLUBS, NUMBER_6),
+    createCard(SUIT_CLUBS, NUMBER_5),
   ],
 ];
 

@@ -8,17 +8,19 @@ import {
   setSuitOptionOnlyInSolutionOptions,
   convertSuitToSuitOptionsIndex,
   setNumberOptionOnlyInSolutionOptions,
+  isSuitTrueInCardOptions,
   isNumberTrueInCardOptions,
 } from './solution-functions';
 
 import { clueToString } from './clue-functions';
 
 import {
+  SUITS,
+  NUMBERS,
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
   HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
   HINT_FOUR_OF_A_KIND_NUMBERS,
-  NUMBERS,
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
   HINT_PLACED_CARD_REMOVE_NUMBER,
@@ -239,19 +241,19 @@ export const applyFullHouseThreeOfAKindSuitsHints = (solutionOptions, hint) => {
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`TODO applying HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
-  const newSolutionOptions = solutionOptions;
+  let newSolutionOptions = solutionOptions;
 
-  // const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
 
-  // // given solution functions we have, we will toggle (to off) any other number that is currently set
-  // NUMBERS.forEach((number) => {
-  //   if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
-  //     // this number is not part of the solution, so toggle off
-  //     newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
-  //   }
-  // });
+  // toggle (to off) any other suit that is currently set
+  SUITS.forEach((suit) => {
+    if (!suits.includes(suit) && isSuitTrueInCardOptions(suit, cardOptions)) {
+      // this suit is not part of the solution, so toggle off
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
 
   return newSolutionOptions;
 };
