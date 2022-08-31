@@ -412,6 +412,35 @@ export const countNumberAvailable = (number, cardsAvailable) => countNumberAvail
   + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[2])
   + countNumberAvailableInSuitCardsAvailable(number, cardsAvailable[3]);
 
+// return true if a card of this number is in the given array of suit cards
+const numberInSuitCardsAvailable = (number, suitCardsAvailable) => {
+  for (let i = 0; i < suitCardsAvailable.length; i += 1) {
+    if (suitCardsAvailable[i].number === number) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// get the suits of the given number in the given cardsAvailable
+export const getSuitsOfNumberInAvailable = (number, cardsAvailable) => {
+  const result = [];
+  if (numberInSuitCardsAvailable(number, cardsAvailable[0])) {
+    result.push(SUIT_SPADES);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[1])) {
+    result.push(SUIT_HEARTS);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[2])) {
+    result.push(SUIT_DIAMONDS);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[3])) {
+    result.push(SUIT_CLUBS);
+  }
+  return result;
+};
+
 // get the value of a specific suit options boolean in the given solution options
 export const getSuitOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, suitOptionsIndex) =>
   solutionOptions[solutionOptionsIndex][handOptionsIndex].suitOptions[suitOptionsIndex];

@@ -25,6 +25,7 @@ import {
   isNumberPlaced,
   countSuitPlacedInSolutionOptions,
   countNumberPlacedInSolutionOptions,
+  getSuitsOfNumberInAvailable,
 } from './solution-functions';
 
 import {
@@ -59,6 +60,7 @@ import {
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_THREE_OF_A_KIND,
   HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
+  HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -610,6 +612,83 @@ export const getFullHouseThreeOfAKindNumbersHints = (cardsStillAvailable, soluti
   return hints;
 };
 
+// --------------------------------------- //
+// HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS //
+// --------------------------------------- //
+
+// create HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS
+export const createHintFullHouseThreeOfAKindSuits = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if there are 3 cards of a number in cardsStillAvailable or already placed then we can create a hint for the first 3 hands
+// note that the hint includes an array of such suits - the apply hint will set it to the single suit if this array is of length 1
+// note we rely on HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS already being applied - so if only a single number is possible it will be the only number by now
+export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOptions /* , clue */) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // because we are working from a valid solution, and as HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS has been applied (or not applicable because the user has done it)
+  // if any of first 3 cards has a single number set, then it is the number for the first 3 positions (so if multiple they will be the same - we just consider the first)
+  let number;
+  if (countNumbersInCardOptions(handOptions[0]) === 1) {
+    // first card has a single number set
+    number = getFirstNumberSet(handOptions[0]);
+  } else if (countNumbersInCardOptions(handOptions[1]) === 1) {
+    // second card has a single number set
+    number = getFirstNumberSet(handOptions[1]);
+  } else if (countNumbersInCardOptions(handOptions[2]) === 1) {
+    // third card has a single number set
+    number = getFirstNumberSet(handOptions[2]);
+  }
+
+  if (number !== undefined) {
+    // we found the number, so we can just consider the possible suits for the cards of this number
+    const suits = getSuitsOfNumberInAvailable(cardsAvailable);
+    // TODO
+    hints.push(suits);
+  }
+
+  // TODO consider the case where there are multiple numbers still possible
+  // // if we didn't find one that way, then look for the numbers with at least 3 cards still available
+  // if (!numbersAvailable.length) {
+  //   NUMBERS.forEach((number) => {
+  //     // count the number of cards of this number still available
+  //     const numberAvailableCount = countNumberAvailable(number, cardsStillAvailable);
+
+  //     // we need to consider if this number has been placed anywhere yet, as a placed number doesn't remove a corresponding card from cardsStillAvailable
+  //     const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+  //     // note that this numberPlacedCount will not include any in the first three positions of this hand, as the above will have found those
+  //     // so if we need at least 3 available after numberPlacedCount has been removed
+  //     if (numberAvailableCount - numberPlacedCount >= 3) {
+  //       numbersAvailable.push(number);
+  //     }
+  //   });
+  // }
+
+  // if we have at least one number which has 3 cards available, then we can create a hint - one for each of the first 3 cards of this solutionHandsIndex
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
+  // we don't create a hint if the number of numbers currently available in that numberOption is the same as our numbers
+  // note this relies on solutionOptions being valid here - that is, those numbers are the same numbers as we've found - as we are working with a valid solutionOptions
+
+  // work through the first 3 cards in this handOptions
+  // [0, 1, 2].forEach((handOptionsIndex) => {
+  //   // if more than this number is allowed in this cardOptions, then create the hint to set this card to this number
+  //   // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
+  //   if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
+  //     hints.push(createHintFullHouseThreeOfAKindSuits(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+  //   }
+  // });
+
+  return hints;
+};
+
 // --------------------------------- //
 // HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS //
 // --------------------------------- //
@@ -764,9 +843,14 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal common aspects of full house and three of a kind
     if (clueType === CLUE_HAND_OF_TYPE && (handType === HAND_TYPE_FULL_HOUSE || handType === HAND_TYPE_THREE_OF_A_KIND)) {
-      const fullHouseThreeOfAKindNumberHints = getFullHouseThreeOfAKindNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
-      if (fullHouseThreeOfAKindNumberHints.length) {
-        return fullHouseThreeOfAKindNumberHints;
+      const fullHouseThreeOfAKindNumbersHints = getFullHouseThreeOfAKindNumbersHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (fullHouseThreeOfAKindNumbersHints.length) {
+        return fullHouseThreeOfAKindNumbersHints;
+      }
+
+      const fullHouseThreeOfAKindSuitsHints = getFullHouseThreeOfAKindNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (fullHouseThreeOfAKindSuitsHints.length) {
+        return fullHouseThreeOfAKindSuitsHints;
       }
     }
 
