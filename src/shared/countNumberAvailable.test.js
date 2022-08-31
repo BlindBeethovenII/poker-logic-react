@@ -9,7 +9,7 @@ describe('countNumberAvailable', () => {
     expect(countNumberAvailable(NUMBER_Q, getCardsAvailable(solutionHands1))).toEqual(4);
   });
 
-  it('will return 3 for Sixes for hand1 cards', () => {
-    expect(countNumberAvailable(NUMBER_6, getCardsAvailable(solutionHands1))).toEqual(3);
+  it('will return 1 for Sixes for hand1 cards', () => {
+    expect(countNumberAvailable(NUMBER_6, getCardsAvailable(solutionHands1))).toEqual(1);
   });
 });

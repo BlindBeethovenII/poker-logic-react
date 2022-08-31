@@ -1,6 +1,6 @@
 // useful solution functions
 
-import { createCard, cardsEqual } from './card-functions';
+import { createCard } from './card-functions';
 
 import {
   INDEX_SUIT_CLUBS,
@@ -556,7 +556,7 @@ export const getFirstNumberSet = (cardOptions) => {
 export const isCardOptionsAPlacedCard = (cardOptions) => (countSuitsInCardOptions(cardOptions) === 1 && countNumbersInCardOptions(cardOptions) === 1);
 
 // return the cards that are placed in the given handOptions
-const getPlacedCardsInHandOptions = (handOptions) => {
+export const getPlacedCardsInHandOptions = (handOptions) => {
   const result = [];
 
   handOptions.forEach((cardOptions) => {
@@ -569,36 +569,10 @@ const getPlacedCardsInHandOptions = (handOptions) => {
 };
 
 // return true if the solutionOptions are still valid
-// that is, can the solutionHands still be placed in it
-// and are the placed cards in the corresponding solutionHand
+// that is, can the solutionHands still be placed in their corresponding cardOptions
+// and are the placed cards those of the corresponding solutionHand
+// actually - now, this is equivalent to checking each card of the solution can still be placed (which includes: is placed) in its corresponding cardOptions
 export const solutionOptionsValid = (solutionOptions, solutionHands) => {
-  // first check each placed cards are allowed in the corresponding solutionHand
-  for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
-    const solutionHand = solutionHands[solutionHandsIndex];
-    const handOptions = solutionOptions[solutionHandsIndex];
-
-    // get the placed cards in this handOptions
-    const placedCards = getPlacedCardsInHandOptions(handOptions);
-    for (let i = 0; i < placedCards.length; i += 1) {
-      const placedCard = placedCards[i];
-
-      // look for this card
-      let found = false;
-      for (let j = 0; j < solutionHand.length && !found; j += 1) {
-        const solutionHandCard = solutionHand[j];
-        if (cardsEqual(placedCard, solutionHandCard)) {
-          found = true;
-        }
-      }
-
-      // did we find it
-      if (!found) {
-        console.error(`solutionOptionsValid: placed card ${placedCard.id} is not a card in solutionHandsIndex ${solutionHandsIndex}`);
-        return false;
-      }
-    }
-  }
-
   // now check that card of the solutionHand can still be placed somewhere
   for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
@@ -607,56 +581,26 @@ export const solutionOptionsValid = (solutionOptions, solutionHands) => {
     // work through each card of the solutionHand
     for (let solutionHandIndex = 0; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
       const { id, suit, number } = solutionHand[solutionHandIndex];
-      const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
 
-      let found = false;
+      // we now look at the same position in the handOptions
+      const cardOptions = handOptions[solutionHandIndex];
 
-      // look through the handOptions to see if it can still be placed in at least one
-      for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length && !found; handOptionsIndex += 1) {
-        const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
-        if (suitOptions[suitOptionsIndex] && numberOptions[number - 1]) {
-          // yes it can be placed here
-          found = true;
-        }
+      // check this solution card's suit is still possible
+      if (!isSuitTrueInCardOptions(suit, cardOptions)) {
+        // eslint-disable-next-line max-len
+        console.error(`solutionOptionsValid: solutionHand card ${id}'s suit cannot be placed in cardOptions at solutionOptionsIndex ${solutionHandsIndex} handOptionsIndex ${solutionHandIndex}`);
+        return false;
       }
 
-      // did we find a place for this solutionHand card?
-      if (!found) {
-        console.error(`solutionOptionsValid: solutionHand card ${id} cannot be placed any where in solutionOptionsIndex ${solutionHandsIndex}`);
+      // check this solution card's number is still possible
+      if (!isNumberTrueInCardOptions(number, cardOptions)) {
+        // eslint-disable-next-line max-len
+        console.error(`solutionOptionsValid: solutionHand card ${id}'s number cannot be placed in cardOptions at solutionOptionsIndex ${solutionHandsIndex} handOptionsIndex ${solutionHandIndex}`);
         return false;
       }
     }
   }
 
-  // now check that each handOption allows at least one of the solutionHand cards in it
-  for (let solutionHandsIndex = 0; solutionHandsIndex < 4; solutionHandsIndex += 1) {
-    const solutionHand = solutionHands[solutionHandsIndex];
-    const handOptions = solutionOptions[solutionHandsIndex];
-
-    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-      const { suitOptions, numberOptions } = handOptions[handOptionsIndex];
-
-      let found = false;
-
-      for (let solutionHandIndex = 0; solutionHandIndex < solutionHand.length && !found; solutionHandIndex += 1) {
-        const { suit, number } = solutionHand[solutionHandIndex];
-        const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-        if (suitOptions[suitOptionsIndex] && numberOptions[number - 1]) {
-          // yes it can be placed here
-          found = true;
-        }
-      }
-
-      // did we find a solutionHand card that can fit in here?
-      if (!found) {
-        console.error(`solutionOptionsValid: solutionOptionsIndex ${solutionHandsIndex} handOptionsIndex ${handOptionsIndex} does not allow any of the solutionHand cards`);
-        return false;
-      }
-    }
-  }
-
-  // TODO - Is there another case to worry about - I can't find a good example and I'm half sure the above checks cover that case???
-
-  // everything is okay
+  // everthing is good
   return true;
 };

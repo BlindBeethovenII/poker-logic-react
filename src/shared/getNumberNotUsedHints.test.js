@@ -1,7 +1,7 @@
 import {
   getNumberNotUsedHints,
   createHintNumberNotUsed,
-} from './hint-functions';
+} from './getHints';
 
 import {
   createSolutionOptions,

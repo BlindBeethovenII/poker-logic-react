@@ -7,8 +7,8 @@ import {
 import { solutionHands1 } from './test-hands';
 
 describe('getSuitsOfNumberInAvailable', () => {
-  it('will return an array of suits for a number with 2 entries', () => {
-    expect(getSuitsOfNumberInAvailable(NUMBER_10, getCardsAvailable(solutionHands1))).toEqual([SUIT_HEARTS, SUIT_DIAMONDS]);
+  it('will return an array of suits for a number with 3 entries', () => {
+    expect(getSuitsOfNumberInAvailable(NUMBER_10, getCardsAvailable(solutionHands1))).toEqual([SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS]);
   });
 
   it('will return an array of suits for a number with 4 entries', () => {
