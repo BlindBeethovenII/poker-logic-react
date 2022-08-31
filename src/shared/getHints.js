@@ -25,6 +25,8 @@ import {
   countNumberPlacedInSolutionOptions,
   getSuitsOfNumberInAvailable,
   isCardPlacedInCardOptions,
+  getNumbersFromCardOptions,
+  allNumbersFromFirstInSecond,
 } from './solution-functions';
 
 import {
@@ -596,14 +598,11 @@ export const getFullHouseThreeOfAKindNumbersHints = (cardsAvailable, solutionHan
 
   // if we have at least one number which has 3 cards available, then we can create a hint - one for each of the first 3 cards of this solutionHandsIndex
   // note that the solutionHandsIndex here is the solutionOptionsIndex
-  // we don't create a hint if the number of numbers currently available in that numberOption is the same as our numbers
-  // note this relies on solutionOptions being valid here - that is, those numbers are the same numbers as we've found - as we are working with a valid solutionOptions
-
   // work through the first 3 cards in this handOptions
   [0, 1, 2].forEach((handOptionsIndex) => {
-    // if more than this number is allowed in this cardOptions, then create the hint to set this card to this number
-    // Note: the following assumes that solutionOptions is valid - if numbers count in cardOptions is the same as the numbersAvailable length, then they are the same numbers
-    if (countNumbersInCardOptions(handOptions[handOptionsIndex]) > numbersAvailable.length) {
+    // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
+    const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
+    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintFullHouseThreeOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });

@@ -604,3 +604,26 @@ export const solutionOptionsValid = (solutionOptions, solutionHands) => {
   // everthing is good
   return true;
 };
+
+// get numbers still available from cardOptions
+export const getNumbersFromCardOptions = (cardOptions) => {
+  const result = [];
+  NUMBERS.forEach((number) => {
+    if (getNumberOptionsValueInCardOptions(cardOptions, number)) {
+      result.push(number);
+    }
+  });
+  return result;
+};
+
+// return true if all numbers in the first array are in the second array
+export const allNumbersFromFirstInSecond = (array1, array2) => {
+  for (let i = 0; i < array1.length; i += 1) {
+    if (!array2.includes(array1[i])) {
+      return false;
+    }
+  }
+
+  // yep, all present and correct
+  return true;
+};
