@@ -680,8 +680,7 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
         if (countSuitsInCardOptions(handOptions[0]) > 1) {
           hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_SPADES], solutionHandsIndex, 0, clue));
         }
-        // and the third card is a D/C
-        // if either S or H current set then the hint is needed
+        // and the third card is a D/C, so if either S or H current set then the hint is needed
         const thirdCardOptions = handOptions[2];
         if (getSuitOptionsValueInCardOptions(thirdCardOptions, INDEX_SUIT_SPADES) || getSuitOptionsValueInCardOptions(thirdCardOptions, INDEX_SUIT_HEARTS)) {
           hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_DIAMONDS, SUIT_CLUBS], solutionHandsIndex, 2, clue));
@@ -690,8 +689,7 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
       }
 
       if (suit === SUIT_DIAMONDS) {
-        // the first card is a S/H
-        // if either D or C current set then the hint is needed
+        // the first card is a S/H, so if either D or C current set then the hint is needed
         const firstCardOptions = handOptions[0];
         if (getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_DIAMONDS) || getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_CLUBS)) {
           hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_SPADES, SUIT_HEARTS], solutionHandsIndex, 0, clue));
@@ -708,14 +706,23 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
       return [];
     }
 
-    // work through the first 3 cards in this handOptions
-    [0, 1, 2].forEach((handOptionsIndex) => {
-      // because we are working from a valid option, if only one suit is an option - it must be the right one
-      // so only need a clue if cardOptions still allows more than one suit
-      if (countSuitsInCardOptions(handOptions[handOptionsIndex]) > 1) {
-        hints.push(createHintFullHouseThreeOfAKindSuits([suits[handOptionsIndex]], solutionHandsIndex, handOptionsIndex, clue));
-      }
-    });
+    // the first card is a S/H, so if either D or C current set then the hint is needed
+    const firstCardOptions = handOptions[0];
+    if (getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_DIAMONDS) || getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_CLUBS)) {
+      hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_SPADES, SUIT_HEARTS], solutionHandsIndex, 0, clue));
+    }
+
+    // the second card is a H/D, so if either S or C current set then the hint is needed
+    const secondCardOptions = handOptions[1];
+    if (getSuitOptionsValueInCardOptions(secondCardOptions, INDEX_SUIT_SPADES) || getSuitOptionsValueInCardOptions(secondCardOptions, INDEX_SUIT_CLUBS)) {
+      hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_HEARTS, SUIT_DIAMONDS], solutionHandsIndex, 1, clue));
+    }
+
+    // and the third card is a D/C, so if either S or H current set then the hint is needed
+    const thirdCardOptions = handOptions[2];
+    if (getSuitOptionsValueInCardOptions(thirdCardOptions, INDEX_SUIT_SPADES) || getSuitOptionsValueInCardOptions(thirdCardOptions, INDEX_SUIT_HEARTS)) {
+      hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_DIAMONDS, SUIT_CLUBS], solutionHandsIndex, 2, clue));
+    }
 
     // these are the hints - of course they might be empty if the first three suits are already set - which means this hint will never be applicable
     return hints;
