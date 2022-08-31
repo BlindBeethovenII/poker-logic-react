@@ -24,6 +24,7 @@ import {
   countSuitPlacedInSolutionOptions,
   countNumberPlacedInSolutionOptions,
   getSuitsOfNumberInAvailable,
+  isCardPlacedInCardOptions,
 } from './solution-functions';
 
 import {
@@ -669,9 +670,30 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
   }
 
   // convert the numbers into suits for the available numbers
-  let repeatedSuits = [];
+  const repeatedSuits = [];
   numbersAvailable.forEach((number) => {
-    repeatedSuits = repeatedSuits.concat(getSuitsOfNumberInAvailable(number, cardsAvailable));
+    // first get all the suits for this card
+    const allSuits = getSuitsOfNumberInAvailable(number, cardsAvailable);
+    // we don't want to include a suit for this number that is placed outside of these first 3 cards
+    allSuits.forEach((suit) => {
+      const card = createCard(suit, number);
+      let cardIsPlaced = false;
+      for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+        const handOptions2 = solutionOptions[solutionOptionsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions2.length; handOptionsIndex += 1) {
+          if (solutionHandsIndex !== solutionOptionsIndex || handOptionsIndex > 2) {
+            const cardOptions = handOptions2[handOptionsIndex];
+            if (isCardPlacedInCardOptions(card, cardOptions)) {
+              cardIsPlaced = true;
+            }
+          }
+        }
+      }
+      if (!cardIsPlaced) {
+        // this card isn't already placed, so remember its suit
+        repeatedSuits.push(suit);
+      }
+    });
   });
   // slim these down so no repeats and in the corrected order
   const suits = [];

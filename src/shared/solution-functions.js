@@ -319,7 +319,7 @@ const isNumberPlacedInNumberOptions = (number, numberOptions) => {
 };
 
 // helper function
-const isCardPlacedInCardOptions = (card, cardOptions) => {
+export const isCardPlacedInCardOptions = (card, cardOptions) => {
   const { suit, number } = card;
   const { suitOptions, numberOptions } = cardOptions;
   return isSuitPlacedInSuitOptions(suit, suitOptions) && isNumberPlacedInNumberOptions(number, numberOptions);
