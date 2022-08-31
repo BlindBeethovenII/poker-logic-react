@@ -59,6 +59,8 @@ import {
   HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_HEARTS,
+  INDEX_SUIT_DIAMONDS,
+  INDEX_SUIT_CLUBS,
 } from './constants';
 
 // -------------------- //
@@ -688,8 +690,17 @@ export const getFullHouseThreeOfAKindSuitsHints = (cardsAvailable, solutionHands
       }
 
       if (suit === SUIT_DIAMONDS) {
-        // TODO
-        return [];
+        // the first card is a S/H
+        // if either D or C current set then the hint is needed
+        const firstCardOptions = handOptions[0];
+        if (getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_DIAMONDS) || getSuitOptionsValueInCardOptions(firstCardOptions, INDEX_SUIT_CLUBS)) {
+          hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_SPADES, SUIT_HEARTS], solutionHandsIndex, 0, clue));
+        }
+        // the third card must be a C
+        if (countSuitsInCardOptions(handOptions[2]) > 1) {
+          hints.push(createHintFullHouseThreeOfAKindSuits([SUIT_CLUBS], solutionHandsIndex, 2, clue));
+        }
+        return hints;
       }
 
       // shouldn't get here
