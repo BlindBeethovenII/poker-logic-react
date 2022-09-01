@@ -912,6 +912,184 @@ export const createNewDeck = (missingNumber) => {
   return (shuffle(deck));
 };
 
+// support function to reorder the cards in a hand so important cards of the hand type are to the left
+export const reorderCardsInHandByImportance = (solutionHand) => {
+  // first look to reorder A5432 to 5432A
+  if (solutionHand[0].number === NUMBER_A
+    && solutionHand[1].number === NUMBER_5
+    && solutionHand[2].number === NUMBER_4
+    && solutionHand[3].number === NUMBER_3
+    && solutionHand[4].number === NUMBER_2) {
+    return [
+      solutionHand[1],
+      solutionHand[2],
+      solutionHand[3],
+      solutionHand[4],
+      solutionHand[0],
+    ];
+  }
+
+  const handType = calcHandType(solutionHand);
+
+  // otherwise if straight flush or straight, then nothing more to do
+  if (handType === HAND_TYPE_STRAIGHT_FLUSH || handType === HAND_TYPE_STRAIGHT) {
+    return solutionHand;
+  }
+
+  // four of a kind
+  if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
+    // if the first and second numbers are different then the first number is higher and needs to be moved to the end
+    if (solutionHand[0].number !== solutionHand[1].number) {
+      return [
+        solutionHand[1],
+        solutionHand[2],
+        solutionHand[3],
+        solutionHand[4],
+        solutionHand[0],
+      ];
+    }
+
+    // don't need to change it
+    return solutionHand;
+  }
+
+  // full house
+  if (handType === HAND_TYPE_FULL_HOUSE) {
+    // if the second and third numbers are different then the pair is higher than the three of a kind and the pair needs moving after the three of a kind
+    if (solutionHand[1].number !== solutionHand[2].number) {
+      return [
+        solutionHand[2],
+        solutionHand[3],
+        solutionHand[4],
+        solutionHand[0],
+        solutionHand[1],
+      ];
+    }
+
+    // don't need to change it
+    return solutionHand;
+  }
+
+  // flush
+  if (handType === HAND_TYPE_FLUSH) {
+    // no change
+    return solutionHand;
+  }
+
+  // three of a kind
+  if (handType === HAND_TYPE_THREE_OF_A_KIND) {
+    // if the third and fourth numbers are different then the first three cards are already the three of a kind
+    if (solutionHand[2].number !== solutionHand[3].number) {
+      return solutionHand;
+    }
+
+    // if the fourth and fifth numbers are different then the middle cards are the three of a kind
+    if (solutionHand[3].number !== solutionHand[4].number) {
+      return [
+        solutionHand[1],
+        solutionHand[2],
+        solutionHand[3],
+        solutionHand[0],
+        solutionHand[4],
+      ];
+    }
+
+    // otherwise the last three cards are the three of a kind
+    return [
+      solutionHand[2],
+      solutionHand[3],
+      solutionHand[4],
+      solutionHand[0],
+      solutionHand[1],
+    ];
+  }
+
+  // two pair
+  if (handType === HAND_TYPE_TWO_PAIR) {
+    // if the fourth and fifth numbers are different then two pairs are already at the left
+    if (solutionHand[3].number !== solutionHand[4].number) {
+      return solutionHand;
+    }
+
+    // if the second and third numbers are different then the middle cards is the single
+    if (solutionHand[1].number !== solutionHand[2].number) {
+      return [
+        solutionHand[0],
+        solutionHand[1],
+        solutionHand[3],
+        solutionHand[4],
+        solutionHand[2],
+      ];
+    }
+
+    // otherwise the first is the single
+    return [
+      solutionHand[1],
+      solutionHand[2],
+      solutionHand[3],
+      solutionHand[4],
+      solutionHand[0],
+    ];
+  }
+
+  // pair
+  if (handType === HAND_TYPE_PAIR) {
+    // if the first two numbers are the pair then already in order
+    if (solutionHand[0].number === solutionHand[1].number) {
+      return solutionHand;
+    }
+
+    // if the second and third numbers are the pair then move them
+    if (solutionHand[1].number === solutionHand[2].number) {
+      return [
+        solutionHand[1],
+        solutionHand[2],
+        solutionHand[0],
+        solutionHand[3],
+        solutionHand[4],
+      ];
+    }
+
+    // if the third and fourth numbers are the pair then move them
+    if (solutionHand[2].number === solutionHand[3].number) {
+      return [
+        solutionHand[2],
+        solutionHand[3],
+        solutionHand[0],
+        solutionHand[1],
+        solutionHand[4],
+      ];
+    }
+
+    // otherwise the last two numbers are the pair
+    return [
+      solutionHand[3],
+      solutionHand[4],
+      solutionHand[0],
+      solutionHand[1],
+      solutionHand[2],
+    ];
+  }
+
+  // high card
+  if (handType === HAND_TYPE_HIGH_CARD) {
+    // no change
+    return solutionHand;
+  }
+
+  // should never get here
+  console.error(`reorderCardsInHandByImportance could not cope with the hand given ${JSON.stringify(solutionHand)}`);
+  return null;
+};
+
+// support function to reorder the cards in the solutionHands so important cards of the hand type are to the left
+const reorderCardsInHandsByImportance = (solutionHands) => [
+  reorderCardsInHandByImportance(solutionHands[0]),
+  reorderCardsInHandByImportance(solutionHands[1]),
+  reorderCardsInHandByImportance(solutionHands[2]),
+  reorderCardsInHandByImportance(solutionHands[3]),
+];
+
 // create a solution, with its hands and missingNumber
 // the approach here makes sures each hand is of a different hand type
 export const createSolution = () => {
@@ -976,7 +1154,12 @@ export const createSolution = () => {
     throw new Error(`createSolutionHands should have 20 unique cards, but it has ${nUnique} - this should never happen!!!`);
   }
 
-  return { solutionHands: sortHands(hands), missingNumber };
+  const sortedHands = sortHands(hands);
+
+  // now reorder cards so important cards of a hand are on the left
+  const handsOrderedByImportance = reorderCardsInHandsByImportance(sortedHands);
+
+  return { solutionHands: handsOrderedByImportance, missingNumber };
 };
 
 // return true if the sorted cards (A K down to 2) - which are known to all be of the same suit - contain a straight
