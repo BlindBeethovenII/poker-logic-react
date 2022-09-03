@@ -19,7 +19,8 @@ import {
   NUMBERS,
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
-  HINT_SAME_NUMBER_LEFT_SUIT,
+  HINT_SAME_COUNT_LEFT_SUIT,
+  HINT_SAME_COUNT_LEFT_NUMBER,
   HINT_FOUR_OF_A_KIND_NUMBERS,
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
@@ -60,16 +61,28 @@ export const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-export const applySameNumberLeftSuitHint = (solutionOptions, hint) => {
+export const applySameCountLeftSuitHint = (solutionOptions, hint) => {
   const {
     suit,
     solutionOptionsIndex,
     handOptionsIndex,
   } = hint;
 
-  logIfDevEnv(`applying HINT_SAME_NUMBER_LEFT_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  logIfDevEnv(`applying HINT_SAME_COUNT_LEFT_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applySameCountLeftNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  logIfDevEnv(`applying HINT_SAME_COUNT_LEFT_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
 export const applyFourOfAKindSuitHint = (solutionOptions, hint) => {
@@ -181,7 +194,7 @@ export const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
     handOptionsIndex,
   } = hint;
 
-  logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  logIfDevEnv(`applying HINT_ALL_OF_NUMBER_PLACED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
@@ -304,8 +317,11 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
       return applyNoStraightFlushInSuitHint(solutionOptions, hint);
 
-    case HINT_SAME_NUMBER_LEFT_SUIT:
-      return applySameNumberLeftSuitHint(solutionOptions, hint);
+    case HINT_SAME_COUNT_LEFT_SUIT:
+      return applySameCountLeftSuitHint(solutionOptions, hint);
+
+    case HINT_SAME_COUNT_LEFT_NUMBER:
+      return applySameCountLeftNumberHint(solutionOptions, hint);
 
     case HINT_FOUR_OF_A_KIND_SUIT:
       return applyFourOfAKindSuitHint(solutionOptions, hint);

@@ -490,6 +490,20 @@ export const countSuitTrueInSolutionOptions = (solutionOptions, suitOptionsIndex
   + countSuitTrueInHandOptions(solutionOptions[3], suitOptionsIndex)
 );
 
+// count the number of cardOptions for which this this number is true in the given handOptions
+export const countNumberTrueInHandOptions = (handOptions, number) => {
+  const countIfNumberOptionTrue = (accumulator, currentValue) => accumulator + (currentValue.numberOptions[number - 1] ? 1 : 0);
+  return handOptions.reduce(countIfNumberOptionTrue, 0);
+};
+
+// count the number of cardOptions for which this number is true in the whole solutionOptions
+export const countNumberTrueInSolutionOptions = (solutionOptions, number) => (
+  countNumberTrueInHandOptions(solutionOptions[0], number)
+  + countNumberTrueInHandOptions(solutionOptions[1], number)
+  + countNumberTrueInHandOptions(solutionOptions[2], number)
+  + countNumberTrueInHandOptions(solutionOptions[3], number)
+);
+
 // count how many times the suit is placed in the given solutionOptions
 export const countSuitPlacedInSolutionOptions = (suit, solutionOptions) => {
   let count = 0;
