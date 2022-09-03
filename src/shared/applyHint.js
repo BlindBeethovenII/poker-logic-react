@@ -27,6 +27,7 @@ import {
   HINT_PLACED_CARD_REMOVE_NUMBER,
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED,
+  HINT_ALL_OF_SUIT_PLACED_NUMBERS,
   HINT_ALL_OF_NUMBER_PLACED,
   HINT_ALL_OF_NUMBER_PLACED_SUITS,
   HINT_THREE_OF_A_KIND_NUMBERS,
@@ -187,6 +188,42 @@ export const applyAllOfSuitPlacedHint = (solutionOptions, hint) => {
   logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyAllOfSuitPlacedNumbersHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    numbers,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  // we do something different if numbers is to a single number, as opposed to multiple numbers
+  if (numbers.length === 1) {
+    const number = numbers[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED_NUMBERS for suit ${suit} for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+    // we know this must be the number
+    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_ALL_OF_SUIT_PLACED_NUMBERS for suit ${suit} for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // given solution functions we have, we will toggle (to off) any other number that is currently set
+  NUMBERS.forEach((number) => {
+    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
+      // this number is not part of the solution, so toggle off
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
 };
 
 export const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
@@ -414,6 +451,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_ALL_OF_SUIT_PLACED:
       return applyAllOfSuitPlacedHint(solutionOptions, hint);
+
+    case HINT_ALL_OF_SUIT_PLACED_NUMBERS:
+      return applyAllOfSuitPlacedNumbersHint(solutionOptions, hint);
 
     case HINT_ALL_OF_NUMBER_PLACED:
       return applyAllOfNumberPlacedHint(solutionOptions, hint);

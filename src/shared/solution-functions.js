@@ -456,6 +456,37 @@ export const getSuitsOfNumberInAvailable = (number, cardsAvailable) => {
   return result;
 };
 
+// get an array of numbers from the given array of suit cards
+const getNumbersFromSuitCardsAvailable = (suitCardsAvailable) => {
+  const result = [];
+
+  for (let i = 0; i < suitCardsAvailable.length; i += 1) {
+    result.push(suitCardsAvailable[i].number);
+  }
+
+  return result;
+};
+
+// get the numbers of the given suit in the given cardsAvailable
+export const getNumbersOfSuitInAvailable = (suit, cardsAvailable) => {
+  if (suit === SUIT_SPADES) {
+    return getNumbersFromSuitCardsAvailable(cardsAvailable[0]);
+  }
+  if (suit === SUIT_HEARTS) {
+    return getNumbersFromSuitCardsAvailable(cardsAvailable[1]);
+  }
+  if (suit === SUIT_DIAMONDS) {
+    return getNumbersFromSuitCardsAvailable(cardsAvailable[2]);
+  }
+  if (suit === SUIT_CLUBS) {
+    return getNumbersFromSuitCardsAvailable(cardsAvailable[3]);
+  }
+
+  // should not get here
+  console.error(`getNumbersOfSuitInAvailable cannot cope with suit ${suit}`);
+  return [];
+};
+
 // get the value of a specific suit options boolean in the given solution options
 export const getSuitOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, suitOptionsIndex) =>
   solutionOptions[solutionOptionsIndex][handOptionsIndex].suitOptions[suitOptionsIndex];
@@ -512,6 +543,23 @@ export const countSuitPlacedInSolutionOptions = (suit, solutionOptions) => {
     for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
       const cardOptions = handOptions[handOptionsIndex];
       if (isSuitPlacedInCardOptions(suit, cardOptions)) {
+        // found one
+        count += 1;
+      }
+    }
+  }
+
+  return count;
+};
+
+// count how many times the suit is placed in the given solutionOptions but for which the number is not yet placed
+export const countSuitPlacedInSolutionOptionsWithoutNumberPlaced = (suit, solutionOptions) => {
+  let count = 0;
+  for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+    const handOptions = solutionOptions[solutionOptionsIndex];
+    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (isSuitPlacedInCardOptions(suit, cardOptions) && countNumbersInCardOptions(cardOptions) > 1) {
         // found one
         count += 1;
       }
@@ -664,6 +712,18 @@ export const isAnotherSuitSetInCardOptions = (cardOptions, suits) => {
   let result = false;
   SUITS.forEach((suit) => {
     if (!suits.includes(suit) && getSuitOptionsValueInCardOptions(cardOptions, convertSuitToSuitOptionsIndex(suit))) {
+      result = true;
+    }
+  });
+
+  return result;
+};
+
+// return true if another number, not in the given numbers, is set in the given card options
+export const isAnotherNumberSetInCardOptions = (cardOptions, numbers) => {
+  let result = false;
+  NUMBERS.forEach((number) => {
+    if (!numbers.includes(number) && getNumberOptionsValueInCardOptions(cardOptions, number)) {
       result = true;
     }
   });

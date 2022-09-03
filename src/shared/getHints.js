@@ -23,13 +23,16 @@ import {
   isSuitPlacedInCardOptions,
   isNumberPlaced,
   countSuitPlacedInSolutionOptions,
+  countSuitPlacedInSolutionOptionsWithoutNumberPlaced,
   countNumberPlacedInSolutionOptions,
   countNumberPlacedInSolutionOptionsWithoutSuitPlaced,
   getSuitsOfNumberInAvailable,
+  getNumbersOfSuitInAvailable,
   isCardPlacedInCardOptions,
   getNumbersFromCardOptions,
   allNumbersFromFirstInSecond,
   isAnotherSuitSetInCardOptions,
+  isAnotherNumberSetInCardOptions,
 } from './solution-functions';
 
 import {
@@ -62,6 +65,7 @@ import {
   HINT_PLACED_CARD_REMOVE_NUMBER,
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED,
+  HINT_ALL_OF_SUIT_PLACED_NUMBERS,
   HINT_ALL_OF_NUMBER_PLACED,
   HINT_ALL_OF_NUMBER_PLACED_SUITS,
   HINT_THREE_OF_A_KIND_NUMBERS,
@@ -550,6 +554,51 @@ export const getAllOfSuitPlacedHints = (cardsAvailable, solutionOptions) => {
   return hints;
 };
 
+// ------------------------------- //
+// HINT_ALL_OF_SUIT_PLACED_NUMBERS //
+// ------------------------------- //
+
+// create HINT_ALL_OF_SUIT_PLACED_NUMBERS
+export const createHintAllOfSuitPlacedNumbers = (suit, numbers, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_ALL_OF_SUIT_PLACED_NUMBERS,
+  suit,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// if n cards available for a suit, and solutionOptions has placed n of that suit without the number placed, then can restrict those cards to the numbers of the still available for that suit
+export const getAllOfSuitPlacedNumbersHints = (cardsStillAvailable, solutionOptions) => {
+  const hints = [];
+
+  SUITS.forEach((suit) => {
+    // convert suit name to suit options index which is the same index into cards available
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+    // easy to count - just the length
+    const suitCardsStillAvailableCount = cardsStillAvailable[suitOptionsIndex].length;
+
+    // how many cards in solutionOptions have this suit placed but for which the number is not yet placed
+    const suitPlacedCountWithoutNumber = countSuitPlacedInSolutionOptionsWithoutNumberPlaced(suit, solutionOptions);
+
+    if (suitCardsStillAvailableCount === suitPlacedCountWithoutNumber) {
+      // we need to know the numbers still available for this suit
+      const numbers = getNumbersOfSuitInAvailable(suit, cardsStillAvailable);
+
+      // create a hint for each cardOptions that has this suit placed but for which the number is not yet placed, and for which it has a number not in numbers (i.e. one to remove)
+      solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+        handOptions.forEach((cardOptions, handOptionsIndex) => {
+          if (isSuitPlacedInCardOptions(suit, cardOptions) && countNumbersInCardOptions(cardOptions) > 1 && isAnotherNumberSetInCardOptions(cardOptions, numbers)) {
+            hints.push(createHintAllOfSuitPlacedNumbers(suit, numbers, solutionOptionsIndex, handOptionsIndex));
+          }
+        });
+      });
+    }
+  });
+
+  return hints;
+};
+
 // ------------------------- //
 // HINT_ALL_OF_NUMBER_PLACED //
 // ------------------------- //
@@ -601,18 +650,18 @@ export const createHintAllOfNumberPlacedSuits = (number, suits, solutionOptionsI
   handOptionsIndex,
 });
 
-// if n cards still available for a number, and solutionOptions has placed n cards of that number without the suit placed, then can restrict those cards to the suitsof the still available for that number
+// if n cards still available for a number, and solutionOptions has placed n cards of that number without the suit placed, then can restrict those cards to the suits of the still available for that number
 export const getAllOfNumberPlacedSuitsHints = (cardsStillAvailable, solutionOptions) => {
   const hints = [];
 
   NUMBERS.forEach((number) => {
     // count how many of this number are in cardsStillAvailable
-    const numberCardsAvailableCount = countNumberAvailable(number, cardsStillAvailable);
+    const numberCardsStillAvailableCount = countNumberAvailable(number, cardsStillAvailable);
 
     // how many cards in solutionOptions have this number placed but for which the suit is not yet placed
     const numberPlacedCountWithoutSuit = countNumberPlacedInSolutionOptionsWithoutSuitPlaced(number, solutionOptions);
 
-    if (numberCardsAvailableCount === numberPlacedCountWithoutSuit) {
+    if (numberCardsStillAvailableCount === numberPlacedCountWithoutSuit) {
       // we need to know the suits still available for this number
       const suits = getSuitsOfNumberInAvailable(number, cardsStillAvailable);
 
@@ -1255,10 +1304,16 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   // which of the cards available are still available after the solutionOptions have been considered
   const cardsStillAvailable = getCardsStillAvailable(cardsAvailable, solutionOptions);
 
-  // see if all n cards available for a number are placed for that number
+  // if n cards still available for a number, and solutionOptions has placed n cards of that number without the suit placed, then can restrict those cards to the suits of the still available for that number
   const allOfNumberPlacedSuitsHints = getAllOfNumberPlacedSuitsHints(cardsStillAvailable, solutionOptions);
   if (allOfNumberPlacedSuitsHints.length) {
     return allOfNumberPlacedSuitsHints;
+  }
+
+  // see if n cards available for a suit, and solutionOptions has placed n of that suit without the number placed, then can restrict those cards to the numbers of the still available for that suit
+  const allOfSuitPlacedNumbersHints = getAllOfSuitPlacedNumbersHints(cardsStillAvailable, solutionOptions);
+  if (allOfSuitPlacedNumbersHints.length) {
+    return allOfSuitPlacedNumbersHints;
   }
 
   // see if a number from cards available is now used
