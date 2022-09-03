@@ -30,7 +30,7 @@ import {
   HINT_ALL_OF_NUMBER_PLACED,
   HINT_THREE_OF_A_KIND_NUMBERS,
   HINT_THREE_OF_A_KIND_SUITS,
-  HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
+  HINT_PAIR_NUMBERS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -271,7 +271,7 @@ export const applyThreeOfAKindSuitsHints = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
-export const applyPairOfAFullHouseNumbersHints = (solutionOptions, hint) => {
+export const applyPairNumbersHints = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -283,14 +283,14 @@ export const applyPairOfAFullHouseNumbersHints = (solutionOptions, hint) => {
   if (numbers.length === 1) {
     const number = numbers[0];
     // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+    logIfDevEnv(`applying HINT_PAIR_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the number
     return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_PAIR_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   let newSolutionOptions = solutionOptions;
 
@@ -350,8 +350,8 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_THREE_OF_A_KIND_SUITS:
       return applyThreeOfAKindSuitsHints(solutionOptions, hint);
 
-    case HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS:
-      return applyPairOfAFullHouseNumbersHints(solutionOptions, hint);
+    case HINT_PAIR_NUMBERS:
+      return applyPairNumbersHints(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

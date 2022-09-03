@@ -61,7 +61,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_THREE_OF_A_KIND,
-  HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
+  HINT_PAIR_NUMBERS,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
@@ -822,22 +822,23 @@ export const getThreeOfAKindSuitsHints = (cardsAvailable, solutionHandsIndex, so
   return hints;
 };
 
-// --------------------------------- //
-// HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS //
-// --------------------------------- //
+// ----------------- //
+// HINT_PAIR_NUMBERS //
+// ----------------- //
 
-// create HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS
-export const createHintPairOfAFullHouseNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
-  hintType: HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
+// create HINT_PAIR_NUMBERS
+export const createHintPairNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_PAIR_NUMBERS,
   numbers,
   solutionOptionsIndex,
   handOptionsIndex,
   clue,
 });
 
-// if there are 2 cards of a number in cardsAvailable or already placed in position then we can create a hint for the pair hands of a full house
+// if there are 2 cards of a number in cardsAvailable or already placed in position then we can create a hint for the pair
+// note this applies to the pair in a full house and for the pairs of two pairs - the card indexes in handOptions are given
 // note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
-export const getPairOfAFullHouseNumbersHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+export const getPairNumbersHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue, cardIndex1, cardIndex2) => {
   const hints = [];
 
   const numbersAvailable = [];
@@ -846,12 +847,12 @@ export const getPairOfAFullHouseNumbersHints = (cardsAvailable, solutionHandsInd
 
   // because we are working from a valid solution
   // if either card in the pair has a single number set, then it must be the number for the other card in the pair
-  if (countNumbersInCardOptions(handOptions[3]) === 1) {
+  if (countNumbersInCardOptions(handOptions[cardIndex1]) === 1) {
     // fourth card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[3]));
-  } else if (countNumbersInCardOptions(handOptions[4]) === 1) {
+    numbersAvailable.push(getFirstNumberSet(handOptions[cardIndex1]));
+  } else if (countNumbersInCardOptions(handOptions[cardIndex2]) === 1) {
     // fifth card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[4]));
+    numbersAvailable.push(getFirstNumberSet(handOptions[cardIndex2]));
   }
 
   // if we didn't find one that way, then look for the numbers with at least 2 cards still available
@@ -871,14 +872,14 @@ export const getPairOfAFullHouseNumbersHints = (cardsAvailable, solutionHandsInd
     });
   }
 
-  // if we have at least one number which has 2 cards available, then we can create a hint - one for each of the pair the full house at this solutionHandsIndex
+  // if we have at least one number which has 2 cards available, then we can create a hint - one for each card of the pair at this solutionHandsIndex and card indexes
   // note that the solutionHandsIndex here is the solutionOptionsIndex
   // work through the two cards of the pair in this handOptions
-  [3, 4].forEach((handOptionsIndex) => {
+  [cardIndex1, cardIndex2].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
     if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
-      hints.push(createHintPairOfAFullHouseNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+      hints.push(createHintPairNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
 
@@ -992,7 +993,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // deal full house
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE) {
-      const pairOfAFullHouseNumbersHints = getPairOfAFullHouseNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      const pairOfAFullHouseNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
       if (pairOfAFullHouseNumbersHints.length) {
         return pairOfAFullHouseNumbersHints;
       }
