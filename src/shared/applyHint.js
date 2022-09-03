@@ -28,6 +28,7 @@ import {
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED,
   HINT_ALL_OF_NUMBER_PLACED,
+  HINT_ALL_OF_NUMBER_PLACED_SUITS,
   HINT_THREE_OF_A_KIND_NUMBERS,
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
@@ -198,6 +199,42 @@ export const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
   logIfDevEnv(`applying HINT_ALL_OF_NUMBER_PLACED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyAllOfNumberPlacedSuitsHint = (solutionOptions, hint) => {
+  const {
+    number,
+    suits,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  // we do something different if suits is to a single suit, as opposed to multiple suits
+  if (suits.length === 1) {
+    const suit = suits[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_ALL_OF_NUMBER_PLACED_SUITS for number ${number} for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+    // we know this must be the suit
+    return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_ALL_OF_NUMBER_PLACED_SUITS for number ${number} for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // toggle (to off) any other suit that is currently set
+  SUITS.forEach((suit) => {
+    if (!suits.includes(suit) && isSuitTrueInCardOptions(suit, cardOptions)) {
+      // this suit is not part of the solution, so toggle off
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
 };
 
 export const applyThreeOfAKindNumbersHints = (solutionOptions, hint) => {
@@ -380,6 +417,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_ALL_OF_NUMBER_PLACED:
       return applyAllOfNumberPlacedHint(solutionOptions, hint);
+
+    case HINT_ALL_OF_NUMBER_PLACED_SUITS:
+      return applyAllOfNumberPlacedSuitsHint(solutionOptions, hint);
 
     case HINT_THREE_OF_A_KIND_NUMBERS:
       return applyThreeOfAKindNumbersHints(solutionOptions, hint);
