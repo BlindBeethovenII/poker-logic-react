@@ -88,6 +88,7 @@ export const HINT_ALL_OF_SUIT_PLACED = 'ALL OF SUIT PLACED';
 export const HINT_ALL_OF_NUMBER_PLACED = 'ALL OF NUMBER PLACED';
 export const HINT_THREE_OF_A_KIND_NUMBERS = 'THREE OF A KIND NUMBERS'; // also applies to the three of a kind of a full house
 export const HINT_THREE_OF_A_KIND_SUITS = 'THREE OF A KIND SUITS'; // also applies to the three of a kind of a full house
-export const HINT_PAIR_NUMBERS = 'PAIR NUMBERS';
+export const HINT_PAIR_NUMBERS = 'PAIR NUMBERS'; // also applies to the pair in a full house and to two pairs
+export const HINT_PAIR_SUITS = 'PAIR SUITS'; // also applies to the pair in a full house and to two pairs
 
 export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';

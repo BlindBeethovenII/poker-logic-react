@@ -31,6 +31,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS,
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
+  HINT_PAIR_SUITS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -307,6 +308,42 @@ export const applyPairNumbersHints = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
+export const applyPairSuitsHints = (solutionOptions, hint) => {
+  const {
+    suits,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // we do something different if suits is to a single suit, as opposed to multiple suits
+  if (suits.length === 1) {
+    const suit = suits[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_PAIR_SUITS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+    // we know this must be the suit
+    return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_PAIR_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // toggle (to off) any other suit that is currently set
+  SUITS.forEach((suit) => {
+    if (!suits.includes(suit) && isSuitTrueInCardOptions(suit, cardOptions)) {
+      // this suit is not part of the solution, so toggle off
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -352,6 +389,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PAIR_NUMBERS:
       return applyPairNumbersHints(solutionOptions, hint);
+
+    case HINT_PAIR_SUITS:
+      return applyPairSuitsHints(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

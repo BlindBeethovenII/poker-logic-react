@@ -641,3 +641,15 @@ export const allNumbersFromFirstInSecond = (array1, array2) => {
   // yep, all present and correct
   return true;
 };
+
+// return true if another suit, not in the given suits, is set in the given card options
+export const isAnotherSuitSetInCardOptions = (cardOptions, suits) => {
+  let result = false;
+  SUITS.forEach((suit) => {
+    if (!suits.includes(suit) && getSuitOptionsValueInCardOptions(cardOptions, convertSuitToSuitOptionsIndex(suit))) {
+      result = true;
+    }
+  });
+
+  return result;
+};
