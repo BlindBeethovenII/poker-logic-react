@@ -40,7 +40,7 @@ import {
   HAND_TYPE_STRAIGHT_FLUSH,
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
-  HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
+  HINT_SAME_NUMBER_LEFT_SUIT,
   HINT_FOUR_OF_A_KIND_NUMBERS,
   CLUE_HAND_OF_TYPE,
   HAND_TYPE_FOUR_OF_A_KIND,
@@ -169,21 +169,21 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
   return hints;
 };
 
-// ------------------------------------------ //
-// HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS //
-// ------------------------------------------ //
+// -------------------------- //
+// HINT_SAME_NUMBER_LEFT_SUIT //
+// -------------------------- //
 
-// create HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS
-export const createHintSameNSuitCardsInSolutionOptions = (suit, solutionOptionsIndex, handOptionsIndex) => ({
-  hintType: HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
+// create HINT_SAME_NUMBER_LEFT_SUIT
+export const createHintSameNumberLeftSuit = (suit, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_SAME_NUMBER_LEFT_SUIT,
   suit,
   solutionOptionsIndex,
   handOptionsIndex,
 });
 
-// if there are n cards of a suit in cardsAvailable and also only n cards in solutionOptions with that suit option
+// if there are n cards of a suit in cardsAvailable and also only n cardsOptions in solutionOptions with that suit is available and not placed
 // then all those cards must be that suit
-export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solutionOptions) => {
+export const getSameNumberLeftSuitHints = (cardsAvailable, solutionOptions) => {
   const hints = [];
 
   SUITS.forEach((suit) => {
@@ -201,7 +201,7 @@ export const getSameNSuitCardsInSolutionOptionsHints = (cardsAvailable, solution
       solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
         handOptions.forEach((cardOptions, handOptionsIndex) => {
           if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && countSuitsInCardOptions(cardOptions) > 1) {
-            hints.push(createHintSameNSuitCardsInSolutionOptions(suit, solutionOptionsIndex, handOptionsIndex));
+            hints.push(createHintSameNumberLeftSuit(suit, solutionOptionsIndex, handOptionsIndex));
           }
         });
       });
@@ -875,10 +875,10 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     return allOfNumberPlacedHints;
   }
 
-  // see if the solution options only has n cards of a suit left where n is the number of cards of that suit in cardsAvailable
-  const sameNSuitCardsInSolutionOptionsHints = getSameNSuitCardsInSolutionOptionsHints(cardsAvailable, solutionOptions);
-  if (sameNSuitCardsInSolutionOptionsHints.length) {
-    return sameNSuitCardsInSolutionOptionsHints;
+  // see if the solution options only the same number of cards of a suit left and not placed as there are cards of that suit in cardsAvailable
+  const sameNumberLeftSuitHints = getSameNumberLeftSuitHints(cardsAvailable, solutionOptions);
+  if (sameNumberLeftSuitHints.length) {
+    return sameNumberLeftSuitHints;
   }
 
   // which of the cards available are still available after the solutionOptions have been considered

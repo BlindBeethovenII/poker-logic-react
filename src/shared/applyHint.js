@@ -19,7 +19,7 @@ import {
   NUMBERS,
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
-  HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS,
+  HINT_SAME_NUMBER_LEFT_SUIT,
   HINT_FOUR_OF_A_KIND_NUMBERS,
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
@@ -60,14 +60,14 @@ export const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-export const applySameNSuitCardsInSolutionOptionsHint = (solutionOptions, hint) => {
+export const applySameNumberLeftSuitHint = (solutionOptions, hint) => {
   const {
     suit,
     solutionOptionsIndex,
     handOptionsIndex,
   } = hint;
 
-  logIfDevEnv(`applying HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  logIfDevEnv(`applying HINT_SAME_NUMBER_LEFT_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
@@ -304,8 +304,8 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
       return applyNoStraightFlushInSuitHint(solutionOptions, hint);
 
-    case HINT_SAME_N_SUIT_CARDS_IN_SOLUTION_OPTIONS:
-      return applySameNSuitCardsInSolutionOptionsHint(solutionOptions, hint);
+    case HINT_SAME_NUMBER_LEFT_SUIT:
+      return applySameNumberLeftSuitHint(solutionOptions, hint);
 
     case HINT_FOUR_OF_A_KIND_SUIT:
       return applyFourOfAKindSuitHint(solutionOptions, hint);
