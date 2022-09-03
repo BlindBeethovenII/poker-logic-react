@@ -28,9 +28,9 @@ import {
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED,
   HINT_ALL_OF_NUMBER_PLACED,
-  HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS,
+  HINT_THREE_OF_A_KIND_NUMBERS,
+  HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS,
-  HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -199,7 +199,7 @@ export const applyAllOfNumberPlacedHint = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-export const applyFullHouseThreeOfAKindNumbersHints = (solutionOptions, hint) => {
+export const applyThreeOfAKindNumbersHints = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -211,14 +211,14 @@ export const applyFullHouseThreeOfAKindNumbersHints = (solutionOptions, hint) =>
   if (numbers.length === 1) {
     const number = numbers[0];
     // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+    logIfDevEnv(`applying HINT_THREE_OF_A_KIND_NUMBERS for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the number
     return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_THREE_OF_A_KIND_NUMBERS for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   let newSolutionOptions = solutionOptions;
 
@@ -235,7 +235,7 @@ export const applyFullHouseThreeOfAKindNumbersHints = (solutionOptions, hint) =>
   return newSolutionOptions;
 };
 
-export const applyFullHouseThreeOfAKindSuitsHints = (solutionOptions, hint) => {
+export const applyThreeOfAKindSuitsHints = (solutionOptions, hint) => {
   const {
     suits,
     solutionOptionsIndex,
@@ -247,14 +247,14 @@ export const applyFullHouseThreeOfAKindSuitsHints = (solutionOptions, hint) => {
   if (suits.length === 1) {
     const suit = suits[0];
     // eslint-disable-next-line max-len
-    logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+    logIfDevEnv(`applying HINT_THREE_OF_A_KIND_SUITS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
     // we know this must be the suit
     return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
   }
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+  logIfDevEnv(`applying HINT_THREE_OF_A_KIND_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   let newSolutionOptions = solutionOptions;
 
@@ -344,11 +344,11 @@ export const applyHint = (solutionOptions, hint) => {
     case HINT_ALL_OF_NUMBER_PLACED:
       return applyAllOfNumberPlacedHint(solutionOptions, hint);
 
-    case HINT_FULL_HOUSE_THREE_OF_A_KIND_NUMBERS:
-      return applyFullHouseThreeOfAKindNumbersHints(solutionOptions, hint);
+    case HINT_THREE_OF_A_KIND_NUMBERS:
+      return applyThreeOfAKindNumbersHints(solutionOptions, hint);
 
-    case HINT_FULL_HOUSE_THREE_OF_A_KIND_SUITS:
-      return applyFullHouseThreeOfAKindSuitsHints(solutionOptions, hint);
+    case HINT_THREE_OF_A_KIND_SUITS:
+      return applyThreeOfAKindSuitsHints(solutionOptions, hint);
 
     case HINT_PAIR_OF_A_FULL_HOUSE_NUMBERS:
       return applyPairOfAFullHouseNumbersHints(solutionOptions, hint);
