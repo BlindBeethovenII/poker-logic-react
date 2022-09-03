@@ -66,6 +66,8 @@ import {
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
   INDEX_SUIT_CLUBS,
+  HAND_TYPE_PAIR,
+  HAND_TYPE_TWO_PAIR,
 } from './constants';
 
 // -------------------- //
@@ -957,7 +959,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;
 
-    // deal with hand of type straight flush clue (which has to be for the first hand, but we don't care about that actually)
+    // hand type straight flush clue (which has to be for the first hand, but we don't care about that actually)
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
       const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
@@ -965,7 +967,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // deal with hand of type four of a kind
+    // hand of type four of a kind clue
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
       const fourOfAKindSuitHints = getFourOfAKindSuitHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (fourOfAKindSuitHints.length) {
@@ -978,7 +980,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // deal common aspects of full house and three of a kind
+    // common aspects of hand types full house and three of a kind clue
     if (clueType === CLUE_HAND_OF_TYPE && (handType === HAND_TYPE_FULL_HOUSE || handType === HAND_TYPE_THREE_OF_A_KIND)) {
       const threeOfAKindNumbersHints = getThreeOfAKindNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindNumbersHints.length) {
@@ -991,11 +993,31 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // deal full house
+    // hand type full house clue
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE) {
-      const pairOfAFullHouseNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
-      if (pairOfAFullHouseNumbersHints.length) {
-        return pairOfAFullHouseNumbersHints;
+      const pairNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
+      if (pairNumbersHints.length) {
+        return pairNumbersHints;
+      }
+    }
+
+    // hand type two pair clue
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_TWO_PAIR) {
+      const pairNumbersHints1 = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersHints1.length) {
+        return pairNumbersHints1;
+      }
+      const pairNumbersHints2 = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
+      if (pairNumbersHints2.length) {
+        return pairNumbersHints2;
+      }
+    }
+
+    // hand type pair clue
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR) {
+      const pairNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersHints.length) {
+        return pairNumbersHints;
       }
     }
   }

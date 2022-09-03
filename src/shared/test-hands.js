@@ -1,6 +1,6 @@
 // interesting hands used in tests
 
-import { createCard } from './card-functions';
+import { createCard, calcHandType } from './card-functions';
 
 import { createClueHandOfType } from './clue-functions';
 
@@ -25,9 +25,6 @@ import {
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_STRAIGHT,
   HAND_TYPE_PAIR,
-  HAND_TYPE_FULL_HOUSE,
-  HAND_TYPE_TWO_PAIR,
-  HAND_TYPE_THREE_OF_A_KIND,
 } from './constants';
 
 export const solutionHands1 = [
@@ -67,10 +64,10 @@ export const solution1 = {
 };
 
 export const clues1 = [
-  createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
-  createClueHandOfType(HAND_TYPE_FULL_HOUSE, 1),
-  createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 2),
-  createClueHandOfType(HAND_TYPE_TWO_PAIR, 3),
+  createClueHandOfType(calcHandType(solutionHands1[0]), 0),
+  createClueHandOfType(calcHandType(solutionHands1[1]), 1),
+  createClueHandOfType(calcHandType(solutionHands1[2]), 2),
+  createClueHandOfType(calcHandType(solutionHands1[3]), 3),
 ];
 
 export const solutionHands2 = [
