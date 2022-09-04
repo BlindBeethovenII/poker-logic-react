@@ -4,6 +4,7 @@ import { calcHandType } from './card-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
+  CLUE_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -13,15 +14,37 @@ import {
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
+  SUIT_SPADES,
+  SUIT_HEARTS,
+  SUIT_DIAMONDS,
+  SUIT_CLUBS,
 } from './constants';
 
-// create CLUE_HAND_OF_TYPE
+// ----------------- //
+// CLUE_HAND_OF_TYPE //
+// ----------------- //
+
 export const createClueHandOfType = (handType, solutionHandsIndex, deduced) => ({
   clueType: CLUE_HAND_OF_TYPE,
   handType,
   solutionHandsIndex,
   deduced,
 });
+
+// ------------- //
+// CLUE_NOT_SUIT //
+// ------------- //
+
+export const createClueNotSuit = (suit, solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_NOT_SUIT,
+  suit,
+  solutionHandsIndex,
+  handOptionsIndex,
+});
+
+// ----------------- //
+// support functions //
+// ----------------- //
 
 const handTypeToText = (handType) => {
   switch (handType) {
@@ -48,27 +71,40 @@ const handTypeToText = (handType) => {
   }
 };
 
+const suitToTextSingular = (suit) => {
+  switch (suit) {
+    case SUIT_SPADES:
+      return 'Spade';
+    case SUIT_HEARTS:
+      return 'Heart';
+    case SUIT_DIAMONDS:
+      return 'Diamond';
+    case SUIT_CLUBS:
+      return 'Club';
+    default:
+      return `suitToTextSingular cannot cope with ${suit}`;
+  }
+};
+
 // clue to clue string
 export const clueToString = (clue) => {
   const { clueType } = clue;
+
   if (clueType === CLUE_HAND_OF_TYPE) {
     const { handType, solutionHandsIndex, deduced } = clue;
     const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
     return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
   }
 
+  if (clueType === CLUE_NOT_SUIT) {
+    const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+  }
+
   return `clueToString cannot cope with clueType ${clueType}`;
 };
 
-export const clueToText = (clue, clueIndex) => {
-  const { clueType } = clue;
-  const prefix = `Clue ${clueIndex + 1}:`;
-  if (clueType === CLUE_HAND_OF_TYPE) {
-    return `${prefix} ${clueToString(clue)}`;
-  }
-
-  return `clueToText cannot cope with clueType ${clueType}`;
-};
+export const clueToText = (clue, clueIndex) => `Clue ${clueIndex + 1}: ${clueToString(clue)}`;
 
 export const createCluesForSolutionHands = (solutionHands) => {
   const clues = [];

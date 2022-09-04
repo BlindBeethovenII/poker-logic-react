@@ -2,7 +2,7 @@
 
 import { createCard, calcHandType } from './card-functions';
 
-import { createClueHandOfType } from './clue-functions';
+import { createClueHandOfType, createClueNotSuit } from './clue-functions';
 
 import {
   NUMBER_A,
@@ -64,6 +64,7 @@ export const clues1 = [
   createClueHandOfType(calcHandType(solutionHands1[1]), 1),
   createClueHandOfType(calcHandType(solutionHands1[2]), 2),
   createClueHandOfType(calcHandType(solutionHands1[3]), 3),
+  createClueNotSuit(SUIT_HEARTS, 3, 0),
 ];
 
 export const solutionHands2 = [
