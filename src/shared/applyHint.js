@@ -34,6 +34,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_NOT_SUIT,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -274,7 +275,7 @@ export const applyAllOfNumberPlacedSuitsHint = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
-export const applyThreeOfAKindNumbersHints = (solutionOptions, hint) => {
+export const applyThreeOfAKindNumbersHint = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -310,7 +311,7 @@ export const applyThreeOfAKindNumbersHints = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
-export const applyThreeOfAKindSuitsHints = (solutionOptions, hint) => {
+export const applyThreeOfAKindSuitsHint = (solutionOptions, hint) => {
   const {
     suits,
     solutionOptionsIndex,
@@ -346,7 +347,7 @@ export const applyThreeOfAKindSuitsHints = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
-export const applyPairNumbersHints = (solutionOptions, hint) => {
+export const applyPairNumbersHint = (solutionOptions, hint) => {
   const {
     numbers,
     solutionOptionsIndex,
@@ -382,7 +383,7 @@ export const applyPairNumbersHints = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
-export const applyPairSuitsHints = (solutionOptions, hint) => {
+export const applyPairSuitsHint = (solutionOptions, hint) => {
   const {
     suits,
     solutionOptionsIndex,
@@ -416,6 +417,20 @@ export const applyPairSuitsHints = (solutionOptions, hint) => {
   });
 
   return newSolutionOptions;
+};
+
+export const applyClueNotSuitHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_NOT_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
@@ -462,16 +477,19 @@ export const applyHint = (solutionOptions, hint) => {
       return applyAllOfNumberPlacedSuitsHint(solutionOptions, hint);
 
     case HINT_THREE_OF_A_KIND_NUMBERS:
-      return applyThreeOfAKindNumbersHints(solutionOptions, hint);
+      return applyThreeOfAKindNumbersHint(solutionOptions, hint);
 
     case HINT_THREE_OF_A_KIND_SUITS:
-      return applyThreeOfAKindSuitsHints(solutionOptions, hint);
+      return applyThreeOfAKindSuitsHint(solutionOptions, hint);
 
     case HINT_PAIR_NUMBERS:
-      return applyPairNumbersHints(solutionOptions, hint);
+      return applyPairNumbersHint(solutionOptions, hint);
 
     case HINT_PAIR_SUITS:
-      return applyPairSuitsHints(solutionOptions, hint);
+      return applyPairSuitsHint(solutionOptions, hint);
+
+    case HINT_CLUE_NOT_SUIT:
+      return applyClueNotSuitHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

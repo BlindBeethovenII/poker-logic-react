@@ -45,6 +45,7 @@ import {
   SUITS,
   NUMBERS,
   CLUE_HAND_OF_TYPE,
+  CLUE_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -72,6 +73,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_NOT_SUIT,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
@@ -1256,6 +1258,35 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
   return hints;
 };
 
+// ------------------ //
+// HINT_CLUE_NOT_SUIT //
+// ------------------ //
+
+// create HINT_CLUE_NOT_SUIT
+export const createHintClueNotSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_NOT_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card still allows the suit then create a HINT_CLUE_NOT_SUIT hint
+export const getClueNotSuitHints = (suit, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+  if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && countSuitsInCardOptions(cardOptions) > 1) {
+    hints.push(createHintClueNotSuit(suit, solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -1275,6 +1306,21 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const numberNotUsedHints = getNumberNotUsedHints(solutionOptions, solutionHands, missingNumber);
   if (numberNotUsedHints.length) {
     return numberNotUsedHints;
+  }
+
+  // first look through clues to process the basic CLUE_NOT_SUIT clues
+  for (let i = 0; i < clues.length; i += 1) {
+    const clue = clues[i];
+    const { clueType } = clue;
+
+    // clue not suit
+    if (clueType === CLUE_NOT_SUIT) {
+      const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+      const clueNotSuitHints = getClueNotSuitHints(suit, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueNotSuitHints.length) {
+        return clueNotSuitHints;
+      }
+    }
   }
 
   // see if all n cards available for a number are placed for that number
@@ -1334,7 +1380,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     return placedCardRemoveNumberHints;
   }
 
-  // look through each clue indvidually
+  // look through each clue individually
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;

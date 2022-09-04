@@ -92,6 +92,7 @@ export const HINT_THREE_OF_A_KIND_NUMBERS = 'THREE OF A KIND NUMBERS'; // also a
 export const HINT_THREE_OF_A_KIND_SUITS = 'THREE OF A KIND SUITS'; // also applies to the three of a kind of a full house
 export const HINT_PAIR_NUMBERS = 'PAIR NUMBERS'; // also applies to the pair in a full house and to two pairs
 export const HINT_PAIR_SUITS = 'PAIR SUITS'; // also applies to the pair in a full house and to two pairs
+export const HINT_CLUE_NOT_SUIT = 'CLUE NOT SUIT';
 
 export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';
 export const CLUE_NOT_SUIT = 'NOT SUIT';
