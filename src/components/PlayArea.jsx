@@ -126,6 +126,7 @@ const PlayArea = () => (
     <NewSolutionButton newSolutionIndex={1} />
     <NewSolutionButton newSolutionIndex={2} />
     <HintButton />
+    <HintButton allHints />
     <Clues />
   </div>
 );

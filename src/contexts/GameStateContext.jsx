@@ -145,6 +145,38 @@ export const GameStateContextProvider = ({ children }) => {
     }
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
+  // find and apply all hints
+  const findAndApplyAllHints = useCallback(() => {
+    let lookForMore = true;
+    let finalSolutionOptions = solutionOptions;
+    let hintsApplied = false;
+
+    while (lookForMore) {
+      const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable);
+      console.log(`getHints returns ${JSON.stringify(hints)}`);
+
+      if (hints?.length) {
+        // apply all these hints
+        let newSolutionOptions = finalSolutionOptions;
+        hints.forEach((hint) => {
+          newSolutionOptions = applyHint(newSolutionOptions, hint);
+        });
+        // had to do something weird here as could not re-assign newSolutionOptions to the outer one here??
+        finalSolutionOptions = newSolutionOptions;
+        hintsApplied = true;
+
+        // and look for more
+      } else {
+        // no more hints available
+        lookForMore = false;
+      }
+    }
+
+    if (hintsApplied) {
+      setSolutionOptions(finalSolutionOptions);
+    }
+  }, [solutionOptions, solution, clues, cardsAvailable]);
+
   // ----------- //
   // the context //
   // ----------- //
@@ -179,6 +211,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     // hint stuff
     findAndApplyNextHint,
+    findAndApplyAllHints,
 
     // clues stuff
     clues,
@@ -195,6 +228,7 @@ export const GameStateContextProvider = ({ children }) => {
     cardsAvailable,
     newSolution,
     findAndApplyNextHint,
+    findAndApplyAllHints,
     clues,
   ]);
 
