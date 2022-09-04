@@ -415,6 +415,13 @@ export const getCardsStillAvailable = (cardsAvailable, solutionOptions) => [
   cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions),
 ];
 
+// return a count of cards that are still available in solution options
+export const countCardsStillAvailable = (cardsAvailable, solutionOptions) =>
+  cardsStillAvailableFromArray(cardsAvailable[0], solutionOptions).length
+  + cardsStillAvailableFromArray(cardsAvailable[1], solutionOptions).length
+  + cardsStillAvailableFromArray(cardsAvailable[2], solutionOptions).length
+  + cardsStillAvailableFromArray(cardsAvailable[3], solutionOptions).length;
+
 // helper function
 const countNumberAvailableInSuitCardsAvailable = (number, suitCardsAvailable) => {
   const countIfSameNumber = (accumulator, card) => accumulator + (card.number === number ? 1 : 0);

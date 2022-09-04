@@ -17,6 +17,7 @@ import RestartButton from './RestartButton';
 import NewSolutionButton from './NewSolutionButton';
 import HintButton from './HintButton';
 import Clues from './Clues';
+import CompleteIncorrectMark from './CompleteIncorrectMark';
 
 import {
   SUIT_SPADES,
@@ -128,6 +129,7 @@ const PlayArea = () => (
     <HintButton />
     <HintButton allHints />
     <Clues />
+    <CompleteIncorrectMark />
   </div>
 );
 
