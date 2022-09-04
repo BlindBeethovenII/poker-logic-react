@@ -33,6 +33,7 @@ import {
   allNumbersFromFirstInSecond,
   isAnotherSuitSetInCardOptions,
   isAnotherNumberSetInCardOptions,
+  canPairOfSuitsOfNumberFitIn,
 } from './solution-functions';
 
 import {
@@ -74,6 +75,7 @@ import {
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
   HINT_CLUE_NOT_SUIT,
+  HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
@@ -950,25 +952,35 @@ export const getPairNumbersHints = (cardsAvailable, solutionHandsIndex, solution
   const numbersAvailable = [];
 
   const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[handOptionsIndex1];
+  const cardOptions2 = handOptions[handOptionsIndex2];
+  const countNumbers1 = countNumbersInCardOptions(cardOptions1);
+  const countNumbers2 = countNumbersInCardOptions(cardOptions2);
+
+  // because we are working from a valid solution
+  // if both numbers are already set - then no point in continuing
+  if (countNumbers1 === 1 && countNumbers2 === 1) {
+    return [];
+  }
 
   // because we are working from a valid solution
   // if either card in the pair has a single number set, then it must be the number for the other card in the pair
-  if (countNumbersInCardOptions(handOptions[handOptionsIndex1]) === 1) {
+  if (countNumbers1 === 1) {
     // fourth card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[handOptionsIndex1]));
-  } else if (countNumbersInCardOptions(handOptions[handOptionsIndex2]) === 1) {
+    numbersAvailable.push(getFirstNumberSet(cardOptions1));
+  } else if (countNumbers2 === 1) {
     // fifth card has a single number set
-    numbersAvailable.push(getFirstNumberSet(handOptions[handOptionsIndex2]));
+    numbersAvailable.push(getFirstNumberSet(cardOptions2));
   }
 
   // if we didn't find one that way, then look for the numbers with at least 2 cards still available
   if (!numbersAvailable.length) {
     NUMBERS.forEach((number) => {
-      // count the number of cards of this number still available
+      // count the number of cards of this number
       const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
 
-      // we need to consider if this number has been placed anywhere yet, as a placed number doesn't remove a corresponding card from cardsStillAvailable
-      // note: numberPlacedCount will not include any in pair of the full house, as the above will have found those
+      // and how many have been placed already
+      // note: this will not include any in the pair, as the above will have found those
       const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
 
       // so if we need at least 2 available after numberPlacedCount has been removed
@@ -978,11 +990,10 @@ export const getPairNumbersHints = (cardsAvailable, solutionHandsIndex, solution
     });
   }
 
-  // if we have at least one number which has 2 cards available, then we can create a hint - one for each card of the pair at this solutionHandsIndex and card indexes
-  // note that the solutionHandsIndex here is the solutionOptionsIndex
   // work through the two cards of the pair in this handOptions
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
   [handOptionsIndex1, handOptionsIndex2].forEach((handOptionsIndex) => {
-    // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
+    // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
     if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintPairNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
@@ -1014,7 +1025,7 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
   const firstCardOptions = handOptions[handOptionsIndex1];
   const secondCardOptions = handOptions[handOptionsIndex2];
 
-  // if the suits of the three of a kind are already all set, then nothing to do here
+  // if the suits of the pair are already all set, then nothing to do here
   const countSuits1 = countSuitsInCardOptions(firstCardOptions);
   const countSuits2 = countSuitsInCardOptions(secondCardOptions);
   if (countSuits1 === 1 && countSuits2 === 1) {
@@ -1042,7 +1053,7 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
       const numberAvailableCount = countNumberAvailable(number2, cardsAvailable);
 
       // and how many of this number have been placed anywhere
-      // note: numberPlacedCount will not include any in the pair of this hand, as the above will have found those
+      // note: this will not include any in the pair of this hand, as the above will have found those
       const numberPlacedCount = countNumberPlacedInSolutionOptions(number2, solutionOptions);
 
       // so if we need at least 2 available after numberPlacedCount has been removed
@@ -1287,6 +1298,82 @@ export const getClueNotSuitHints = (suit, solutionHandsIndex, handOptionsIndex, 
   return hints;
 };
 
+// ------------------------------------ //
+// HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
+// ------------------------------------ //
+
+// create HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT
+export const createHintPairNumbersRestrictedBySuit = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if there are 2 or more cards of a number are available (either in cardsAvailable or already placed in position)
+// then look to restrict to the numbers whose suits can still fit in
+// note this applies to the pair in a full house and for the pairs of two pairs - the handOptions indexes are given
+// note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
+export const getPairNumbersRestrictedBySuitHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue, handOptionsIndex1, handOptionsIndex2) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[handOptionsIndex1];
+  const cardOptions2 = handOptions[handOptionsIndex2];
+  const countNumbers1 = countNumbersInCardOptions(cardOptions1);
+  const countNumbers2 = countNumbersInCardOptions(cardOptions2);
+
+  // because we are working from a valid solution
+  // if both numbers are already set - then no point in continuing
+  // in fact if either number is set - then HINT_PAIR_NUMBERS will set the other to that number and no point in continuing as there won't be a further number to remove
+  if (countNumbers1 === 1 || countNumbers2 === 1) {
+    return [];
+  }
+
+  // look for numbers that can still place a pair here (same logic as HINT_PAIR_NUMBERS)
+  NUMBERS.forEach((number) => {
+    // count the number of cards of this number
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // count the number placed
+    // note: this will not include any in pair, as the above will have found those
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // so if we need at least 2 available after numberPlacedCount has been removed
+    if (numberAvailableCount - numberPlacedCount >= 2) {
+      numbersAvailable.push(number);
+    }
+  });
+
+  // if we don't have two or more numbers, then no chance of restricting anything
+  if (numbersAvailable.length < 2) {
+    return [];
+  }
+
+  // we want to restrict these to numbers for which a pair of that number can still be placed because of the suits still available for that number
+  const numbersAvailableRestricted = [];
+  numbersAvailable.forEach((number) => {
+    if (canPairOfSuitsOfNumberFitIn(number, solutionHandsIndex, handOptionsIndex1, handOptionsIndex2, cardsAvailable, solutionOptions)) {
+      numbersAvailableRestricted.push(number);
+    }
+  });
+
+  // work through the two cards of the pair in this handOptions
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
+  [handOptionsIndex1, handOptionsIndex2].forEach((handOptionsIndex) => {
+    // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
+    const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
+    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
+      hints.push(createHintPairNumbersRestrictedBySuit(numbersAvailableRestricted, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -1427,6 +1514,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       if (pairSuitsHints.length) {
         return pairSuitsHints;
       }
+
+      const pairNumbersRestrictedBySuitHints = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
+      if (pairNumbersRestrictedBySuitHints.length) {
+        return pairNumbersRestrictedBySuitHints;
+      }
     }
 
     // hand type clue: flush
@@ -1469,6 +1561,16 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       if (pairSuitsHints2.length) {
         return pairSuitsHints2;
       }
+
+      const pairNumbersRestrictedBySuitHints1 = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersRestrictedBySuitHints1.length) {
+        return pairNumbersRestrictedBySuitHints1;
+      }
+
+      const pairNumbersRestrictedBySuitHints2 = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
+      if (pairNumbersRestrictedBySuitHints2.length) {
+        return pairNumbersRestrictedBySuitHints2;
+      }
     }
 
     // hand type clue: pair
@@ -1481,6 +1583,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairSuitsHints = getPairSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairSuitsHints.length) {
         return pairSuitsHints;
+      }
+
+      const pairNumbersRestrictedBySuitHints = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersRestrictedBySuitHints.length) {
+        return pairNumbersRestrictedBySuitHints;
       }
     }
 

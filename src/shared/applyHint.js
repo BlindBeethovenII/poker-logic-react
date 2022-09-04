@@ -35,6 +35,7 @@ import {
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
   HINT_CLUE_NOT_SUIT,
+  HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -433,6 +434,42 @@ export const applyClueNotSuitHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyPairNumbersRestrictedBySuitHint = (solutionOptions, hint) => {
+  const {
+    numbers,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // we do something different if numbers is to a single number, as opposed to multiple numbers
+  if (numbers.length === 1) {
+    const number = numbers[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+    // we know this must be the number
+    return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT for numbers ${numbers} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // given solution functions we have, we will toggle (to off) any other number that is currently set
+  NUMBERS.forEach((number) => {
+    if (!numbers.includes(number) && isNumberTrueInCardOptions(number, cardOptions)) {
+      // this number is not part of the solution, so toggle off
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
+};
+
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
@@ -490,6 +527,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_NOT_SUIT:
       return applyClueNotSuitHint(solutionOptions, hint);
+
+    case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
+      return applyPairNumbersRestrictedBySuitHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

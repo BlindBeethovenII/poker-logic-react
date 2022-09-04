@@ -463,6 +463,24 @@ export const getSuitsOfNumberInAvailable = (number, cardsAvailable) => {
   return result;
 };
 
+// get the suit indexes of the given number in the given cardsAvailable - in order
+export const getSuitIndexesOfNumberInAvailable = (number, cardsAvailable) => {
+  const result = [];
+  if (numberInSuitCardsAvailable(number, cardsAvailable[0])) {
+    result.push(INDEX_SUIT_SPADES);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[1])) {
+    result.push(INDEX_SUIT_HEARTS);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[2])) {
+    result.push(INDEX_SUIT_DIAMONDS);
+  }
+  if (numberInSuitCardsAvailable(number, cardsAvailable[3])) {
+    result.push(INDEX_SUIT_CLUBS);
+  }
+  return result;
+};
+
 // get an array of numbers from the given array of suit cards
 const getNumbersFromSuitCardsAvailable = (suitCardsAvailable) => {
   const result = [];
@@ -736,4 +754,33 @@ export const isAnotherNumberSetInCardOptions = (cardOptions, numbers) => {
   });
 
   return result;
+};
+
+// return true if an available pair of this number can fit into the stated pair position by suit
+// note: it is known that the given number is a possibility here - we are just interested in the suits fitting
+export const canPairOfSuitsOfNumberFitIn = (number, solutionHandsIndex, handOptionsIndex1, handOptionsIndex2, cardsAvailable, solutionOptions) => {
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[handOptionsIndex1];
+  const cardOptions2 = handOptions[handOptionsIndex2];
+
+  // first get all the suit indexs of the suits available for this number
+  const suitIndexes = getSuitIndexesOfNumberInAvailable(number, cardsAvailable);
+
+  // consider all pairs - remembering order must be obeyed
+  for (let suitIndex1 = 0; suitIndex1 < suitIndexes.length - 1; suitIndex1 += 1) {
+    const suitOptionsIndex1 = suitIndexes[suitIndex1];
+    // only continue if this suit can be placed in the first card
+    if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex1)) {
+      for (let suitIndex2 = suitIndex1 + 1; suitIndex2 < suitIndexes.length; suitIndex2 += 1) {
+        const suitOptionsIndex2 = suitIndexes[suitIndex2];
+        if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex2)) {
+          // yet this one can fit
+          return true;
+        }
+      }
+    }
+  }
+
+  // couldn't find a valid pair of suits for this number
+  return false;
 };
