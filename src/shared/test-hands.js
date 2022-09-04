@@ -65,6 +65,7 @@ export const clues1 = [
   createClueHandOfType(calcHandType(solutionHands1[2]), 2),
   createClueHandOfType(calcHandType(solutionHands1[3]), 3),
   createClueNotSuit(SUIT_HEARTS, 3, 0),
+  createClueNotSuit(SUIT_HEARTS, 1, 1),
 ];
 
 export const solutionHands2 = [

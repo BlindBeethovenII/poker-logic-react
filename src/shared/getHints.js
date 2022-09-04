@@ -34,6 +34,7 @@ import {
   isAnotherSuitSetInCardOptions,
   isAnotherNumberSetInCardOptions,
   canPairOfSuitsOfNumberFitIn,
+  canThreeOfSuitsOfNumberFitIn,
 } from './solution-functions';
 
 import {
@@ -76,6 +77,7 @@ import {
   HINT_PAIR_SUITS,
   HINT_CLUE_NOT_SUIT,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
+  HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
@@ -1361,6 +1363,12 @@ export const getPairNumbersRestrictedBySuitHints = (cardsAvailable, solutionHand
     }
   });
 
+  // we should have at least one number, to be a valid solution
+  if (!numbersAvailableRestricted.length) {
+    console.error('getPairNumbersRestrictedBySuitHints could not find any numbers that have at least 2 cards available for which the suits fit in');
+    return [];
+  }
+
   // work through the two cards of the pair in this handOptions
   // note that the solutionHandsIndex here is the solutionOptionsIndex
   [handOptionsIndex1, handOptionsIndex2].forEach((handOptionsIndex) => {
@@ -1368,6 +1376,90 @@ export const getPairNumbersRestrictedBySuitHints = (cardsAvailable, solutionHand
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
     if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
       hints.push(createHintPairNumbersRestrictedBySuit(numbersAvailableRestricted, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
+
+  return hints;
+};
+
+// ----------------------------------------------- //
+// HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT //
+// ----------------------------------------------- //
+
+// create HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT
+export const createHintThreeOfAKindNumbersRestrictedBySuit = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
+  numbers,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if there are 3 or more cards of a number are available (either in cardsAvailable or already placed in position)
+// then look to restrict to the numbers whose suits can still fit in
+// note this applies to the 3 of a kind in a full house as well
+// note that the hint includes an array of such numbers - the apply hint will set it to the single number if this array is of length 1
+export const getThreeOfAKindNumbersRestrictedBySuitHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+  const countNumbers1 = countNumbersInCardOptions(cardOptions1);
+  const countNumbers2 = countNumbersInCardOptions(cardOptions2);
+  const countNumbers3 = countNumbersInCardOptions(cardOptions3);
+
+  // because we are working from a valid solution
+  // if all of the three numbers are already set - then no point in continuing
+  // in fact if any of the number are set - then HINT_THREE_OF_A_KIND_NUMBERS will set the other to that number and no point in continuing as there won't be a further number to remove
+  if (countNumbers1 === 1 || countNumbers2 === 1 || countNumbers3 === 1) {
+    return [];
+  }
+
+  // look for numbers that can still place three of a kind here (same logic as HINT_THREE_OF_A_KIND_NUMBERS)
+  NUMBERS.forEach((number) => {
+    // count the number of cards of this number
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // count the number placed
+    // note: this will not include any in the first three positions of this hand, as the above will have found those
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // so if we need at least 3 available after numberPlacedCount has been removed
+    if (numberAvailableCount - numberPlacedCount >= 3) {
+      numbersAvailable.push(number);
+    }
+  });
+
+  // if we don't have three or more numbers, then no chance of restricting anything
+  if (numbersAvailable.length < 3) {
+    return [];
+  }
+
+  // we want to restrict these to numbers for which three of a kind of that number can still be placed because of the suits still available for that number
+  const numbersAvailableRestricted = [];
+  numbersAvailable.forEach((number) => {
+    if (canThreeOfSuitsOfNumberFitIn(number, solutionHandsIndex, cardsAvailable, solutionOptions)) {
+      numbersAvailableRestricted.push(number);
+    }
+  });
+
+  // we should have at least one number, to be a valid solution
+  if (!numbersAvailableRestricted.length) {
+    console.error('getThreeOfAKindNumbersRestrictedBySuitHints could not find any numbers that have at least 3 cards available for which the suits fit in');
+    return [];
+  }
+
+  // work through the three cards in this handOptions
+  // note that the solutionHandsIndex here is the solutionOptionsIndex
+  [0, 1, 2].forEach((handOptionsIndex) => {
+    // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
+    const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
+    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
+      hints.push(createHintThreeOfAKindNumbersRestrictedBySuit(numbersAvailableRestricted, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
 
@@ -1515,6 +1607,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return pairSuitsHints;
       }
 
+      const threeOfAKindNumbersRestrictedBySuitHints = getThreeOfAKindNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersRestrictedBySuitHints.length) {
+        return threeOfAKindNumbersRestrictedBySuitHints;
+      }
+
       const pairNumbersRestrictedBySuitHints = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
       if (pairNumbersRestrictedBySuitHints.length) {
         return pairNumbersRestrictedBySuitHints;
@@ -1537,6 +1634,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const threeOfAKindSuitsHints = getThreeOfAKindSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindSuitsHints.length) {
         return threeOfAKindSuitsHints;
+      }
+
+      const threeOfAKindNumbersRestrictedBySuitHints = getThreeOfAKindNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersRestrictedBySuitHints.length) {
+        return threeOfAKindNumbersRestrictedBySuitHints;
       }
     }
 

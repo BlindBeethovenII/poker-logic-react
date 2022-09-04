@@ -774,8 +774,44 @@ export const canPairOfSuitsOfNumberFitIn = (number, solutionHandsIndex, handOpti
       for (let suitIndex2 = suitIndex1 + 1; suitIndex2 < suitIndexes.length; suitIndex2 += 1) {
         const suitOptionsIndex2 = suitIndexes[suitIndex2];
         if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex2)) {
-          // yet this one can fit
+          // yes this pair can fit
           return true;
+        }
+      }
+    }
+  }
+
+  // couldn't find a valid pair of suits for this number
+  return false;
+};
+
+// return true if there a three of this number can fit into the first three cards by suit
+// note: it is known that the given number is a possibility here - we are just interested in the suits fitting
+export const canThreeOfSuitsOfNumberFitIn = (number, solutionHandsIndex, cardsAvailable, solutionOptions) => {
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+
+  // first get all the suit indexs of the suits available for this number
+  const suitIndexes = getSuitIndexesOfNumberInAvailable(number, cardsAvailable);
+
+  // consider all triples - remembering order must be obeyed
+  for (let suitIndex1 = 0; suitIndex1 < suitIndexes.length - 2; suitIndex1 += 1) {
+    const suitOptionsIndex1 = suitIndexes[suitIndex1];
+    // only continue if this suit can be placed in the first card
+    if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex1)) {
+      for (let suitIndex2 = suitIndex1 + 1; suitIndex2 < suitIndexes.length - 1; suitIndex2 += 1) {
+        const suitOptionsIndex2 = suitIndexes[suitIndex2];
+        // only continue if this suit can be placed in the second card
+        if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex2)) {
+          for (let suitIndex3 = suitIndex2 + 1; suitIndex3 < suitIndexes.length; suitIndex3 += 1) {
+            const suitOptionsIndex3 = suitIndexes[suitIndex3];
+            if (getSuitOptionsValueInCardOptions(cardOptions3, suitOptionsIndex3)) {
+              // yes this triple can fit
+              return true;
+            }
+          }
         }
       }
     }
