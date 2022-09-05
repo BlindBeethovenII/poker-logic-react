@@ -1,10 +1,11 @@
 // useful clue functions
 
-import { calcHandType } from './card-functions';
+import { calcHandType, cardNumberToString } from './card-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
   CLUE_NOT_SUIT,
+  CLUE_NOT_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -38,6 +39,17 @@ export const createClueHandOfType = (handType, solutionHandsIndex, deduced) => (
 export const createClueNotSuit = (suit, solutionHandsIndex, handOptionsIndex) => ({
   clueType: CLUE_NOT_SUIT,
   suit,
+  solutionHandsIndex,
+  handOptionsIndex,
+});
+
+// --------------- //
+// CLUE_NOT_NUMBER //
+// --------------- //
+
+export const createClueNotNumber = (number, solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_NOT_NUMBER,
+  number,
   solutionHandsIndex,
   handOptionsIndex,
 });
@@ -99,6 +111,11 @@ export const clueToString = (clue) => {
   if (clueType === CLUE_NOT_SUIT) {
     const { suit, solutionHandsIndex, handOptionsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+  }
+
+  if (clueType === CLUE_NOT_NUMBER) {
+    const { number, solutionHandsIndex, handOptionsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${cardNumberToString(number)}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
