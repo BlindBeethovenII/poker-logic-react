@@ -41,6 +41,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
   HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
+  HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -558,10 +559,25 @@ export const applyThreeOfAKindNumbersNumberNotInAll = (solutionOptions, hint) =>
     number,
     solutionOptionsIndex,
     handOptionsIndex,
+    clue,
   } = hint;
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+  logIfDevEnv(`applying HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyPairNumbersNumberNotInAll = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
@@ -643,6 +659,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL:
       return applyThreeOfAKindNumbersNumberNotInAll(solutionOptions, hint);
+
+    case HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL:
+      return applyPairNumbersNumberNotInAll(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

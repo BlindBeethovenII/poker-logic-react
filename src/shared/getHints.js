@@ -87,6 +87,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
   HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
+  HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
 } from './constants';
 
 // -------------------- //
@@ -1593,7 +1594,7 @@ export const createHintThreeOfAKindNumbersNumberNotInAll = (number, solutionOpti
   clue,
 });
 
-// any number currently possible in a three of a kind cardOptions must also be possible in all three cardOptions, if not remove it from any that still have hit
+// any number currently possible in a three of a kind cardOptions must also be possible in all three cardOptions, if not remove it from any that still have it
 // note this applies to the 3 of a kind in a full house as well
 export const getThreeOfAKindNumbersNumberNotInAllHints = (solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
@@ -1637,6 +1638,63 @@ export const getThreeOfAKindNumbersNumberNotInAllHints = (solutionHandsIndex, so
       }
       if (getNumberOptionsValueInCardOptions(cardOptions3, number)) {
         hints.push(createHintThreeOfAKindNumbersNumberNotInAll(number, solutionHandsIndex, 2, clue));
+      }
+    }
+  });
+
+  return hints;
+};
+
+// ----------------------------------- //
+// HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL //
+// ----------------------------------- //
+
+// create HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL
+export const createHintPairNumbersNumberNotInAll = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// any number currently possible in a pair cardOptions must also be possible in both cardOptions, if not remove it from any (the other) that still have it
+// note this applies to the pair in a full house and for the pairs of two pairs - the handOptions indexes are given
+export const getPairNumbersNumberNotInAllHints = (solutionHandsIndex, solutionOptions, clue, handOptionsIndex1, handOptionsIndex2) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[handOptionsIndex1];
+  const cardOptions2 = handOptions[handOptionsIndex2];
+
+  // get the numbers still possible from the two positions
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+
+  // get all the numbers that appear in any of these two arrays
+  NUMBERS.forEach((number) => {
+    if (numbers1.includes(number) || numbers2.includes(number)) {
+      numbersAvailable.push(number);
+    }
+  });
+
+  // if we only have one number then the number for this pair is already known and there is nothing for this hint to do
+  if (numbersAvailable.length === 1) {
+    return [];
+  }
+
+  // consider each number
+  numbersAvailable.forEach((number) => {
+    // if this number is not in both cardOptions
+    if (!getNumberOptionsValueInCardOptions(cardOptions1, number) || !getNumberOptionsValueInCardOptions(cardOptions2, number)) {
+      // create hint to remove it from any that it is currently possible in
+      if (getNumberOptionsValueInCardOptions(cardOptions1, number)) {
+        hints.push(createHintPairNumbersNumberNotInAll(number, solutionHandsIndex, handOptionsIndex1, clue));
+      }
+      if (getNumberOptionsValueInCardOptions(cardOptions2, number)) {
+        hints.push(createHintPairNumbersNumberNotInAll(number, solutionHandsIndex, handOptionsIndex2, clue));
       }
     }
   });
@@ -1804,6 +1862,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return pairSuitsHints;
       }
 
+      const pairNumbersNumberNotInAllHints = getPairNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue, 3, 4);
+      if (pairNumbersNumberNotInAllHints.length) {
+        return pairNumbersNumberNotInAllHints;
+      }
+
       const pairNumbersAllSameSuitHints = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
       if (pairNumbersAllSameSuitHints.length) {
         return pairNumbersAllSameSuitHints;
@@ -1866,6 +1929,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return pairSuitsHints1;
       }
 
+      const pairNumbersNumberNotInAllHints1 = getPairNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersNumberNotInAllHints1.length) {
+        return pairNumbersNumberNotInAllHints1;
+      }
+
       const pairNumbersAllSameSuitHints1 = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairNumbersAllSameSuitHints1.length) {
         return pairNumbersAllSameSuitHints1;
@@ -1879,6 +1947,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairSuitsHints2 = getPairSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
       if (pairSuitsHints2.length) {
         return pairSuitsHints2;
+      }
+
+      const pairNumbersNumberNotInAllHints2 = getPairNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue, 2, 3);
+      if (pairNumbersNumberNotInAllHints2.length) {
+        return pairNumbersNumberNotInAllHints2;
       }
 
       const pairNumbersAllSameSuitHints2 = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
@@ -1907,6 +1980,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairSuitsHints = getPairSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairSuitsHints.length) {
         return pairSuitsHints;
+      }
+
+      const pairNumbersNumberNotInAllHints = getPairNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersNumberNotInAllHints.length) {
+        return pairNumbersNumberNotInAllHints;
       }
 
       const pairNumbersAllSameSuitHints = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
