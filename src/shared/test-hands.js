@@ -35,7 +35,7 @@ export const solutionHands1 = [
     createCard(SUIT_SPADES, NUMBER_5),
     createCard(SUIT_DIAMONDS, NUMBER_5),
     createCard(SUIT_CLUBS, NUMBER_5),
-    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
     createCard(SUIT_CLUBS, NUMBER_4),
   ],
   [
