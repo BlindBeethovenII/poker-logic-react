@@ -86,6 +86,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
   HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
+  HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
 } from './constants';
 
 // -------------------- //
@@ -1579,6 +1580,70 @@ export const getPairNumbersAllSameSuitHints = (cardsAvailable, solutionHandsInde
   return hints;
 };
 
+// ---------------------------------------------- //
+// HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL //
+// ---------------------------------------------- //
+
+// create HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL
+export const createHintThreeOfAKindNumbersNumberNotInAll = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// any number currently possible in a three of a kind cardOptions must also be possible in all three cardOptions, if not remove it from any that still have hit
+// note this applies to the 3 of a kind in a full house as well
+export const getThreeOfAKindNumbersNumberNotInAllHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+
+  // get the numbers still possible from the first three positions
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+  const numbers3 = getNumbersFromCardOptions(cardOptions3);
+
+  // get all the numbers that appear in any of these three arrays
+  NUMBERS.forEach((number) => {
+    if (numbers1.includes(number) || numbers2.includes(number) || numbers3.includes(number)) {
+      numbersAvailable.push(number);
+    }
+  });
+
+  // if we only have one number then the number for this three of a kind is already known and there is nothing for this hint to do
+  if (numbersAvailable.length === 1) {
+    return [];
+  }
+
+  // consider each number
+  numbersAvailable.forEach((number) => {
+    // if this number is not in all three cardOptions
+    if (!getNumberOptionsValueInCardOptions(cardOptions1, number)
+    || !getNumberOptionsValueInCardOptions(cardOptions2, number)
+    || !getNumberOptionsValueInCardOptions(cardOptions3, number)) {
+      // create hint to remove it from any that it is currently possible in
+      if (getNumberOptionsValueInCardOptions(cardOptions1, number)) {
+        hints.push(createHintThreeOfAKindNumbersNumberNotInAll(number, solutionHandsIndex, 0, clue));
+      }
+      if (getNumberOptionsValueInCardOptions(cardOptions2, number)) {
+        hints.push(createHintThreeOfAKindNumbersNumberNotInAll(number, solutionHandsIndex, 1, clue));
+      }
+      if (getNumberOptionsValueInCardOptions(cardOptions3, number)) {
+        hints.push(createHintThreeOfAKindNumbersNumberNotInAll(number, solutionHandsIndex, 2, clue));
+      }
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -1719,6 +1784,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return threeOfAKindSuitsHints;
       }
 
+      const threeOfAKindNumbersNumberNotInAllHints = getThreeOfAKindNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersNumberNotInAllHints.length) {
+        return threeOfAKindNumbersNumberNotInAllHints;
+      }
+
       const threeOfAKindNumbersAllSameSuitHints = getThreeOfAKindNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindNumbersAllSameSuitHints.length) {
         return threeOfAKindNumbersAllSameSuitHints;
@@ -1766,6 +1836,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const threeOfAKindSuitsHints = getThreeOfAKindSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindSuitsHints.length) {
         return threeOfAKindSuitsHints;
+      }
+
+      const threeOfAKindNumbersNumberNotInAllHints = getThreeOfAKindNumbersNumberNotInAllHints(solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersNumberNotInAllHints.length) {
+        return threeOfAKindNumbersNumberNotInAllHints;
       }
 
       const threeOfAKindNumbersAllSameSuitHints = getThreeOfAKindNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);

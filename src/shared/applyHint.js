@@ -40,6 +40,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
   HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
+  HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -552,7 +553,22 @@ export const applyPairNumbersAllSameSuit = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-// apply the given hint - this assumes it is a valid hint for the given solutionOptions
+export const applyThreeOfAKindNumbersNumberNotInAll = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+// ------------------------------------------------------------------------------------ //
+// apply the given hint - this assumes it is a valid hint for the given solutionOptions //
+// ------------------------------------------------------------------------------------ //
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
   switch (hintType) {
@@ -624,6 +640,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PAIR_NUMBERS_ALL_SAME_SUIT:
       return applyPairNumbersAllSameSuit(solutionOptions, hint);
+
+    case HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL:
+      return applyThreeOfAKindNumbersNumberNotInAll(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
