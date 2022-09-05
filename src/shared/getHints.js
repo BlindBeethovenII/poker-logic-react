@@ -85,6 +85,7 @@ import {
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
+  HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
 } from './constants';
 
 // -------------------- //
@@ -1518,6 +1519,66 @@ export const getThreeOfAKindNumbersAllSameSuitHints = (cardsAvailable, solutionH
   return hints;
 };
 
+// ------------------------------- //
+// HINT_PAIR_NUMBERS_ALL_SAME_SUIT //
+// ------------------------------- //
+
+// create HINT_PAIR_NUMBERS_ALL_SAME_SUIT
+export const createHintPairNumbersAllSameSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if all the possible numbers to make up the pair all have the same three suits then we know the suits of the pair cards due to the suit ordering
+// note this applies to the pair in a full house and for the pairs of two pairs - the handOptions indexes are given
+export const getPairNumbersAllSameSuitHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue, handOptionsIndex1, handOptionsIndex2) => {
+  const hints = [];
+
+  const numbersAvailable = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+  const cardOptions1 = handOptions[handOptionsIndex1];
+  const cardOptions2 = handOptions[handOptionsIndex2];
+
+  // get the numbers still possible from the two positions
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+
+  // get all the numbers that appear in either of these two arrays
+  NUMBERS.forEach((number) => {
+    if (numbers1.includes(number) || numbers2.includes(number)) {
+      numbersAvailable.push(number);
+    }
+  });
+
+  // get the suits available for these available numbers that can still be placed in the two positions
+  const suits = getSuitsOfNumberAvailableForGivenCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2);
+
+  // there should be at least 2
+  if (suits.length < 2) {
+    console.error(`getPairNumbersAllSameSuitHints needs at least 2 suits for numbers ${numbersAvailable} but got ${suits}`);
+    return [];
+  }
+
+  // this hint only applies when just two suits are possible
+  if (suits.length > 2) {
+    return [];
+  }
+
+  // so we know the two suits must be in this order in the two cards
+  if (countSuitsInCardOptions(cardOptions1) > 1) {
+    hints.push(createHintPairNumbersAllSameSuit(suits[0], solutionHandsIndex, handOptionsIndex1, clue));
+  }
+  if (countSuitsInCardOptions(cardOptions2) > 1) {
+    hints.push(createHintPairNumbersAllSameSuit(suits[1], solutionHandsIndex, handOptionsIndex2, clue));
+  }
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -1673,6 +1734,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return pairSuitsHints;
       }
 
+      const pairNumbersAllSameSuitHints = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
+      if (pairNumbersAllSameSuitHints.length) {
+        return pairNumbersAllSameSuitHints;
+      }
+
       const threeOfAKindNumbersRestrictedBySuitHints = getThreeOfAKindNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindNumbersRestrictedBySuitHints.length) {
         return threeOfAKindNumbersRestrictedBySuitHints;
@@ -1725,6 +1791,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return pairSuitsHints1;
       }
 
+      const pairNumbersAllSameSuitHints1 = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersAllSameSuitHints1.length) {
+        return pairNumbersAllSameSuitHints1;
+      }
+
       const pairNumbersHints2 = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
       if (pairNumbersHints2.length) {
         return pairNumbersHints2;
@@ -1733,6 +1804,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairSuitsHints2 = getPairSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
       if (pairSuitsHints2.length) {
         return pairSuitsHints2;
+      }
+
+      const pairNumbersAllSameSuitHints2 = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 2, 3);
+      if (pairNumbersAllSameSuitHints2.length) {
+        return pairNumbersAllSameSuitHints2;
       }
 
       const pairNumbersRestrictedBySuitHints1 = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
@@ -1756,6 +1832,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairSuitsHints = getPairSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairSuitsHints.length) {
         return pairSuitsHints;
+      }
+
+      const pairNumbersAllSameSuitHints = getPairNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
+      if (pairNumbersAllSameSuitHints.length) {
+        return pairNumbersAllSameSuitHints;
       }
 
       const pairNumbersRestrictedBySuitHints = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
