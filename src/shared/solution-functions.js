@@ -820,3 +820,47 @@ export const canThreeOfSuitsOfNumberFitIn = (number, solutionHandsIndex, cardsAv
   // couldn't find a valid pair of suits for this number
   return false;
 };
+
+// convert the given numbers into their suits from given cards available excluding the given position indexes of the given solutionHandIndex hand
+// position index params are so this code works for pair and three of a kind (for a pair index3 will be undefined which will always not match the condition)
+// we exclude a number's suit if it is placed outside of the first n cards as that card is not available to be later placed in the first n cards
+// eslint-disable-next-line max-len
+export const getSuitsOfNumberInAvailableNotInNCardsOfHand = (numbers, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2, handOptionsIndex3) => {
+  // convert the numbers into suits for the available numbers
+  const repeatedSuits = [];
+  numbers.forEach((number) => {
+    // first get all the suits for this card
+    const allSuits = getSuitsOfNumberInAvailable(number, cardsAvailable);
+    // we don't want to include a suit for this number that is placed outside of the first n cards as that suit is not actually available for the first n cards
+    allSuits.forEach((suit) => {
+      const card = createCard(suit, number);
+      let cardIsPlaced = false;
+      for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+        const handOptions = solutionOptions[solutionOptionsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          if (solutionHandsIndex !== solutionOptionsIndex
+            || (handOptionsIndex !== handOptionsIndex1 && handOptionsIndex !== handOptionsIndex2 && handOptionsIndex !== handOptionsIndex3)) {
+            const cardOptions = handOptions[handOptionsIndex];
+            if (isCardPlacedInCardOptions(card, cardOptions)) {
+              cardIsPlaced = true;
+            }
+          }
+        }
+      }
+      if (!cardIsPlaced) {
+        // this card isn't already placed, so remember its suit
+        repeatedSuits.push(suit);
+      }
+    });
+  });
+
+  // slim these down so no repeats and in the corrected order
+  const suits = [];
+  SUITS.forEach((suit) => {
+    if (repeatedSuits.includes(suit)) {
+      suits.push(suit);
+    }
+  });
+
+  return suits;
+};

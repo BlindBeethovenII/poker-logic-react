@@ -75,6 +75,8 @@ export const HAND_TYPE_TWO_PAIR = 3;
 export const HAND_TYPE_PAIR = 2;
 export const HAND_TYPE_HIGH_CARD = 1;
 
+// note: THREE_OF_A_KIND hints also apply to the three of a kind of a full house, as they are three cards of the same number in the same location
+// note: PAIR hints also apply to the pair in a full house and to two pairs
 export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';
 export const HINT_NO_STRAIGHT_FLUSH_IN_SUIT = 'NO STRAIGHT FLUSH IN SUIT';
 export const HINT_SAME_COUNT_LEFT_SUIT = 'HINT SAME COUNT LEFT SUIT';
@@ -88,13 +90,14 @@ export const HINT_ALL_OF_SUIT_PLACED = 'ALL OF SUIT PLACED';
 export const HINT_ALL_OF_SUIT_PLACED_NUMBERS = 'ALL OF SUIT PLACED NUMBERS';
 export const HINT_ALL_OF_NUMBER_PLACED = 'ALL OF NUMBER PLACED';
 export const HINT_ALL_OF_NUMBER_PLACED_SUITS = 'ALL OF NUMBER PLACED SUITS';
-export const HINT_THREE_OF_A_KIND_NUMBERS = 'THREE OF A KIND NUMBERS'; // also applies to the three of a kind of a full house
-export const HINT_THREE_OF_A_KIND_SUITS = 'THREE OF A KIND SUITS'; // also applies to the three of a kind of a full house
-export const HINT_PAIR_NUMBERS = 'PAIR NUMBERS'; // also applies to the pair in a full house and to two pairs
-export const HINT_PAIR_SUITS = 'PAIR SUITS'; // also applies to the pair in a full house and to two pairs
+export const HINT_THREE_OF_A_KIND_NUMBERS = 'THREE OF A KIND NUMBERS';
+export const HINT_THREE_OF_A_KIND_SUITS = 'THREE OF A KIND SUITS';
+export const HINT_PAIR_NUMBERS = 'PAIR NUMBERS';
+export const HINT_PAIR_SUITS = 'PAIR SUITS';
 export const HINT_CLUE_NOT_SUIT = 'CLUE NOT SUIT';
-export const HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT = 'PAIR NUMBERS RESTRICTED BY SUIT'; // also applies to the pair in a full house and to two pairs
-export const HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT = 'THREE OF A KIND NUMBERS RESTRICTED BY SUIT'; // also applies to the three of a kind of a full house
+export const HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT = 'PAIR NUMBERS RESTRICTED BY SUIT';
+export const HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT = 'THREE OF A KIND NUMBERS RESTRICTED BY SUIT';
+export const HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT = 'THREE OF A KIND NUMBERS ALL SAME SUIT';
 
 export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';
 export const CLUE_NOT_SUIT = 'NOT SUIT';
