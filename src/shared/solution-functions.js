@@ -821,11 +821,11 @@ export const canThreeOfSuitsOfNumberFitIn = (number, solutionHandsIndex, cardsAv
   return false;
 };
 
-// convert the given numbers into their suits from given cards available excluding the given position indexes of the given solutionHandIndex hand
+// convert the given numbers into their suits from given cards available for which the suits can still be placed into given position indexes of the given solutionHandIndex hand
 // position index params are so this code works for pair and three of a kind (for a pair index3 will be undefined which will always not match the condition)
 // we exclude a number's suit if it is placed outside of the first n cards as that card is not available to be later placed in the first n cards
 // eslint-disable-next-line max-len
-export const getSuitsOfNumberInAvailableNotInNCardsOfHand = (numbers, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2, handOptionsIndex3) => {
+export const getSuitsOfNumberAvailableForGivenCardsOfHand = (numbers, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2, handOptionsIndex3) => {
   // convert the numbers into suits for the available numbers
   const repeatedSuits = [];
   numbers.forEach((number) => {

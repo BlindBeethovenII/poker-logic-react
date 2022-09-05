@@ -34,7 +34,7 @@ import {
   isAnotherNumberSetInCardOptions,
   canPairOfSuitsOfNumberFitIn,
   canThreeOfSuitsOfNumberFitIn,
-  getSuitsOfNumberInAvailableNotInNCardsOfHand,
+  getSuitsOfNumberAvailableForGivenCardsOfHand,
 } from './solution-functions';
 
 import {
@@ -837,7 +837,7 @@ export const getThreeOfAKindSuitsHints = (cardsAvailable, solutionHandsIndex, so
   }
 
   // get the suits available for these available numbers that can still be placed in the first 3 positions
-  const suits = getSuitsOfNumberInAvailableNotInNCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, 0, 1, 2);
+  const suits = getSuitsOfNumberAvailableForGivenCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, 0, 1, 2);
 
   // there should be at least 3
   if (suits.length < 3) {
@@ -1060,7 +1060,7 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
   }
 
   // get the suits available for these available numbers that can still be placed in the two positions
-  const suits = getSuitsOfNumberInAvailableNotInNCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2);
+  const suits = getSuitsOfNumberAvailableForGivenCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, handOptionsIndex1, handOptionsIndex2);
 
   // there should be at least 2
   if (suits.length < 2) {
@@ -1437,7 +1437,7 @@ export const createHintThreeOfAKindNumbersAllSameSuit = (suit, solutionOptionsIn
   clue,
 });
 
-// all the possible numbers to make up the three of a kind all have the same three suits, so we know the suits of the three cards due to the suit ordering
+// if all the possible numbers to make up the three of a kind all have the same three suits then we know the suits of the three cards due to the suit ordering
 // note this applies to the 3 of a kind in a full house as well
 export const getThreeOfAKindNumbersAllSameSuitHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
@@ -1448,50 +1448,43 @@ export const getThreeOfAKindNumbersAllSameSuitHints = (cardsAvailable, solutionH
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
-  const countNumbers1 = countNumbersInCardOptions(cardOptions1);
-  const countNumbers2 = countNumbersInCardOptions(cardOptions2);
-  const countNumbers3 = countNumbersInCardOptions(cardOptions3);
 
-  // because we are working from a valid solution
-  // if one of the first 3 cards has a single number set, then it must be the number for the other cards in the first 3 positions
-  if (countNumbers1 === 1) {
-    // first card has a single number set
-    numbersAvailable.push(getFirstNumberSet(cardOptions1));
-  } else if (countNumbers2 === 1) {
-    // second card has a single number set
-    numbersAvailable.push(getFirstNumberSet(cardOptions2));
-  } else if (countNumbers3 === 1) {
-    // third card has a single number set
-    numbersAvailable.push(getFirstNumberSet(cardOptions3));
-  }
+  // get the numbers still possible from the first three positions
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+  const numbers3 = getNumbersFromCardOptions(cardOptions3);
 
-  // if we didn't find one that way, then look for the numbers with at least 3 cards still available
-  if (!numbersAvailable.length) {
-    NUMBERS.forEach((number) => {
-      // count the number of cards of this number available in the solution
-      const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
-
-      // and count how many of these have been placed
-      // note: numberPlacedCount will not include any in the first three positions of this hand, as the above will have found those
-      const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
-
-      // so if we need at least 3 available after numberPlacedCount has been removed
-      if (numberAvailableCount - numberPlacedCount >= 3) {
-        numbersAvailable.push(number);
-      }
-    });
-  }
-
-  // if we have at least one number which has 3 cards available, then we can create a hint - one for each of the first 3 cards of this solutionHandsIndex
-  // note that the solutionHandsIndex here is the solutionOptionsIndex
-  // work through the first 3 cards in this handOptions
-  [0, 1, 2].forEach((handOptionsIndex) => {
-    // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
-    const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
-      hints.push(createHintThreeOfAKindNumbersAllSameSuit(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
+  // get all the numbers that appear in any of these three arrays
+  NUMBERS.forEach((number) => {
+    if (numbers1.includes(number) || numbers2.includes(number) || numbers3.includes(number)) {
+      numbersAvailable.push(number);
     }
   });
+
+  // get the suits available for these available numbers that can still be placed in the first 3 positions
+  const suits = getSuitsOfNumberAvailableForGivenCardsOfHand(numbersAvailable, cardsAvailable, solutionHandsIndex, solutionOptions, 0, 1, 2);
+
+  // there should be at least 3
+  if (suits.length < 3) {
+    console.error(`getThreeOfAKindNumbersAllSameSuitHints needs at least 3 suits for numbers ${numbersAvailable} but got ${suits}`);
+    return [];
+  }
+
+  // this hint only applies when just three suits are possible
+  if (suits.length > 3) {
+    return [];
+  }
+
+  // so we know these three suits must be in this order in the first three cards
+  if (countSuitsInCardOptions(cardOptions1) > 1) {
+    hints.push(createHintThreeOfAKindNumbersAllSameSuit(suits[0], solutionHandsIndex, 0, clue));
+  }
+  if (countSuitsInCardOptions(cardOptions2) > 1) {
+    hints.push(createHintThreeOfAKindNumbersAllSameSuit(suits[1], solutionHandsIndex, 1, clue));
+  }
+  if (countSuitsInCardOptions(cardOptions3) > 1) {
+    hints.push(createHintThreeOfAKindNumbersAllSameSuit(suits[2], solutionHandsIndex, 2, clue));
+  }
 
   return hints;
 };
@@ -1627,6 +1620,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return threeOfAKindSuitsHints;
       }
 
+      const threeOfAKindNumbersAllSameSuitHints = getThreeOfAKindNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersAllSameSuitHints.length) {
+        return threeOfAKindNumbersAllSameSuitHints;
+      }
+
       const pairNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 3, 4);
       if (pairNumbersHints.length) {
         return pairNumbersHints;
@@ -1664,6 +1662,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const threeOfAKindSuitsHints = getThreeOfAKindSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindSuitsHints.length) {
         return threeOfAKindSuitsHints;
+      }
+
+      const threeOfAKindNumbersAllSameSuitHints = getThreeOfAKindNumbersAllSameSuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (threeOfAKindNumbersAllSameSuitHints.length) {
+        return threeOfAKindNumbersAllSameSuitHints;
       }
 
       const threeOfAKindNumbersRestrictedBySuitHints = getThreeOfAKindNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
