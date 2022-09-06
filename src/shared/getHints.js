@@ -1433,8 +1433,9 @@ export const getPairNumbersRestrictedBySuitHints = (cardsAvailable, solutionHand
     }
   });
 
-  // if we don't have two or more numbers, then no chance of restricting anything
-  if (numbersAvailable.length < 2) {
+  // we should have at least one number, to be a valid solution (and likely two or more)
+  if (!numbersAvailable.length) {
+    console.error('getPairNumbersRestrictedBySuitHints could not find any numbers that have at least 2 cards available');
     return [];
   }
 
@@ -1517,8 +1518,9 @@ export const getThreeOfAKindNumbersRestrictedBySuitHints = (cardsAvailable, solu
     }
   });
 
-  // if we don't have three or more numbers, then no chance of restricting anything
-  if (numbersAvailable.length < 3) {
+  // we should have at least one number, to be a valid solution (and more likely two or more)
+  if (!numbersAvailable.length) {
+    console.error('getThreeOfAKindNumbersRestrictedBySuitHints could not find any numbers that have at least 3 cards available');
     return [];
   }
 
