@@ -7,8 +7,8 @@ import {
   createClueSuitAndNumber,
   createClueSuit,
   createClueNotSuit,
-  createClueNumber,
-  createClueNotNumber,
+  // createClueNumber,
+  // createClueNotNumber,
 } from './clue-functions';
 
 import {
@@ -74,15 +74,15 @@ export const clues1 = [
   createClueSuitAndNumber(SUIT_HEARTS, 9, 3, 2),
   createClueSuit(SUIT_DIAMONDS, 2, 1),
   createClueNotSuit(SUIT_HEARTS, 3, 0),
-  createClueNumber(NUMBER_5, 1, 1),
-  createClueNotNumber(NUMBER_10, 1, 1),
-  createClueNotNumber(NUMBER_5, 1, 3),
-  createClueNotNumber(NUMBER_5, 1, 4),
-  createClueNotNumber(NUMBER_8, 1, 3),
-  createClueNotNumber(NUMBER_8, 1, 4),
-  createClueNotNumber(NUMBER_9, 1, 3),
-  createClueNotNumber(NUMBER_9, 1, 4),
-  createClueNotNumber(NUMBER_10, 1, 3),
+  // createClueNumber(NUMBER_5, 1, 1),
+  // createClueNotNumber(NUMBER_10, 1, 1),
+  // createClueNotNumber(NUMBER_5, 1, 3),
+  // createClueNotNumber(NUMBER_5, 1, 4),
+  // createClueNotNumber(NUMBER_8, 1, 3),
+  // createClueNotNumber(NUMBER_8, 1, 4),
+  // createClueNotNumber(NUMBER_9, 1, 3),
+  // createClueNotNumber(NUMBER_9, 1, 4),
+  // createClueNotNumber(NUMBER_10, 1, 3),
 ];
 
 export const solutionHands2 = [

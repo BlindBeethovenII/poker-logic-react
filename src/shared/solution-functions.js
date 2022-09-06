@@ -864,3 +864,17 @@ export const getSuitsOfNumberAvailableForGivenCardsOfHand = (numbers, cardsAvail
 
   return suits;
 };
+
+// return the count of which of the given suits are still possible in the given cardOptions
+export const countWhichOfSuitsPossibleInCardOptions = (suits, cardOptions) => {
+  let result = 0;
+
+  for (let i = 0; i < suits.length; i += 1) {
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suits[i]);
+    if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      result += 1;
+    }
+  }
+
+  return result;
+};

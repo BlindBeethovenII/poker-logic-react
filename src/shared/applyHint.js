@@ -45,6 +45,7 @@ import {
   HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
+  HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -630,6 +631,18 @@ export const applyPairNumbersNumberNotInAll = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyAllSuitsOfNumberNotPossibleHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  logIfDevEnv(`applying HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // ------------------------------------------------------------------------------------ //
 // apply the given hint - this assumes it is a valid hint for the given solutionOptions //
 // ------------------------------------------------------------------------------------ //
@@ -719,6 +732,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL:
       return applyPairNumbersNumberNotInAll(solutionOptions, hint);
+
+    case HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE:
+      return applyAllSuitsOfNumberNotPossibleHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
