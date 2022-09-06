@@ -55,6 +55,7 @@ import {
   INDEX_SUIT_DIAMONDS,
   INDEX_SUIT_CLUBS,
   CLUE_HAND_OF_TYPE,
+  CLUE_SUIT,
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
@@ -81,6 +82,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_SUIT,
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
@@ -1236,6 +1238,34 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
   return hints;
 };
 
+// -------------- //
+// HINT_CLUE_SUIT //
+// -------------- //
+
+// create HINT_CLUE_SUIT
+export const createHintClueSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card does not have this suit as the placed still then create a HINT_CLUE_SUIT hint to place it
+export const getClueSuitHints = (suit, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  // as we are working from a valid solution options we just care if more than one suit is still possible
+  if (countSuitsInCardOptions(cardOptions) > 1) {
+    hints.push(createHintClueSuit(suit, solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // ------------------ //
 // HINT_CLUE_NOT_SUIT //
 // ------------------ //
@@ -1757,6 +1787,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType } = clue;
+
+    // clue suit
+    if (clueType === CLUE_SUIT) {
+      const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+      const clueSuitHints = getClueSuitHints(suit, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueSuitHints.length) {
+        return clueSuitHints;
+      }
+    }
 
     // clue not suit
     if (clueType === CLUE_NOT_SUIT) {

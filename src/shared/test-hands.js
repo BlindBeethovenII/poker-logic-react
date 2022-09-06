@@ -4,6 +4,7 @@ import { createCard, calcHandType } from './card-functions';
 
 import {
   createClueHandOfType,
+  createClueSuit,
   createClueNotSuit,
   createClueNumber,
   createClueNotNumber,
@@ -69,6 +70,7 @@ export const clues1 = [
   createClueHandOfType(calcHandType(solutionHands1[1]), 1),
   createClueHandOfType(calcHandType(solutionHands1[2]), 2),
   createClueHandOfType(calcHandType(solutionHands1[3]), 3),
+  createClueSuit(SUIT_DIAMONDS, 2, 1),
   createClueNotSuit(SUIT_HEARTS, 3, 0),
   createClueNumber(NUMBER_5, 1, 1),
   createClueNotNumber(NUMBER_10, 1, 1),

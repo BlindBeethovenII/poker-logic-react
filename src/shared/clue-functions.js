@@ -4,6 +4,7 @@ import { calcHandType, cardNumberToString } from './card-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
+  CLUE_SUIT,
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
@@ -31,6 +32,17 @@ export const createClueHandOfType = (handType, solutionHandsIndex, deduced) => (
   handType,
   solutionHandsIndex,
   deduced,
+});
+
+// --------- //
+// CLUE_SUIT //
+// --------- //
+
+export const createClueSuit = (suit, solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_SUIT,
+  suit,
+  solutionHandsIndex,
+  handOptionsIndex,
 });
 
 // ------------- //
@@ -118,6 +130,11 @@ export const clueToString = (clue) => {
     const { handType, solutionHandsIndex, deduced } = clue;
     const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
     return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
+  }
+
+  if (clueType === CLUE_SUIT) {
+    const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)}`;
   }
 
   if (clueType === CLUE_NOT_SUIT) {
