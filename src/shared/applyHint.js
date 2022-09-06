@@ -35,6 +35,7 @@ import {
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
   HINT_CLUE_NOT_SUIT,
+  HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
@@ -440,6 +441,20 @@ export const applyClueNotSuitHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyClueNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 export const applyClueNotNumberHint = (solutionOptions, hint) => {
   const {
     number,
@@ -641,6 +656,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_NOT_SUIT:
       return applyClueNotSuitHint(solutionOptions, hint);
+
+    case HINT_CLUE_NUMBER:
+      return applyClueNumberHint(solutionOptions, hint);
 
     case HINT_CLUE_NOT_NUMBER:
       return applyClueNotNumberHint(solutionOptions, hint);

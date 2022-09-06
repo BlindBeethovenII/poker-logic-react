@@ -56,6 +56,7 @@ import {
   INDEX_SUIT_CLUBS,
   CLUE_HAND_OF_TYPE,
   CLUE_NOT_SUIT,
+  CLUE_NUMBER,
   CLUE_NOT_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
@@ -81,6 +82,7 @@ import {
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
   HINT_CLUE_NOT_SUIT,
+  HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
@@ -1263,6 +1265,34 @@ export const getClueNotSuitHints = (suit, solutionHandsIndex, handOptionsIndex, 
   return hints;
 };
 
+// ---------------- //
+// HINT_CLUE_NUMBER //
+// ---------------- //
+
+// create HINT_CLUE_NUMBER
+export const createHintClueNumber = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card does not have this number placed then create a HINT_CLUE_NUMBER hint to place it
+export const getClueNumberHints = (number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  // as we are working from a valid solution options we just care if more than one number is still possible
+  if (countNumbersInCardOptions(cardOptions) > 1) {
+    hints.push(createHintClueNumber(number, solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // -------------------- //
 // HINT_CLUE_NOT_NUMBER //
 // -------------------- //
@@ -1276,7 +1306,7 @@ export const createHintClueNotNumber = (number, solutionOptionsIndex, handOption
   clue,
 });
 
-// if the named card still allows the suit then create a HINT_CLUE_NOT_NUMBER hint
+// if the named card still allows the suit then create a HINT_CLUE_NOT_NUMBER hint to remove it
 export const getClueNotNumberHints = (number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -1737,12 +1767,21 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
+    // clue number
+    if (clueType === CLUE_NUMBER) {
+      const { number, solutionHandsIndex, handOptionsIndex } = clue;
+      const clueNumberHints = getClueNumberHints(number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueNumberHints.length) {
+        return clueNumberHints;
+      }
+    }
+
     // clue not number
     if (clueType === CLUE_NOT_NUMBER) {
       const { number, solutionHandsIndex, handOptionsIndex } = clue;
-      const clueNotSuitHints = getClueNotNumberHints(number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
-      if (clueNotSuitHints.length) {
-        return clueNotSuitHints;
+      const clueNotNumberHints = getClueNotNumberHints(number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueNotNumberHints.length) {
+        return clueNotNumberHints;
       }
     }
   }
