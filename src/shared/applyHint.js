@@ -34,6 +34,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_SUIT_AND_NUMBER,
   HINT_CLUE_SUIT,
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_NUMBER,
@@ -428,6 +429,23 @@ export const applyPairSuitsHint = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
+export const applyClueSuitAndNumberHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_SUIT_AND_NUMBER for suit ${suit} and number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  const newSolutionOptions = setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+
+  return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+};
+
 export const applyClueSuitHint = (solutionOptions, hint) => {
   const {
     suit,
@@ -668,6 +686,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_PAIR_SUITS:
       return applyPairSuitsHint(solutionOptions, hint);
+
+    case HINT_CLUE_SUIT_AND_NUMBER:
+      return applyClueSuitAndNumberHint(solutionOptions, hint);
 
     case HINT_CLUE_SUIT:
       return applyClueSuitHint(solutionOptions, hint);

@@ -55,6 +55,7 @@ import {
   INDEX_SUIT_DIAMONDS,
   INDEX_SUIT_CLUBS,
   CLUE_HAND_OF_TYPE,
+  CLUE_SUIT_AND_NUMBER,
   CLUE_SUIT,
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
@@ -82,6 +83,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_SUIT_AND_NUMBER,
   HINT_CLUE_SUIT,
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_NUMBER,
@@ -1238,6 +1240,37 @@ export const getPairSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOp
   return hints;
 };
 
+// ------------------------- //
+// HINT_CLUE_SUIT_AND_NUMBER //
+// ------------------------- //
+
+// create HINT_CLUE_SUIT_AND_NUMBER
+export const createHintClueSuitAndNumber = (suit, number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_SUIT_AND_NUMBER,
+  suit,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card does not have this suit as the placed suit or the number as the placed number then create a HINT_CLUE_SUIT_AND_NUMBER hint to place them/it
+export const getClueSuitAndNumberHints = (suit, number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  // as we are working from a valid solution options we just care if more than one suit is still possible
+  if (countSuitsInCardOptions(cardOptions) > 1) {
+    hints.push(createHintClueSuitAndNumber(suit, number, solutionHandsIndex, handOptionsIndex, clue));
+  } else if (countNumbersInCardOptions(cardOptions) > 1) {
+    hints.push(createHintClueSuitAndNumber(suit, number, solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // -------------- //
 // HINT_CLUE_SUIT //
 // -------------- //
@@ -1251,7 +1284,7 @@ export const createHintClueSuit = (suit, solutionOptionsIndex, handOptionsIndex,
   clue,
 });
 
-// if the named card does not have this suit as the placed still then create a HINT_CLUE_SUIT hint to place it
+// if the named card does not have this suit as the placed suit then create a HINT_CLUE_SUIT hint to place it
 export const getClueSuitHints = (suit, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -1787,6 +1820,20 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType } = clue;
+
+    // clue suit and number
+    if (clueType === CLUE_SUIT_AND_NUMBER) {
+      const {
+        suit,
+        number,
+        solutionHandsIndex,
+        handOptionsIndex,
+      } = clue;
+      const clueSuitAndNumberHints = getClueSuitAndNumberHints(suit, number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueSuitAndNumberHints.length) {
+        return clueSuitAndNumberHints;
+      }
+    }
 
     // clue suit
     if (clueType === CLUE_SUIT) {
