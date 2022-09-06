@@ -720,6 +720,18 @@ export const getNumbersFromCardOptions = (cardOptions) => {
   return result;
 };
 
+// get suits still available from cardOptions
+export const getSuitsFromCardOptions = (cardOptions) => {
+  const result = [];
+  SUITS.forEach((suit) => {
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+    if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      result.push(suit);
+    }
+  });
+  return result;
+};
+
 // return true if all numbers in the first array are in the second array
 export const allNumbersFromFirstInSecond = (array1, array2) => {
   for (let i = 0; i < array1.length; i += 1) {
@@ -872,6 +884,19 @@ export const countWhichOfSuitsPossibleInCardOptions = (suits, cardOptions) => {
   for (let i = 0; i < suits.length; i += 1) {
     const suitOptionsIndex = convertSuitToSuitOptionsIndex(suits[i]);
     if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      result += 1;
+    }
+  }
+
+  return result;
+};
+
+// return the count of which of the given numbers are still possible in the given cardOptions
+export const countWhichOfNumbersPossibleInCardOptions = (numbers, cardOptions) => {
+  let result = 0;
+
+  for (let i = 0; i < numbers.length; i += 1) {
+    if (getNumberOptionsValueInCardOptions(cardOptions, numbers[i])) {
       result += 1;
     }
   }

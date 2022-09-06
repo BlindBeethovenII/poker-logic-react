@@ -29,6 +29,7 @@ import {
   getSuitsOfNumberInAvailable,
   getNumbersOfSuitInAvailable,
   getNumbersFromCardOptions,
+  getSuitsFromCardOptions,
   allNumbersFromFirstInSecond,
   isAnotherSuitSetInCardOptions,
   isAnotherNumberSetInCardOptions,
@@ -36,6 +37,7 @@ import {
   canThreeOfSuitsOfNumberFitIn,
   getSuitsOfNumberAvailableForGivenCardsOfHand,
   countWhichOfSuitsPossibleInCardOptions,
+  countWhichOfNumbersPossibleInCardOptions,
 } from './solution-functions';
 
 import {
@@ -96,6 +98,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
+  HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
 } from './constants';
 
 // -------------------- //
@@ -1838,6 +1841,45 @@ export const getAllSuitsOfNumberNotPossibleHints = (cardsStillAvailable, solutio
   return hints;
 };
 
+// ------------------------------------- //
+// HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE //
+// ------------------------------------- //
+
+// create HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE
+export const createHintAllNumbersOfSuitNotPossible = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if none of the still available numbers for a possible suit of a cardOptions are possible in that cardOptions then the suit cannot be placed here either, so remove the suit
+export const getAllNumbersOfSuitNotPossibleHints = (cardsStillAvailable, solutionOptions) => {
+  const hints = [];
+
+  // look at each cardOptions
+  solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+    handOptions.forEach((cardOptions, handOptionsIndex) => {
+      // only interested if there is more than one suit still possible, as a placed suit cannot be moved by this hint
+      if (countSuitsInCardOptions(cardOptions) > 1 > 0) {
+        // consider each suit still allowed here
+        const suits = getSuitsFromCardOptions(cardOptions);
+        suits.forEach((suit) => {
+          // get the numbers for this suit left in cardsStillAvailable
+          const numbers = getNumbersOfSuitInAvailable(suit, cardsStillAvailable);
+          // if none of these numbers are possible then create a hint to remove the suit
+          if (countWhichOfNumbersPossibleInCardOptions(numbers, cardOptions) === 0) {
+            hints.push(createHintAllNumbersOfSuitNotPossible(suit, solutionOptionsIndex, handOptionsIndex));
+          }
+        });
+      }
+    });
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -1941,6 +1983,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
   // which of the cards available are still available after the solutionOptions have been considered
   const cardsStillAvailable = getCardsStillAvailable(cardsAvailable, solutionOptions);
+
+  // see if a suit can be removed from a cardOptions because none of the still available numbers for that suit are possible in that cardOptions
+  const allNumbersOfSuitNotPossibleHints = getAllNumbersOfSuitNotPossibleHints(cardsStillAvailable, solutionOptions);
+  if (allNumbersOfSuitNotPossibleHints.length) {
+    return allNumbersOfSuitNotPossibleHints;
+  }
 
   // see if a number can be removed from a cardOptions because none of the still available suits for that number are possible in that cardOptions
   const allSuitsOfNumberNotPossibleHints = getAllSuitsOfNumberNotPossibleHints(cardsStillAvailable, solutionOptions);
