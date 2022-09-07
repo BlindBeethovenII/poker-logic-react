@@ -13,15 +13,17 @@ import {
   toggleNumberOptionInSolutionOptions,
   resetNumberOptionsInSolutionOptions,
   getCardsAvailable,
+  countCardsStillAvailable,
 } from '../shared/solution-functions';
 
 import { getHints } from '../shared/getHints';
 
-import { applyHint } from '../shared/applyHint';
+import { applyHint, applyAllHintsToSolutionOptions } from '../shared/applyHint';
 
 import {
   createCluesForSolutionHands,
   addInDeducedClues,
+  clueToText,
 } from '../shared/clue-functions';
 
 import {
@@ -30,6 +32,8 @@ import {
   solution2,
   clues2,
 } from '../shared/test-hands';
+
+import logIfDevEnv from '../shared/logIfDevEnv';
 
 const GameStateContext = React.createContext({});
 
@@ -133,7 +137,7 @@ export const GameStateContextProvider = ({ children }) => {
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
     const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
-    console.log(`getHints returns ${JSON.stringify(hints)}`);
+    logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
 
     if (hints?.length) {
       // apply all the hints
@@ -147,35 +151,66 @@ export const GameStateContextProvider = ({ children }) => {
 
   // find and apply all hints
   const findAndApplyAllHints = useCallback(() => {
+    const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
+    if (newSolutionOptions) {
+      setSolutionOptions(newSolutionOptions);
+    }
+  }, [solutionOptions, solution, clues, cardsAvailable]);
+
+  // ------------ //
+  // reduce clues //
+  // ------------ //
+
+  // see if any clues can be removed and the puzzle can still be solved
+  const reduceClues = useCallback(() => {
+    // first check that the puzzle can be solved with the current clues
+    const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
+    if (countCardsStillAvailable(cardsAvailable, newSolutionOptions) !== 0) {
+      console.error('reduceClues: initial clues do not solve the puzzle');
+      return;
+    }
+
+    // now order the clues, bringing the those to the front that we prefer to lose if possible
+    // TODO - hand 1's clues are already in order
+
+    // need to remember if we remove any clues
+    let removedAnyClues = false;
+
+    // and the final clues
+    let finalClues = clues;
+
+    // keep removing while possible
     let lookForMore = true;
-    let finalSolutionOptions = solutionOptions;
-    let hintsApplied = false;
-
     while (lookForMore) {
-      const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable);
-      console.log(`getHints returns ${JSON.stringify(hints)}`);
+      let indexToRemove = -1;
+      for (let i = 0; i < finalClues.length && indexToRemove === -1; i += 1) {
+        const clue = finalClues[i];
 
-      if (hints?.length) {
-        // apply all these hints
-        let newSolutionOptions = finalSolutionOptions;
-        hints.forEach((hint) => {
-          newSolutionOptions = applyHint(newSolutionOptions, hint);
-        });
-        // had to do something weird here as could not re-assign newSolutionOptions to the outer one here??
-        finalSolutionOptions = newSolutionOptions;
-        hintsApplied = true;
-
-        // and look for more
-      } else {
-        // no more hints available
+        // the new clues without that one
+        const newClues = [...finalClues.slice(0, i), ...finalClues.slice(i + 1)];
+        const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
+        if (countCardsStillAvailable(cardsAvailable, newSolutionOptions1) === 0) {
+          logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, i)}`);
+          indexToRemove = i;
+        }
+      }
+      if (indexToRemove === -1) {
+        // didn't find any to remove, so give up here
         lookForMore = false;
+      } else {
+        // found one to remove
+        finalClues = [...finalClues.slice(0, indexToRemove), ...finalClues.slice(indexToRemove + 1)];
+        removedAnyClues = true;
       }
     }
 
-    if (hintsApplied) {
-      setSolutionOptions(finalSolutionOptions);
+    if (removedAnyClues) {
+      // save the new clues
+      setClues(finalClues);
+    } else {
+      logIfDevEnv('reduceClues: could not find a clue to remove');
     }
-  }, [solutionOptions, solution, clues, cardsAvailable]);
+  }, [cardsAvailable, clues, solution, solutionOptions]);
 
   // ----------- //
   // the context //
@@ -215,6 +250,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     // clues stuff
     clues,
+    reduceClues,
   }), [
     showWin,
     solution,
@@ -230,6 +266,7 @@ export const GameStateContextProvider = ({ children }) => {
     findAndApplyNextHint,
     findAndApplyAllHints,
     clues,
+    reduceClues,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

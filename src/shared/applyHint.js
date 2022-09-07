@@ -14,6 +14,8 @@ import {
 
 import { clueToString } from './clue-functions';
 
+import { getHints } from './getHints';
+
 import {
   SUITS,
   NUMBERS,
@@ -656,9 +658,11 @@ export const applyAllNumbersOfSuitNotPossibleHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
-// ------------------------------------------------------------------------------------ //
-// apply the given hint - this assumes it is a valid hint for the given solutionOptions //
-// ------------------------------------------------------------------------------------ //
+// -----------//
+//  applyHint //
+// -----------//
+
+// apply the given hint - this assumes it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
   switch (hintType) {
@@ -756,4 +760,44 @@ export const applyHint = (solutionOptions, hint) => {
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
       return solutionOptions;
   }
+};
+
+// ------------------------------- //
+//  applyAllHintsToSolutionOptions //
+// ------------------------------- //
+
+// find and apply all hints to the given solutionOptions - returning the new solutionOptions if any applied and null otherwise
+// this is common code used in two placed
+export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues, cardsAvailable) => {
+  let lookForMore = true;
+  let finalSolutionOptions = solutionOptions;
+  let hintsApplied = false;
+
+  while (lookForMore) {
+    const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable);
+    console.log(`getHints returns ${JSON.stringify(hints)}`);
+
+    if (hints?.length) {
+      // apply all these hints
+      let newSolutionOptions = finalSolutionOptions;
+      hints.forEach((hint) => {
+        newSolutionOptions = applyHint(newSolutionOptions, hint);
+      });
+      // had to do something weird here as could not re-assign newSolutionOptions to the outer one here??
+      finalSolutionOptions = newSolutionOptions;
+      hintsApplied = true;
+
+      // and look for more
+    } else {
+      // no more hints available
+      lookForMore = false;
+    }
+  }
+
+  if (hintsApplied) {
+    return finalSolutionOptions;
+  }
+
+  // no hints were applied
+  return null;
 };
