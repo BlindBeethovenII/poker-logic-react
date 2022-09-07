@@ -762,6 +762,28 @@ export const applyHint = (solutionOptions, hint) => {
   }
 };
 
+// -------------------------------- //
+//  applyNextHintsToSolutionOptions //
+// -------------------------------- //
+
+// find and apply next hints to the given solutionOptions - returning the new solutionOptions if any applied and null otherwise
+export const applyNextHintsToSolutionOptions = (solutionOptions, solution, clues, cardsAvailable) => {
+  const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
+  logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
+
+  // if we can't find another hint, then return null
+  if (!hints?.length) {
+    return null;
+  }
+
+  // apply all the hints
+  let newSolutionOptions = solutionOptions;
+  hints.forEach((hint) => {
+    newSolutionOptions = applyHint(newSolutionOptions, hint);
+  });
+  return newSolutionOptions;
+};
+
 // ------------------------------- //
 //  applyAllHintsToSolutionOptions //
 // ------------------------------- //

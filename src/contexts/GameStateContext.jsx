@@ -16,9 +16,7 @@ import {
   countCardsStillAvailable,
 } from '../shared/solution-functions';
 
-import { getHints } from '../shared/getHints';
-
-import { applyHint, applyAllHintsToSolutionOptions } from '../shared/applyHint';
+import { applyNextHintsToSolutionOptions, applyAllHintsToSolutionOptions } from '../shared/applyHint';
 
 import {
   createCluesForSolutionHands,
@@ -136,15 +134,8 @@ export const GameStateContextProvider = ({ children }) => {
 
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
-    const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
-    logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
-
-    if (hints?.length) {
-      // apply all the hints
-      let newSolutionOptions = solutionOptions;
-      hints.forEach((hint) => {
-        newSolutionOptions = applyHint(newSolutionOptions, hint);
-      });
+    const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
+    if (newSolutionOptions) {
       setSolutionOptions(newSolutionOptions);
     }
   }, [solutionOptions, solution, clues, cardsAvailable]);
