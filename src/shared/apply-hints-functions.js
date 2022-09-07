@@ -12,9 +12,9 @@ import {
   isNumberTrueInCardOptions,
 } from './solution-functions';
 
-import { clueToString } from './clue-functions';
+import { clueToString } from './to-text-functions';
 
-import { getHints } from './getHints';
+import { getHints } from './get-hints-functions';
 
 import {
   SUITS,

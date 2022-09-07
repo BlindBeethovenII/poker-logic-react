@@ -6,7 +6,7 @@ import TickBoxTicked from '../images/orts/tickbox_ticked.png';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
-import { solutionOptionsValid, countCardsStillAvailable } from '../shared/solution-functions';
+import { solutionOptionsValid, isSolutionOptionsComplete } from '../shared/solution-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -39,7 +39,7 @@ const CompleteIncorrectMark = () => {
   let tickBox = tickBoxEmpty;
   if (!solutionOptionsValid(solutionOptions, solutionHands)) {
     tickBox = tickBoxCrossed;
-  } else if (countCardsStillAvailable(cardsAvailable, solutionOptions) === 0) {
+  } else if (isSolutionOptionsComplete(cardsAvailable, solutionOptions)) {
     tickBox = tickBoxTicked;
   }
 

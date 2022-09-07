@@ -13,16 +13,17 @@ import {
   toggleNumberOptionInSolutionOptions,
   resetNumberOptionsInSolutionOptions,
   getCardsAvailable,
-  countCardsStillAvailable,
+  isSolutionOptionsComplete,
 } from '../shared/solution-functions';
 
-import { applyNextHintsToSolutionOptions, applyAllHintsToSolutionOptions } from '../shared/applyHint';
+import { applyNextHintsToSolutionOptions, applyAllHintsToSolutionOptions } from '../shared/apply-hints-functions';
 
 import {
   createCluesForSolutionHands,
   addInDeducedClues,
-  clueToText,
 } from '../shared/clue-functions';
+
+import { clueToText } from '../shared/to-text-functions';
 
 import {
   solution1,
@@ -116,7 +117,7 @@ export const GameStateContextProvider = ({ children }) => {
       nextClues = clues2;
     } else {
       nextNewSolution = createSolution();
-      nextClues = createCluesForSolutionHands(nextNewSolution.solutionHands);
+      nextClues = createCluesForSolutionHands(nextNewSolution);
     }
     setSolution(nextNewSolution);
     setClues(addInDeducedClues(nextClues));
@@ -156,7 +157,7 @@ export const GameStateContextProvider = ({ children }) => {
   const reduceClues = useCallback(() => {
     // first check that the puzzle can be solved with the current clues
     const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
-    if (countCardsStillAvailable(cardsAvailable, newSolutionOptions) !== 0) {
+    if (!isSolutionOptionsComplete(cardsAvailable, newSolutionOptions)) {
       console.error('reduceClues: initial clues do not solve the puzzle');
       return;
     }
@@ -180,7 +181,7 @@ export const GameStateContextProvider = ({ children }) => {
         // the new clues without that one
         const newClues = [...finalClues.slice(0, i), ...finalClues.slice(i + 1)];
         const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
-        if (countCardsStillAvailable(cardsAvailable, newSolutionOptions1) === 0) {
+        if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
           logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, i)}`);
           indexToRemove = i;
         }

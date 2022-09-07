@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import Clue from './Clue';
 
-import { clueToText } from '../shared/clue-functions';
+import { clueToText } from '../shared/to-text-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 

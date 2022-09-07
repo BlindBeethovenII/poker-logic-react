@@ -903,3 +903,6 @@ export const countWhichOfNumbersPossibleInCardOptions = (numbers, cardOptions) =
 
   return result;
 };
+
+// return true if solutionOptions is complete, that is, no cards are still available, that is all cards have been placed
+export const isSolutionOptionsComplete = (cardsAvailable, solutionOptions) => countCardsStillAvailable(cardsAvailable, solutionOptions) === 0;

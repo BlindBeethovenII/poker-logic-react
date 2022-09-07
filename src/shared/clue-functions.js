@@ -1,6 +1,19 @@
 // useful clue functions
 
-import { calcHandType, cardNumberToString } from './card-functions';
+import { calcHandType } from './card-functions';
+
+import {
+  createSolutionOptions,
+  getCardsAvailable,
+  isSolutionOptionsComplete,
+  isCardOptionsAPlacedCard,
+  countNumbersInCardOptions,
+  countSuitsInCardOptions,
+  getNumberOptionsValueInCardOptions,
+  getSuitOptionsValueInCardOptions,
+} from './solution-functions';
+
+import { applyAllHintsToSolutionOptions } from './apply-hints-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
@@ -13,15 +26,12 @@ import {
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
   HAND_TYPE_FLUSH,
-  HAND_TYPE_STRAIGHT,
   HAND_TYPE_THREE_OF_A_KIND,
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
-  SUIT_SPADES,
-  SUIT_HEARTS,
-  SUIT_DIAMONDS,
-  SUIT_CLUBS,
+  NUMBERS,
+  SUITS,
 } from './constants';
 
 // ----------------- //
@@ -91,96 +101,13 @@ export const createClueNumber = (number, solutionHandsIndex, handOptionsIndex) =
   handOptionsIndex,
 });
 
-// ----------------- //
-// support functions //
-// ----------------- //
+// --------------------------- //
+// createCluesForSolutionHands //
+// --------------------------- //
 
-const handTypeToText = (handType) => {
-  switch (handType) {
-    case HAND_TYPE_STRAIGHT_FLUSH:
-      return 'a Straight Flush';
-    case HAND_TYPE_FOUR_OF_A_KIND:
-      return '4 of a Kind';
-    case HAND_TYPE_FULL_HOUSE:
-      return 'a Full House';
-    case HAND_TYPE_FLUSH:
-      return 'a Flush';
-    case HAND_TYPE_STRAIGHT:
-      return 'a Straight';
-    case HAND_TYPE_THREE_OF_A_KIND:
-      return '3 of a Kind';
-    case HAND_TYPE_TWO_PAIR:
-      return '2 Pairs';
-    case HAND_TYPE_PAIR:
-      return 'a Pair';
-    case HAND_TYPE_HIGH_CARD:
-      return 'a High Card';
-    default:
-      return `handTypeToText cannot cope with ${handType}`;
-  }
-};
+export const createCluesForSolutionHands = (solution) => {
+  const { solutionHands, missingNumber } = solution;
 
-const suitToTextSingular = (suit) => {
-  switch (suit) {
-    case SUIT_SPADES:
-      return 'Spade';
-    case SUIT_HEARTS:
-      return 'Heart';
-    case SUIT_DIAMONDS:
-      return 'Diamond';
-    case SUIT_CLUBS:
-      return 'Club';
-    default:
-      return `suitToTextSingular cannot cope with ${suit}`;
-  }
-};
-
-// clue to clue string
-export const clueToString = (clue) => {
-  const { clueType } = clue;
-
-  if (clueType === CLUE_HAND_OF_TYPE) {
-    const { handType, solutionHandsIndex, deduced } = clue;
-    const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
-    return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
-  }
-
-  if (clueType === CLUE_SUIT_AND_NUMBER) {
-    const {
-      suit,
-      number,
-      solutionHandsIndex,
-      handOptionsIndex,
-    } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is ${cardNumberToString(number)} ${suitToTextSingular(suit)}`;
-  }
-
-  if (clueType === CLUE_SUIT) {
-    const { suit, solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)}`;
-  }
-
-  if (clueType === CLUE_NOT_SUIT) {
-    const { suit, solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
-  }
-
-  if (clueType === CLUE_NUMBER) {
-    const { number, solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is a ${cardNumberToString(number)}`;
-  }
-
-  if (clueType === CLUE_NOT_NUMBER) {
-    const { number, solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${cardNumberToString(number)}`;
-  }
-
-  return `clueToString cannot cope with clueType ${clueType}`;
-};
-
-export const clueToText = (clue, clueIndex) => `Clue ${clueIndex + 1}: ${clueToString(clue)}`;
-
-export const createCluesForSolutionHands = (solutionHands) => {
   const clues = [];
 
   // add a HAND OF TYPE clue for each solution hand
@@ -189,8 +116,63 @@ export const createCluesForSolutionHands = (solutionHands) => {
   clues.push(createClueHandOfType(calcHandType(solutionHands[2]), 2));
   clues.push(createClueHandOfType(calcHandType(solutionHands[3]), 3));
 
+  // TODO change approach here later
+  // not good to do a SUIT_AND_NUMBER for every card, otherwise it just removes the HAND_TYPE clues and leaves 19 SUIT_AND_NUMBER clues
+  // so for now rotate through SUIT_AND_NUMBER, SUIT and NUMBER clues for the cards
+  let nextClueType = CLUE_SUIT_AND_NUMBER;
+  solutionHands.forEach((solutionHand, solutionHandsIndex) => {
+    solutionHand.forEach((card, solutionHandIndex) => {
+      const { suit, number } = card;
+      if (nextClueType === CLUE_SUIT_AND_NUMBER) {
+        clues.push(createClueSuitAndNumber(suit, number, solutionHandsIndex, solutionHandIndex));
+        nextClueType = CLUE_SUIT;
+      } else if (nextClueType === CLUE_SUIT) {
+        clues.push(createClueSuit(suit, solutionHandsIndex, solutionHandIndex));
+        nextClueType = CLUE_NUMBER;
+      } else {
+        clues.push(createClueNumber(number, solutionHandsIndex, solutionHandIndex));
+        nextClueType = CLUE_SUIT_AND_NUMBER;
+      }
+    });
+  });
+
+  // sometimes these clues can't solve the puzzle - so apply the above to a new solutionOptions and fill in the gaps with NOT_SUIT and NOT_NUMBER clues
+  const solutionOptions = createSolutionOptions(missingNumber);
+  const cardsAvailable = getCardsAvailable(solutionHands);
+  const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
+  if (!isSolutionOptionsComplete(cardsAvailable, newSolutionOptions)) {
+    newSolutionOptions.forEach((handOptions, solutionOptionsIndex) => {
+      handOptions.forEach((cardOptions, handOptionsIndex) => {
+        if (!isCardOptionsAPlacedCard(cardOptions)) {
+          // we need to know the correct card for here
+          const card = solutionHands[solutionOptionsIndex][handOptionsIndex];
+          if (countNumbersInCardOptions(cardOptions) > 1) {
+            // create a NOT_NUMBER clue for each of the unwanted numbers
+            NUMBERS.forEach((number) => {
+              if (number !== card.number && getNumberOptionsValueInCardOptions(cardOptions, number)) {
+                clues.push(createClueNotNumber(number, solutionOptionsIndex, handOptionsIndex));
+              }
+            });
+          }
+          if (countSuitsInCardOptions(cardOptions) > 1) {
+            // create a NOT_SUIT clue for each of the unwanted suits
+            SUITS.forEach((suit) => {
+              if (suit !== card.suit && getSuitOptionsValueInCardOptions(cardOptions, suit)) {
+                clues.push(createClueNotSuit(suit, solutionOptionsIndex, handOptionsIndex));
+              }
+            });
+          }
+        }
+      });
+    });
+  }
+
   return clues;
 };
+
+// --------------------------------------- //
+// addInDeducedClues and support functions //
+// --------------------------------------- //
 
 // return true if the two given clues are fundamentally equal
 const cluesEqual = (clue1, clue2) => {
