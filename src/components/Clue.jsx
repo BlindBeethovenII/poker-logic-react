@@ -8,7 +8,7 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 
 const Label = styled.h2`
   background: rgb(85,107,47);
-  color: white;
+  color: black;
   font-size: 0.8em;
   margin: 0.4em;
   padding: 0.2em 1em 0.2em 0.2em;
