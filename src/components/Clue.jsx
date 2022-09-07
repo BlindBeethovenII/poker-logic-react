@@ -9,7 +9,7 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 const Label = styled.h2`
   background: rgb(85,107,47);
   color: white;
-  font-size: 0.6em;
+  font-size: 0.8em;
   margin: 0.4em;
   padding: 0.2em 1em 0.2em 0.2em;
   border: 1px solid #761d38;
@@ -21,7 +21,7 @@ const Clue = (props) => {
   const { clueText, clueIndex } = props;
 
   const left = colToLeft(0) + 30;
-  const top = rowToTop(5 + clueIndex * 0.2);
+  const top = rowToTop(5 + clueIndex * 0.3);
 
   const divstyle = {
     position: 'absolute',
