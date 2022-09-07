@@ -16,6 +16,7 @@ import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
 import NewSolutionButton from './NewSolutionButton';
 import HintButton from './HintButton';
+import ReduceCluesButton from './ReduceCluesButton';
 import Clues from './Clues';
 import CompleteIncorrectMark from './CompleteIncorrectMark';
 
@@ -128,6 +129,7 @@ const PlayArea = () => (
     <NewSolutionButton newSolutionIndex={2} />
     <HintButton />
     <HintButton allHints />
+    <ReduceCluesButton />
     <Clues />
     <CompleteIncorrectMark />
   </div>
