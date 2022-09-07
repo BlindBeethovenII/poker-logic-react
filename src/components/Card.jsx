@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CardBlankImage from '../images/cards/cardblank.png';
+import CardBackImage from '../images/cards/cardback.png';
 
 import {
   colToLeft,
@@ -26,7 +27,7 @@ const Card = (props) => {
     row,
     card,
     small,
-    faded,
+    cardPlaced,
   } = props;
 
   // there are the card details - including where it was showing before
@@ -46,7 +47,7 @@ const Card = (props) => {
     top: '0px',
     width: small ? '31px' : '63px',
     height: small ? '40px' : '81px',
-    opacity: faded ? 0.5 : 1,
+    opacity: 1, // cardPlaced ? 0.5 : 1,
   };
 
   const cardnumberstyle = {
@@ -62,7 +63,7 @@ const Card = (props) => {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
     msUserSelect: 'none',
-    opacity: faded ? 0.5 : 1,
+    opacity: cardPlaced ? 0.5 : 1,
   };
 
   let height = small ? '21px' : '42px';
@@ -78,10 +79,12 @@ const Card = (props) => {
     top: suit === SUIT_SPADES ? '2px' : '0px',
     width: small ? '20px' : '40px',
     height,
-    opacity: faded ? 0.5 : 1,
+    opacity: cardPlaced ? 0.5 : 1,
   };
 
   const cardblank = <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />;
+
+  const cardback = <img src={CardBackImage} alt="cardback" style={cardbasestyle} />;
 
   let textX = small ? 5 : 10;
   if (number === NUMBER_10) {
@@ -119,7 +122,7 @@ const Card = (props) => {
       id={id}
       style={inPlaceDivStyle}
     >
-      {cardShowing}
+      {cardPlaced ? cardback : cardShowing}
     </div>
   );
 };
@@ -133,12 +136,12 @@ Card.propTypes = {
     number: PropTypes.number.isRequired,
   }).isRequired,
   small: PropTypes.bool,
-  faded: PropTypes.bool,
+  cardPlaced: PropTypes.bool,
 };
 
 Card.defaultProps = {
   small: false,
-  faded: false,
+  cardPlaced: false,
 };
 
 export default Card;

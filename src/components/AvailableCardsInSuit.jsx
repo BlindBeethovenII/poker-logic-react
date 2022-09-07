@@ -30,7 +30,7 @@ const AvailableCardsInSuit = (props) => {
         row={row - 0.15}
         card={cardAvailable}
         small
-        faded={isCardPlacedInSolutionOptions(cardAvailable, solutionOptions)}
+        cardPlaced={isCardPlacedInSolutionOptions(cardAvailable, solutionOptions)}
       />,
     );
   });
