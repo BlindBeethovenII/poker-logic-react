@@ -1111,7 +1111,7 @@ export const createSolution = () => {
     HAND_TYPE_THREE_OF_A_KIND,
     HAND_TYPE_TWO_PAIR,
     HAND_TYPE_PAIR,
-    // HAND_TYPE_HIGH_CARD,
+    HAND_TYPE_HIGH_CARD,
   ];
 
   // and shuffle them

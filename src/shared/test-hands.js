@@ -125,7 +125,7 @@ export const solution2 = {
 };
 
 export const clues2 = [
-  createClueHandOfType(calcHandType(solutionHands2[0]), 0),
+  // createClueHandOfType(calcHandType(solutionHands2[0]), 0),
   createClueHandOfType(calcHandType(solutionHands2[1]), 1),
   createClueHandOfType(calcHandType(solutionHands2[2]), 2),
   createClueHandOfType(calcHandType(solutionHands2[3]), 3),
