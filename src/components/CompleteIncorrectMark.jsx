@@ -1,8 +1,6 @@
 import React, { useContext } from 'react';
 
-import TickBoxEmpty from '../images/orts/tickbox_empty.png';
-import TickBoxCrossed from '../images/orts/tickbox_crossed.png';
-import TickBoxTicked from '../images/orts/tickbox_ticked.png';
+import styled from 'styled-components';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
@@ -10,44 +8,42 @@ import { solutionOptionsValid, isSolutionOptionsComplete } from '../shared/solut
 
 import GameStateContext from '../contexts/GameStateContext';
 
+const Button = styled.button`
+  background: #761d38;
+  color: white;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 0.25em;
+  border: 2px solid #761d38;
+  border-radius: 3px;
+`;
+
+const left = colToLeft(6) - 16;
+const top = rowToTop(0);
+
 const CompleteIncorrectMark = () => {
   const { solutionOptions, solutionHands, cardsAvailable } = useContext(GameStateContext);
 
-  const left = colToLeft(6) + 4;
-  const top = rowToTop(0);
-
-  const cardbasestyle = {
-    position: 'relative',
-    left: '0px',
-    top: '0px',
-    width: '26px',
-    height: '26px',
-  };
-
-  const tickBoxEmpty = <img src={TickBoxEmpty} alt="tickboxempty" style={cardbasestyle} />;
-  const tickBoxCrossed = <img src={TickBoxCrossed} alt="tickboxcrossed" style={cardbasestyle} />;
-  const tickBoxTicked = <img src={TickBoxTicked} alt="tickboxticked" style={cardbasestyle} />;
-
-  const inPlaceDivStyle = {
-    position: 'absolute',
-    zIndex: 0,
-    left,
-    top,
-  };
-
   // what to show
-  let tickBox = tickBoxEmpty;
+  let boxText = 'OK';
   if (!solutionOptionsValid(solutionOptions, solutionHands)) {
-    tickBox = tickBoxCrossed;
+    boxText = 'INVALID';
   } else if (isSolutionOptionsComplete(cardsAvailable, solutionOptions)) {
-    tickBox = tickBoxTicked;
+    boxText = 'DONE';
   }
 
+  const buttonDivStyle = {
+    position: 'absolute',
+    left: `${left}px`,
+    top: `${top}px`,
+    height: '16px',
+    textAlign: 'left',
+    zIndex: 0,
+  };
+
   return (
-    <div
-      style={inPlaceDivStyle}
-    >
-      {tickBox}
+    <div style={buttonDivStyle}>
+      <Button>{boxText}</Button>
     </div>
   );
 };
