@@ -14,6 +14,9 @@ import {
   resetNumberOptionsInSolutionOptions,
   getCardsAvailable,
   isSolutionOptionsComplete,
+  convertSuitToSuitOptionsIndex,
+  getSuitOptionsValue,
+  getNumberOptionsValue,
 } from '../shared/solution-functions';
 
 import { getHints } from '../shared/get-hints-functions';
@@ -30,6 +33,14 @@ import {
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
+
+import {
+  CLUE_SUIT_AND_NUMBER,
+  CLUE_SUIT,
+  CLUE_NUMBER,
+  CLUE_NOT_SUIT,
+  CLUE_NOT_NUMBER,
+} from '../shared/constants';
 
 import {
   solution1,
@@ -231,6 +242,71 @@ export const GameStateContextProvider = ({ children }) => {
     }
   }, [cardsAvailable, clues, solution, solutionOptions]);
 
+  // --------------------- //
+  // apply the basic clues //
+  // --------------------- //
+
+  // apply the basic clues and hide those clues
+  const applyBasicClues = useCallback(() => {
+    // this will update the solutionOptions if a change was made
+    let cluesApplied = false;
+    let newSolutionOptions = solutionOptions;
+    const newShowClues = [...showClues];
+
+    // look for each basic clue and apply it
+    for (let i = 0; i < clues.length; i += 1) {
+      const clue = clues[i];
+      const { clueType } = clue;
+
+      if (clueType === CLUE_SUIT_AND_NUMBER) {
+        const {
+          suit,
+          number,
+          solutionHandsIndex,
+          handOptionsIndex,
+        } = clue;
+
+        newSolutionOptions = setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_SUIT) {
+        const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+        newSolutionOptions = setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_NUMBER) {
+        const { number, solutionHandsIndex, handOptionsIndex } = clue;
+        newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_NOT_SUIT) {
+        const { suit, solutionHandsIndex, handOptionsIndex } = clue;
+        const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_NOT_NUMBER) {
+        const { number, solutionHandsIndex, handOptionsIndex } = clue;
+        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
+          newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      }
+    }
+
+    if (cluesApplied) {
+      // the solution options have change, so save them
+      setSolutionOptions(newSolutionOptions);
+
+      // and we have hidden those clues
+      setShowClues(newShowClues);
+    }
+  }, [clues, showClues, solutionOptions]);
+
   // ------------------ //
   // showSolution stuff //
   // ------------------ //
@@ -289,6 +365,7 @@ export const GameStateContextProvider = ({ children }) => {
     // clues stuff
     clues,
     reduceClues,
+    applyBasicClues,
 
     // showSolution stuff
     showSolution,
@@ -314,6 +391,7 @@ export const GameStateContextProvider = ({ children }) => {
     findAndApplyAllHints,
     clues,
     reduceClues,
+    applyBasicClues,
     showSolution,
     toggleShowSolution,
     showClues,

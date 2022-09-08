@@ -6,8 +6,8 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
-const left = colToLeft(5) - 20;
-const top = rowToTop(5) + 4;
+const left = colToLeft(5) - 12;
+const top = rowToTop(6) - 4;
 
 const divstyle = {
   position: 'absolute',
@@ -27,14 +27,14 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const ReduceCluesButton = () => {
-  const { reduceClues } = useContext(GameStateContext);
+const ApplyBasicCluesButton = () => {
+  const { applyBasicClues } = useContext(GameStateContext);
 
   return (
     <div style={divstyle}>
-      <Button onClick={reduceClues}>Reduce Clues</Button>
+      <Button onClick={applyBasicClues}>Apply Basic Clues</Button>
     </div>
   );
 };
 
-export default ReduceCluesButton;
+export default ApplyBasicCluesButton;

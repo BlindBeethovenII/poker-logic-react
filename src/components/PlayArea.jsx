@@ -18,6 +18,7 @@ import NewSolutionButton from './NewSolutionButton';
 import HintButton from './HintButton';
 import ReduceCluesButton from './ReduceCluesButton';
 import HideShowSolutionButton from './HideShowSolutionButton';
+import ApplyBasicCluesButton from './ApplyBasicCluesButton';
 import Clues from './Clues';
 import CompleteIncorrectMark from './CompleteIncorrectMark';
 
@@ -133,6 +134,7 @@ const PlayArea = () => (
     <HintButton applyAll />
     <ReduceCluesButton />
     <HideShowSolutionButton />
+    <ApplyBasicCluesButton />
     <Clues />
     <CompleteIncorrectMark />
   </div>
