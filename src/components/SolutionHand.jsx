@@ -11,7 +11,11 @@ const SolutionHand = (props) => {
     solutionHandIndex,
   } = props;
 
-  const { solutionHands } = useContext(GameStateContext);
+  const { solutionHands, showSolution } = useContext(GameStateContext);
+
+  if (!showSolution) {
+    return null;
+  }
 
   // get our solution hand
   const solutionHand = solutionHands[solutionHandIndex];

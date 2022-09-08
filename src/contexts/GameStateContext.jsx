@@ -57,6 +57,9 @@ export const GameStateContextProvider = ({ children }) => {
   // clues
   const [clues, setClues] = useState(() => addInDeducedClues(clues1));
 
+  // show or hide the solution
+  const [showSolution, setShowSolution] = useState(false);
+
   // -------------------- //
   // card options setters //
   // -------------------- //
@@ -204,6 +207,14 @@ export const GameStateContextProvider = ({ children }) => {
     }
   }, [cardsAvailable, clues, solution, solutionOptions]);
 
+  // ------------------ //
+  // showSolution stuff //
+  // ------------------ //
+
+  const toggleShowSolution = useCallback(() => {
+    setShowSolution(!showSolution);
+  }, [showSolution]);
+
   // ----------- //
   // the context //
   // ----------- //
@@ -243,6 +254,10 @@ export const GameStateContextProvider = ({ children }) => {
     // clues stuff
     clues,
     reduceClues,
+
+    // showSolution stuff
+    showSolution,
+    toggleShowSolution,
   }), [
     showWin,
     solution,
@@ -259,6 +274,8 @@ export const GameStateContextProvider = ({ children }) => {
     findAndApplyAllHints,
     clues,
     reduceClues,
+    showSolution,
+    toggleShowSolution,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;
