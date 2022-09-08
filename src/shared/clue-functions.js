@@ -11,6 +11,7 @@ import {
   countSuitsInCardOptions,
   getNumberOptionsValueInCardOptions,
   getSuitOptionsValueInCardOptions,
+  convertSuitToSuitOptionsIndex,
 } from './solution-functions';
 
 import { applyAllHintsToSolutionOptions } from './apply-hints-functions';
@@ -157,7 +158,7 @@ export const createCluesForSolutionHands = (solution) => {
           if (countSuitsInCardOptions(cardOptions) > 1) {
             // create a NOT_SUIT clue for each of the unwanted suits
             SUITS.forEach((suit) => {
-              if (suit !== card.suit && getSuitOptionsValueInCardOptions(cardOptions, suit)) {
+              if (suit !== card.suit && getSuitOptionsValueInCardOptions(cardOptions, convertSuitToSuitOptionsIndex(suit))) {
                 clues.push(createClueNotSuit(suit, solutionOptionsIndex, handOptionsIndex));
               }
             });
