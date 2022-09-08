@@ -16,11 +16,15 @@ import {
   isSolutionOptionsComplete,
 } from '../shared/solution-functions';
 
-import { applyNextHintsToSolutionOptions, applyAllHintsToSolutionOptions } from '../shared/apply-hints-functions';
+import {
+  applyNextHintsToSolutionOptions,
+  applyAllHintsToSolutionOptions,
+} from '../shared/apply-hints-functions';
 
 import {
   createCluesForSolutionHands,
   addInDeducedClues,
+  createInitialShowClues,
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
@@ -56,6 +60,9 @@ export const GameStateContextProvider = ({ children }) => {
 
   // clues
   const [clues, setClues] = useState(() => addInDeducedClues(clues1));
+
+  // show of hide each clue
+  const [showClues, setShowClues] = useState(() => createInitialShowClues(clues));
 
   // show or hide the solution
   const [showSolution, setShowSolution] = useState(false);
@@ -100,6 +107,15 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions);
   }, [solutionOptions]);
 
+  // ---------------------------------------------------------------------- //
+  // helper function to set the clues and the showClues corresponding array //
+  // ---------------------------------------------------------------------- //
+
+  const setCluesAndShowClues = (newClues) => {
+    setClues(newClues);
+    setShowClues(createInitialShowClues(newClues));
+  };
+
   // ------------------------------------- //
   // solution and solution options setters //
   // ------------------------------------- //
@@ -123,7 +139,7 @@ export const GameStateContextProvider = ({ children }) => {
       nextClues = createCluesForSolutionHands(nextNewSolution);
     }
     setSolution(nextNewSolution);
-    setClues(addInDeducedClues(nextClues));
+    setCluesAndShowClues(addInDeducedClues(nextClues));
 
     // need to reset the solution options as well
     resetSolutionOptions();
@@ -201,7 +217,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     if (removedAnyClues) {
       // save the new clues
-      setClues(finalClues);
+      setCluesAndShowClues(finalClues);
     } else {
       logIfDevEnv('reduceClues: could not find a clue to remove');
     }
@@ -214,6 +230,16 @@ export const GameStateContextProvider = ({ children }) => {
   const toggleShowSolution = useCallback(() => {
     setShowSolution(!showSolution);
   }, [showSolution]);
+
+  // --------------- //
+  // showClues stuff //
+  // --------------- //
+
+  const toggleShowClue = useCallback((clueIndex) => {
+    const newShowClues = [...showClues];
+    newShowClues[clueIndex] = !showClues[clueIndex];
+    setShowClues(newShowClues);
+  }, [showClues]);
 
   // ----------- //
   // the context //
@@ -258,6 +284,10 @@ export const GameStateContextProvider = ({ children }) => {
     // showSolution stuff
     showSolution,
     toggleShowSolution,
+
+    // showClues stuff
+    showClues,
+    toggleShowClue,
   }), [
     showWin,
     solution,
@@ -276,6 +306,8 @@ export const GameStateContextProvider = ({ children }) => {
     reduceClues,
     showSolution,
     toggleShowSolution,
+    showClues,
+    toggleShowClue,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

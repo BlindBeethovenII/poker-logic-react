@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -6,7 +6,9 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
-const Label = styled.h2`
+import GameStateContext from '../contexts/GameStateContext';
+
+const Button = styled.button`
   background: rgb(85,107,47);
   color: black;
   font-size: 0.8em;
@@ -14,13 +16,14 @@ const Label = styled.h2`
   padding: 0.2em 1em 0.2em 0.2em;
   border: 1px solid #761d38;
   border-radius: 2px;
-  pointer-events: none;
 `;
 
 const Clue = (props) => {
   const { clueText, clueIndex } = props;
 
-  const left = colToLeft(0) + 30;
+  const { showClues, toggleShowClue } = useContext(GameStateContext);
+
+  const left = colToLeft(0) + 36;
   const top = rowToTop(5 + clueIndex * 0.3);
 
   const divstyle = {
@@ -29,13 +32,17 @@ const Clue = (props) => {
     top: `${top}px`,
     height: '16px',
     textAlign: 'left',
-    pointerEvents: 'none',
     zIndex: 0,
   };
 
+  // get our show clue bool
+  const showClue = showClues[clueIndex];
+
+  const labelText = showClue ? clueText : 'User indicated clue used';
+
   return (
     <div style={divstyle}>
-      <Label>{clueText}</Label>
+      <Button onClick={() => toggleShowClue(clueIndex)}>{labelText}</Button>
     </div>
   );
 };

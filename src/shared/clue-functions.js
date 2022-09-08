@@ -301,3 +301,12 @@ export const addInDeducedClues = (clues) => {
   // just return the original clues
   return clues;
 };
+
+// create the initial showClues array for the given clues - which is just an array of true bools of the same length
+export const createInitialShowClues = (clues) => {
+  const result = [];
+  for (let index = 0; index < clues.length; index += 1) {
+    result.push(true);
+  }
+  return result;
+};
