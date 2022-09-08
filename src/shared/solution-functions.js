@@ -194,10 +194,12 @@ export const toggleNumberOptionInSolutionOptions = (number, solutionOptionsIndex
 };
 
 // reset all the number options
-export const resetNumberOptionsInSolutionOptions = (solutionOptionsIndex, handOptionsIndex, solutionOptions) => {
+export const resetNumberOptionsInSolutionOptions = (solutionOptionsIndex, handOptionsIndex, solutionOptions, missingNumber) => {
   const handOptions = solutionOptions[solutionOptionsIndex];
   const { suitOptions } = handOptions[handOptionsIndex];
   const newNumberOptions = [true, true, true, true, true, true, true, true, true, true, true, true, true];
+  // don't forget to set the missing number to false
+  newNumberOptions[missingNumber - 1] = false;
   const newCardOptions = { suitOptions, numberOptions: newNumberOptions };
   const newHandOptions = [...handOptions];
   newHandOptions[handOptionsIndex] = newCardOptions;

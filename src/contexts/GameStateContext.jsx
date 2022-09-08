@@ -105,9 +105,9 @@ export const GameStateContextProvider = ({ children }) => {
 
   // reset all the number options
   const resetNumberOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
-    const newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions);
+    const newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions, solution.missingNumber);
     setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+  }, [solutionOptions, solution]);
 
   // ---------------------------------------------------------------------- //
   // helper function to set the clues and the showClues corresponding array //
@@ -123,7 +123,7 @@ export const GameStateContextProvider = ({ children }) => {
   // ------------------------------------- //
 
   // reset solution options
-  const resetSolutionOptions = () => setSolutionOptions(createSolutionOptions());
+  const resetSolutionOptions = useCallback(() => setSolutionOptions(createSolutionOptions(solution.missingNumber)), [solution]);
 
   // get a new solution
   const newSolution = useCallback((newSolutionIndex) => {
@@ -148,7 +148,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     // and find the cards available for this solution
     setCardsAvailable(getCardsAvailable(nextNewSolution.solutionHands));
-  }, []);
+  }, [resetSolutionOptions]);
 
   // ----------- //
   // hint system //
@@ -307,6 +307,7 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    resetSolutionOptions,
     cardsAvailable,
     newSolution,
     findNextHint,
