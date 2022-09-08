@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import Clue from './Clue';
 
-import { clueToText } from '../shared/to-text-functions';
+import { clueToString } from '../shared/to-text-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -16,7 +16,7 @@ const Clues = () => {
   clues.forEach((clue, i) => {
     // don't show deduced clues - the use has to work those out for themselves
     if (!clue.deduced) {
-      cluesResult.push(<Clue key={genKey(i)} clueText={clueToText(clue, i)} clueIndex={i} />);
+      cluesResult.push(<Clue key={genKey(i)} clueText={clueToString(clue)} clueIndex={i} />);
     }
   });
 

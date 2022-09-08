@@ -12,6 +12,7 @@ const Button = styled.button`
   background: rgb(85,107,47);
   color: black;
   font-size: 0.8em;
+  font-weight: bold;
   margin: 0.4em;
   padding: 0.2em 1em 0.2em 0.2em;
   border: 1px solid #761d38;
@@ -38,7 +39,7 @@ const Clue = (props) => {
   // get our show clue bool
   const showClue = showClues[clueIndex];
 
-  const labelText = showClue ? clueText : 'User indicated clue used';
+  const labelText = showClue ? clueText : '******************';
 
   return (
     <div style={divstyle}>
