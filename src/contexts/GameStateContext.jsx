@@ -16,6 +16,8 @@ import {
   isSolutionOptionsComplete,
 } from '../shared/solution-functions';
 
+import { getHints } from '../shared/get-hints-functions';
+
 import {
   applyNextHintsToSolutionOptions,
   applyAllHintsToSolutionOptions,
@@ -152,6 +154,12 @@ export const GameStateContextProvider = ({ children }) => {
   // hint system //
   // ----------- //
 
+  // find the next hint - just log it for now
+  const findNextHint = useCallback(() => {
+    const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
+    logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
+  }, [solutionOptions, solution, clues, cardsAvailable]);
+
   // find and apply the next hint
   const findAndApplyNextHint = useCallback(() => {
     const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
@@ -274,6 +282,7 @@ export const GameStateContextProvider = ({ children }) => {
     newSolution,
 
     // hint stuff
+    findNextHint,
     findAndApplyNextHint,
     findAndApplyAllHints,
 
@@ -300,6 +309,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetNumberOptions,
     cardsAvailable,
     newSolution,
+    findNextHint,
     findAndApplyNextHint,
     findAndApplyAllHints,
     clues,

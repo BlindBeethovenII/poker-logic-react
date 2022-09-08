@@ -19,14 +19,31 @@ const Button = styled.button`
 `;
 
 const HintButton = (props) => {
-  const { allHints } = props;
+  const { getHint, applyOne, applyAll } = props;
 
-  const { findAndApplyNextHint, findAndApplyAllHints } = useContext(GameStateContext);
+  const { findNextHint, findAndApplyNextHint, findAndApplyAllHints } = useContext(GameStateContext);
 
-  const left = colToLeft(6) + 24;
-  const top = rowToTop(allHints ? 5 : 4);
+  let row = 0;
+  let label = '';
+  let clickFunction = () => {};
+  if (getHint) {
+    row = 4;
+    label = 'Get Next Hint';
+    clickFunction = findNextHint;
+  }
+  if (applyOne) {
+    row = 5;
+    label = 'Apply Next Hint';
+    clickFunction = findAndApplyNextHint;
+  }
+  if (applyAll) {
+    row = 6;
+    label = 'Apply All Hints';
+    clickFunction = findAndApplyAllHints;
+  }
 
-  const label = allHints ? 'Apply All Hints' : 'Apply Next Hint';
+  const left = colToLeft(6) + 24 + (getHint ? 2 : 0);
+  const top = rowToTop(row) - (getHint ? 0 : 4);
 
   const divstyle = {
     position: 'absolute',
@@ -38,17 +55,21 @@ const HintButton = (props) => {
 
   return (
     <div style={divstyle}>
-      <Button onClick={allHints ? findAndApplyAllHints : findAndApplyNextHint}>{label}</Button>
+      <Button onClick={clickFunction}>{label}</Button>
     </div>
   );
 };
 
 HintButton.propTypes = {
-  allHints: PropTypes.bool,
+  getHint: PropTypes.bool,
+  applyOne: PropTypes.bool,
+  applyAll: PropTypes.bool,
 };
 
 HintButton.defaultProps = {
-  allHints: false,
+  getHint: false,
+  applyOne: false,
+  applyAll: false,
 };
 
 export default HintButton;

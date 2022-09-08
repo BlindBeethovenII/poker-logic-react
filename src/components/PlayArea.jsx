@@ -128,8 +128,9 @@ const PlayArea = () => (
     <NewSolutionButton newSolutionIndex={0} />
     <NewSolutionButton newSolutionIndex={1} />
     <NewSolutionButton newSolutionIndex={2} />
-    <HintButton />
-    <HintButton allHints />
+    <HintButton getHint />
+    <HintButton applyOne />
+    <HintButton applyAll />
     <ReduceCluesButton />
     <HideShowSolutionButton />
     <Clues />
