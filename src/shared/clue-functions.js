@@ -159,6 +159,22 @@ export const createCluesForSolutionHands = (solution) => {
     needHandType2Clue = false;
   }
 
+  // if 1st hand and 3rd hand have a single hand type between them then we don't need a hand type clue for the 2nd hand as it will be deduced later
+  if (handType1 - handType3 === 2) {
+    needHandType2Clue = false;
+  }
+
+  // if 2nd hand and 4th hand have a single hand type between them then we don't need a hand type clue for the 3rd hand as it will be deduced later
+  if (handType2 - handType4 === 2) {
+    needHandType3Clue = false;
+  }
+
+  // if 1st hand and 4th hand have two hand types between them then we don't need hand type clues for the 2nd and 3rd hands as they will be deduced later
+  if (handType1 - handType4 === 3) {
+    needHandType2Clue = false;
+    needHandType3Clue = false;
+  }
+
   // add in each hand type clue, if it is needed
   if (needHandType1Clue) {
     clues.push(createClueHandOfType(handType1, 0));
