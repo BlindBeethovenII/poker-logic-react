@@ -12,7 +12,7 @@ import {
 } from './clue-functions';
 
 import {
-  NUMBER_A,
+  // NUMBER_A,
   NUMBER_2,
   NUMBER_3,
   NUMBER_4,
@@ -24,6 +24,7 @@ import {
   NUMBER_10,
   NUMBER_J,
   NUMBER_Q,
+  NUMBER_K,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -89,13 +90,13 @@ export const clues1 = [
 ];
 
 export const solutionHands2 = [
-  [
-    createCard(SUIT_DIAMONDS, NUMBER_5),
-    createCard(SUIT_DIAMONDS, NUMBER_4),
-    createCard(SUIT_DIAMONDS, NUMBER_3),
-    createCard(SUIT_DIAMONDS, NUMBER_2),
-    createCard(SUIT_DIAMONDS, NUMBER_A),
-  ],
+  // [
+  //   createCard(SUIT_DIAMONDS, NUMBER_5),
+  //   createCard(SUIT_DIAMONDS, NUMBER_4),
+  //   createCard(SUIT_DIAMONDS, NUMBER_3),
+  //   createCard(SUIT_DIAMONDS, NUMBER_2),
+  //   createCard(SUIT_DIAMONDS, NUMBER_A),
+  // ],
   [
     createCard(SUIT_SPADES, NUMBER_Q),
     createCard(SUIT_HEARTS, NUMBER_Q),
@@ -104,17 +105,24 @@ export const solutionHands2 = [
     createCard(SUIT_HEARTS, NUMBER_8),
   ],
   [
-    createCard(SUIT_CLUBS, NUMBER_7),
-    createCard(SUIT_SPADES, NUMBER_6),
     createCard(SUIT_SPADES, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_CLUBS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
     createCard(SUIT_CLUBS, NUMBER_4),
-    createCard(SUIT_CLUBS, NUMBER_3),
   ],
   [
+    createCard(SUIT_CLUBS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_CLUBS, NUMBER_7),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_7),
+    createCard(SUIT_HEARTS, NUMBER_6),
     createCard(SUIT_HEARTS, NUMBER_5),
-    createCard(SUIT_CLUBS, NUMBER_5),
-    createCard(SUIT_DIAMONDS, NUMBER_10),
-    createCard(SUIT_CLUBS, NUMBER_6),
+    createCard(SUIT_HEARTS, NUMBER_4),
     createCard(SUIT_SPADES, NUMBER_3),
   ],
 ];
@@ -125,8 +133,8 @@ export const solution2 = {
 };
 
 export const clues2 = [
-  // createClueHandOfType(calcHandType(solutionHands2[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands2[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands2[2]), 2),
+  createClueHandOfType(calcHandType(solutionHands2[0]), 0),
+  // createClueHandOfType(calcHandType(solutionHands2[1]), 1),
+  // createClueHandOfType(calcHandType(solutionHands2[2]), 2),
   createClueHandOfType(calcHandType(solutionHands2[3]), 3),
 ];
