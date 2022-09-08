@@ -16,6 +16,7 @@ const Button = styled.button`
   padding: 0.25em 0.25em;
   border: 2px solid #761d38;
   border-radius: 3px;
+  pointer-events: none;
 `;
 
 const left = colToLeft(6) - 16;
@@ -39,6 +40,7 @@ const CompleteIncorrectMark = () => {
     height: '16px',
     textAlign: 'left',
     zIndex: 0,
+    pointerEvents: 'none',
   };
 
   return (
