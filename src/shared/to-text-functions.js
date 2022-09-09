@@ -70,7 +70,15 @@ export const clueToString = (clue) => {
 
   if (clueType === CLUE_HAND_OF_TYPE) {
     const { handType, solutionHandsIndex, deduced } = clue;
-    const deducedText = deduced ? `, deduced from clue ${clueToString(deduced)}` : '';
+    // hand of type clue could be deduced from 1 or 2 clues
+    let deducedText = '';
+    if (deduced) {
+      if (deduced.length === 2) {
+        deducedText = `, deduced from clues ${clueToString(deduced[0])} and ${clueToString(deduced[1])}`;
+      } else if (deduced.length === 1) {
+        deducedText = `, deduced from clue ${clueToString(deduced[0])}`;
+      }
+    }
     return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
   }
 
