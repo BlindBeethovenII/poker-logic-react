@@ -28,11 +28,11 @@ const Button = styled.button`
 `;
 
 const RestartButton = () => {
-  const { resetSolutionOptions, missingNumber } = useContext(GameStateContext);
+  const { resetSolutionOptions } = useContext(GameStateContext);
 
   return (
     <div style={divstyle}>
-      <Button onClick={() => resetSolutionOptions(missingNumber)}>Restart this Solution</Button>
+      <Button onClick={() => resetSolutionOptions()}>Restart this Solution</Button>
     </div>
   );
 };

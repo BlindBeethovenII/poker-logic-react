@@ -134,7 +134,10 @@ export const GameStateContextProvider = ({ children }) => {
   // ------------------------------------- //
 
   // reset solution options - now needs to take missingNumber - so doesn't need to use useCallback
-  const resetSolutionOptions = (missingNumber) => setSolutionOptions(createSolutionOptions(missingNumber));
+  const resetSolutionOptions = useCallback(() => {
+    setSolutionOptions(createSolutionOptions(solution.missingNumber));
+    setShowClues(createInitialShowClues(clues));
+  }, [solution, clues]);
 
   // get a new solution
   const newSolution = useCallback((newSolutionIndex) => {
@@ -155,11 +158,11 @@ export const GameStateContextProvider = ({ children }) => {
     setCluesAndShowClues(addInDeducedClues(nextClues));
 
     // need to reset the solution options as well
-    resetSolutionOptions(nextNewSolution.missingNumber);
+    resetSolutionOptions();
 
     // and find the cards available for this solution
     setCardsAvailable(getCardsAvailable(nextNewSolution.solutionHands));
-  }, []);
+  }, [resetSolutionOptions]);
 
   // ----------- //
   // hint system //
@@ -384,6 +387,7 @@ export const GameStateContextProvider = ({ children }) => {
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    resetSolutionOptions,
     cardsAvailable,
     newSolution,
     findNextHint,
