@@ -65,14 +65,14 @@ const suitToTextSingular = (suit) => {
 };
 
 // clue to clue string
-export const clueToString = (clue) => {
+export const clueToString = (clue, doNotShowDeduced) => {
   const { clueType } = clue;
 
   if (clueType === CLUE_HAND_OF_TYPE) {
     const { handType, solutionHandsIndex, deduced } = clue;
     // hand of type clue could be deduced from 1 or 2 clues
     let deducedText = '';
-    if (deduced) {
+    if (deduced && !doNotShowDeduced) {
       if (deduced.length === 2) {
         deducedText = `, deduced from clues ${clueToString(deduced[0])} and ${clueToString(deduced[1])}`;
       } else if (deduced.length === 1) {

@@ -259,7 +259,7 @@ const cluesEqual = (clue1, clue2) => {
 };
 
 // return true if the given clue already exists in the given clues array
-const clueExists = (clue, clues) => {
+export const clueExists = (clue, clues) => {
   // look through each clue indvidually
   for (let i = 0; i < clues.length; i += 1) {
     const nextClue = clues[i];
