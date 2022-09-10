@@ -6,6 +6,8 @@ import Card from './Card';
 
 import { isCardPlacedInSolutionOptions, convertSuitToSuitOptionsIndex } from '../shared/solution-functions';
 
+import { NUMBER_A } from '../shared/constants';
+
 import GameStateContext from '../contexts/GameStateContext';
 
 const AvailableCardsInSuit = (props) => {
@@ -23,10 +25,12 @@ const AvailableCardsInSuit = (props) => {
   const cards = [];
   suitCardsAvailable.forEach((cardAvailable) => {
     const { number } = cardAvailable;
+    // putting A at the front now
+    const colIndex = number === NUMBER_A ? -1 : 13 - number;
     cards.push(
       <Card
         key={cardAvailable.id}
-        col={12 - number + 0.65}
+        col={colIndex + 0.65}
         row={row - 0.15}
         card={cardAvailable}
         small
