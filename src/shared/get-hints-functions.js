@@ -99,6 +99,8 @@ import {
   HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
+  HAND_TYPE_FLUSH,
+  HINT_FLUSH_SUIT,
 } from './constants';
 
 // -------------------- //
@@ -1880,6 +1882,49 @@ export const getAllNumbersOfSuitNotPossibleHints = (cardsStillAvailable, solutio
   return hints;
 };
 
+// --------------- //
+// HINT_FLUSH_SUIT //
+// --------------- //
+
+// create HINT_FLUSH_SUIT
+export const createHintFlushSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_FLUSH_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// create a hint to set the suit for the other cards in a flush, when a suit is already set for one of the cards, and other cards have additional suits still possible
+export const getFlushSuitHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // Note: the following assumes that solutionOptions is valid - if one of the cards has a single suit placed, that suit is possible for the other cards
+
+  // first look to see if a suit is set
+  let suit;
+  for (let i = 0; i < handOptions.length && suit === undefined; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countSuitsInCardOptions(cardOptions) === 1) {
+      suit = getFirstSuitSet(cardOptions);
+    }
+  }
+
+  // if there is a suit - create a hint for any card that has more than 1 suit still possible
+  if (suit) {
+    for (let i = 0; i < handOptions.length; i += 1) {
+      const cardOptions = handOptions[i];
+      if (countSuitsInCardOptions(cardOptions) > 1) {
+        hints.push(createHintFlushSuit(suit, solutionHandsIndex, i, clue));
+      }
+    }
+  }
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -2106,7 +2151,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     }
 
     // hand type clue: flush
-    // TODO
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FLUSH) {
+      const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
+      if (flushSuitHints.length) {
+        return flushSuitHints;
+      }
+    }
 
     // hand type clue: straight
     // TODO

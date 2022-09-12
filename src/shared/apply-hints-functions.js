@@ -49,6 +49,7 @@ import {
   HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
+  HINT_FLUSH_SUIT,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -658,6 +659,20 @@ export const applyAllNumbersOfSuitNotPossibleHint = (solutionOptions, hint) => {
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyFlushSuitHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_FLUSH_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // -----------//
 //  applyHint //
 // -----------//
@@ -755,6 +770,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE:
       return applyAllNumbersOfSuitNotPossibleHint(solutionOptions, hint);
+
+    case HINT_FLUSH_SUIT:
+      return applyFlushSuitHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
