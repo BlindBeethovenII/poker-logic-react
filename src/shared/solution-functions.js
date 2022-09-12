@@ -276,7 +276,7 @@ export const isCardInSolutionHands = (card, solutionHands) => {
 };
 
 // helper function
-export const getCardsAvailableInSuitSorted = (suit, solutionHands) => {
+const getCardsAvailableInSuitSorted = (suit, solutionHands) => {
   const cards = [];
   NUMBERS_SORTED.forEach((number) => {
     const card = createCard(suit, number);
@@ -908,3 +908,33 @@ export const countWhichOfNumbersPossibleInCardOptions = (numbers, cardOptions) =
 
 // return true if solutionOptions is complete, that is, no cards are still available, that is all cards have been placed
 export const isSolutionOptionsComplete = (cardsAvailable, solutionOptions) => countCardsStillAvailable(cardsAvailable, solutionOptions) === 0;
+
+// return the maximum number still possible in the given cardOptions
+export const getMaxNumberInCardOptions = (cardOptions) => {
+  for (let i = 0; i < NUMBERS_SORTED.length; i += 1) {
+    const number = NUMBERS_SORTED[i];
+    if (isNumberTrueInCardOptions(number, cardOptions)) {
+      return number;
+    }
+  }
+
+  // should never get here
+  console.error(`getMaxNumberInCardOptions could not find possible number in given cardOptions ${JSON.stringify(cardOptions)}`);
+
+  return -1;
+};
+
+// return the number number still possible in the given cardOptions
+export const getMinNumberInCardOptions = (cardOptions) => {
+  for (let i = NUMBERS_SORTED.length - 1; i >= 0; i -= 1) {
+    const number = NUMBERS_SORTED[i];
+    if (isNumberTrueInCardOptions(number, cardOptions)) {
+      return number;
+    }
+  }
+
+  // should never get here
+  console.error(`getMinNumberInCardOptions could not find possible number in given cardOptions ${JSON.stringify(cardOptions)}`);
+
+  return -1;
+};

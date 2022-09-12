@@ -23,7 +23,7 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1),
       createClueHandOfType(HAND_TYPE_STRAIGHT, 2),
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),
-      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1)),
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, [createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -46,8 +46,8 @@ describe('addInDeducedClues', () => {
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2),
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),
-      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)),
-      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)),
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, [createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)]),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, [createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
       createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2),
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 3),
-      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, [createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -73,9 +73,9 @@ describe('addInDeducedClues', () => {
     ];
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_FLUSH, 3),
-      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
-      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
-      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+      createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0, [createClueHandOfType(HAND_TYPE_FLUSH, 3)]),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, [createClueHandOfType(HAND_TYPE_FLUSH, 3)]),
+      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, [createClueHandOfType(HAND_TYPE_FLUSH, 3)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -88,8 +88,8 @@ describe('addInDeducedClues', () => {
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_STRAIGHT_FLUSH, 0),
       createClueHandOfType(HAND_TYPE_FLUSH, 3),
-      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
-      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, createClueHandOfType(HAND_TYPE_FLUSH, 3)),
+      createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 1, [createClueHandOfType(HAND_TYPE_FLUSH, 3)]),
+      createClueHandOfType(HAND_TYPE_FULL_HOUSE, 2, [createClueHandOfType(HAND_TYPE_FLUSH, 3)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -104,7 +104,7 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
       createClueHandOfType(HAND_TYPE_STRAIGHT, 1),
       createClueHandOfType(HAND_TYPE_PAIR, 2),
-      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, createClueHandOfType(HAND_TYPE_PAIR, 2)),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, [createClueHandOfType(HAND_TYPE_PAIR, 2)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -133,8 +133,8 @@ describe('addInDeducedClues', () => {
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
       createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
-      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
-      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, [createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)]),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, [createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -149,7 +149,7 @@ describe('addInDeducedClues', () => {
       createClueHandOfType(HAND_TYPE_FOUR_OF_A_KIND, 0),
       createClueHandOfType(HAND_TYPE_TWO_PAIR, 1),
       createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
-      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, [createClueHandOfType(HAND_TYPE_TWO_PAIR, 1)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -160,9 +160,9 @@ describe('addInDeducedClues', () => {
     ];
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
-      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
-      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
-      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, [createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)]),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, [createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)]),
+      createClueHandOfType(HAND_TYPE_HIGH_CARD, 3, [createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });
@@ -175,8 +175,8 @@ describe('addInDeducedClues', () => {
     const expectedResult = [
       createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0),
       createClueHandOfType(HAND_TYPE_HIGH_CARD, 3),
-      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
-      createClueHandOfType(HAND_TYPE_PAIR, 2, createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)),
+      createClueHandOfType(HAND_TYPE_TWO_PAIR, 1, [createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)]),
+      createClueHandOfType(HAND_TYPE_PAIR, 2, [createClueHandOfType(HAND_TYPE_THREE_OF_A_KIND, 0)]),
     ];
     expect(addInDeducedClues(clues)).toEqual(expectedResult);
   });

@@ -50,6 +50,7 @@ import {
   HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
   HINT_FLUSH_SUIT,
+  HINT_SORT_RULE_NUMBERS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -673,6 +674,27 @@ export const applyFlushSuitHint = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applySortRuleHint = (solutionOptions, hint) => {
+  const {
+    numbers,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_SORT_RULE_NUMBERS to remove numbers ${numbers} in solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  // toggle (to off) any of the numbers mentioned
+  numbers.forEach((number) => {
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  });
+
+  return newSolutionOptions;
+};
+
 // -----------//
 //  applyHint //
 // -----------//
@@ -773,6 +795,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_FLUSH_SUIT:
       return applyFlushSuitHint(solutionOptions, hint);
+
+    case HINT_SORT_RULE_NUMBERS:
+      return applySortRuleHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
