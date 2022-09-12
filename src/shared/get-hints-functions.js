@@ -1944,42 +1944,54 @@ export const createHintSortRuleNumbers = (numbers, solutionOptionsIndex, handOpt
 
 // for certain hand types, the numbers at certain indexes must obey the number sort order (e.g. for three of a kind card 4 must be higher than card 5)
 // this hint removes numbers that break that sort rule
+// note: this might produce hints to restrict some numbers, which next time round will generate more hints
 export const getSortRuleNumbersHints = (solutionHandsIndex, solutionOptions, indexes, clue) => {
   const hints = [];
 
-  // TODO for now we just cope with two indexes and compare those
-
   const handOptions = solutionOptions[solutionHandsIndex];
-  const [index1, index2] = indexes;
-  const cardOptions1 = handOptions[index1];
-  const cardOptions2 = handOptions[index2];
 
-  // all numbers in the 2nd must be smaller than the maximum number in the first
-  const maxNumberIn1 = getMaxNumberInCardOptions(cardOptions1);
-  const numbersToRemoveIn2 = [];
-  NUMBERS_SORTED.forEach((number) => {
-    if (number >= maxNumberIn1 && isNumberTrueInCardOptions(number, cardOptions2)) {
-      numbersToRemoveIn2.push(number);
+  // we move down the indexes in pairs, the numbers in the 2nd must be smaller than the maximum number in the first
+  for (let i = 0; i < indexes.length - 1; i += 1) {
+    const index1 = indexes[i];
+    const index2 = indexes[i + 1];
+    const cardOptions1 = handOptions[index1];
+    const cardOptions2 = handOptions[index2];
+
+    // all numbers in the 2nd must be smaller than the maximum number in the first
+    const maxNumberIn1 = getMaxNumberInCardOptions(cardOptions1);
+    const numbersToRemoveIn2 = [];
+    NUMBERS_SORTED.forEach((number) => {
+      if (number >= maxNumberIn1 && isNumberTrueInCardOptions(number, cardOptions2)) {
+        numbersToRemoveIn2.push(number);
+      }
+    });
+
+    // create a clue to remove these numbers if we found at least one
+    if (numbersToRemoveIn2.length) {
+      hints.push(createHintSortRuleNumbers(numbersToRemoveIn2, solutionHandsIndex, index2, clue));
     }
-  });
-
-  // create a clue to remove these numbers if we found at least one
-  if (numbersToRemoveIn2.length) {
-    hints.push(createHintSortRuleNumbers(numbersToRemoveIn2, solutionHandsIndex, index2, clue));
   }
 
-  // likewise all numbers in the 1st must be larger than the minimum number in the second
-  const minNumberIn2 = getMinNumberInCardOptions(cardOptions2);
-  const numbersToRemoveIn1 = [];
-  NUMBERS_SORTED.forEach((number) => {
-    if (number <= minNumberIn2 && isNumberTrueInCardOptions(number, cardOptions1)) {
-      numbersToRemoveIn1.push(number);
-    }
-  });
+  // we now move up the indexes in pairs, all numbers in the 1st must be larger than the minimum number in the second
+  for (let i = indexes.length - 2; i >= 0; i -= 1) {
+    const index1 = indexes[i];
+    const index2 = indexes[i + 1];
+    const cardOptions1 = handOptions[index1];
+    const cardOptions2 = handOptions[index2];
 
-  // create a clue to remove these numbers if we found at least one
-  if (numbersToRemoveIn1.length) {
-    hints.push(createHintSortRuleNumbers(numbersToRemoveIn1, solutionHandsIndex, index1, clue));
+    // all numbers in the 1st must be larger than the minimum number in the second
+    const minNumberIn2 = getMinNumberInCardOptions(cardOptions2);
+    const numbersToRemoveIn1 = [];
+    NUMBERS_SORTED.forEach((number) => {
+      if (number <= minNumberIn2 && isNumberTrueInCardOptions(number, cardOptions1)) {
+        numbersToRemoveIn1.push(number);
+      }
+    });
+
+    // create a clue to remove these numbers if we found at least one
+    if (numbersToRemoveIn1.length) {
+      hints.push(createHintSortRuleNumbers(numbersToRemoveIn1, solutionHandsIndex, index1, clue));
+    }
   }
 
   return hints;
@@ -2332,6 +2344,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const pairNumbersRestrictedBySuitHints = getPairNumbersRestrictedBySuitHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairNumbersRestrictedBySuitHints.length) {
         return pairNumbersRestrictedBySuitHints;
+      }
+
+      const sortRuleNumbersHints = getSortRuleNumbersHints(solutionHandsIndex, solutionOptions, [2, 3, 4], clue);
+      if (sortRuleNumbersHints.length) {
+        return sortRuleNumbersHints;
       }
     }
 
