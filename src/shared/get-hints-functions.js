@@ -2228,6 +2228,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       if (flushSuitHints.length) {
         return flushSuitHints;
       }
+
+      const sortRuleNumbersHints = getSortRuleNumbersHints(solutionHandsIndex, solutionOptions, [0, 1, 2, 3, 4], clue);
+      if (sortRuleNumbersHints.length) {
+        return sortRuleNumbersHints;
+      }
     }
 
     // hand type clue: straight
