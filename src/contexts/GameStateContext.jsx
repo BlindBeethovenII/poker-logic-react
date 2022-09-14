@@ -90,6 +90,9 @@ export const GameStateContextProvider = ({ children }) => {
   // the next hard coded solution for the new solution button
   const [nextHardCodedSolution, setNextHardCodedSolution] = useState(1);
 
+  // which solution we are looking at
+  const [currentSolutionLabel, setCurrentSolutionLabel] = useState('Hard-coded Solution 1');
+
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
   // --------------------------------------------------------------------- //
@@ -172,14 +175,17 @@ export const GameStateContextProvider = ({ children }) => {
     if (newSolutionIndex === 1) {
       nextNewSolution = solution1;
       nextClues = clues1;
+      setCurrentSolutionLabel('Hard-coded Solution 1');
       setNextHardCodedSolution(2);
     } else if (newSolutionIndex === 2) {
       nextNewSolution = solution2;
       nextClues = clues2;
+      setCurrentSolutionLabel('Hard-coded Solution 2');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();
       nextClues = createCluesForSolutionHands(nextNewSolution);
+      setCurrentSolutionLabel('Random Solution');
     }
     setSolution(nextNewSolution);
     const nextCluesPlusDeduced = addInDeducedClues(nextClues);
@@ -390,6 +396,7 @@ export const GameStateContextProvider = ({ children }) => {
     // new solution and keep track of next hard-coded solution
     newSolution,
     nextHardCodedSolution,
+    currentSolutionLabel,
 
     // hint stuff
     findNextHint,
@@ -423,6 +430,7 @@ export const GameStateContextProvider = ({ children }) => {
     cardsAvailable,
     newSolution,
     nextHardCodedSolution,
+    currentSolutionLabel,
     findNextHint,
     findAndApplyNextHint,
     findAndApplyAllHints,

@@ -21,6 +21,8 @@ const Button = styled.button`
 const NewSolutionButton = (props) => {
   const { hardCoded } = props;
 
+  const { newSolution, nextHardCodedSolution } = useContext(GameStateContext);
+
   const offset = hardCoded ? 3 : 0;
 
   const left = colToLeft(1.7 + offset);
@@ -33,8 +35,6 @@ const NewSolutionButton = (props) => {
     width: '40px',
     height: '40px',
   };
-
-  const { newSolution, nextHardCodedSolution } = useContext(GameStateContext);
 
   const buttonText = hardCoded ? `New Solution ${nextHardCodedSolution}` : 'New Random Solution';
 

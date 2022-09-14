@@ -15,6 +15,7 @@ import AvailableCardsInSuit from './AvailableCardsInSuit';
 import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
 import NewSolutionButton from './NewSolutionButton';
+import CurrentSolutionLabel from './CurrentSolutionLabel';
 import HintButton from './HintButton';
 import ReduceCluesButton from './ReduceCluesButton';
 import HideShowSolutionButton from './HideShowSolutionButton';
@@ -134,6 +135,7 @@ const PlayArea = () => {
       <RestartButton />
       <NewSolutionButton />
       <NewSolutionButton hardCoded />
+      <CurrentSolutionLabel />
       <HintButton getHint />
       <HintButton applyOne />
       <HintButton applyAll />
