@@ -1200,3 +1200,19 @@ export const sortedSuitCardsContainStraight = (suitCardsAvailable) => {
   // we didn't find one
   return false;
 };
+
+// return true if the first card number is greater or equal to the second card number, remembering A is greatest
+export const cardNumberGE = (n1, n2) => {
+  // easiest approach is to convert NUMBER_A to 14 then use straight >=
+  const n1Converted = n1 === NUMBER_A ? 14 : n1;
+  const n2Converted = n2 === NUMBER_A ? 14 : n2;
+  return n1Converted >= n2Converted;
+};
+
+// return true if the first card number is less or equal to the second card number, remembering A is greatest
+export const cardNumberLE = (n1, n2) => {
+  // easiest approach is to convert NUMBER_A to 14 then use straight <=
+  const n1Converted = n1 === NUMBER_A ? 14 : n1;
+  const n2Converted = n2 === NUMBER_A ? 14 : n2;
+  return n1Converted <= n2Converted;
+};

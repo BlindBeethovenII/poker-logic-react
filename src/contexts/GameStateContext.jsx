@@ -36,6 +36,15 @@ import {
 import { clueToText } from '../shared/to-text-functions';
 
 import {
+  solution1,
+  clues1,
+  solution2,
+  clues2,
+  solution3,
+  clues3,
+} from '../shared/test-hands';
+
+import {
   CLUE_SUIT_AND_NUMBER,
   CLUE_SUIT,
   CLUE_NUMBER,
@@ -45,13 +54,6 @@ import {
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
 } from '../shared/constants';
-
-import {
-  solution1,
-  clues1,
-  solution2,
-  clues2,
-} from '../shared/test-hands';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
 
@@ -88,7 +90,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [showSolution, setShowSolution] = useState(false);
 
   // the next hard coded solution for the new solution button
-  const [nextHardCodedSolution, setNextHardCodedSolution] = useState(1);
+  const [nextHardCodedSolution, setNextHardCodedSolution] = useState(2);
 
   // which solution we are looking at
   const [currentSolutionLabel, setCurrentSolutionLabel] = useState('Hard-coded Solution 1');
@@ -181,6 +183,11 @@ export const GameStateContextProvider = ({ children }) => {
       nextNewSolution = solution2;
       nextClues = clues2;
       setCurrentSolutionLabel('Hard-coded Solution 2');
+      setNextHardCodedSolution(3);
+    } else if (newSolutionIndex === 3) {
+      nextNewSolution = solution3;
+      nextClues = clues3;
+      setCurrentSolutionLabel('Hard-coded Solution 3');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();

@@ -46,6 +46,8 @@ import {
   sortedSuitCardsContainStraight,
   createCard,
   sortSuit,
+  cardNumberGE,
+  cardNumberLE,
 } from './card-functions';
 
 import {
@@ -105,6 +107,7 @@ import {
   HAND_TYPE_FLUSH,
   HINT_FLUSH_SUIT,
   HINT_SORT_RULE_NUMBERS,
+  HAND_TYPE_HIGH_CARD,
 } from './constants';
 
 // -------------------- //
@@ -1961,7 +1964,7 @@ export const getSortRuleNumbersHints = (solutionHandsIndex, solutionOptions, ind
     const maxNumberIn1 = getMaxNumberInCardOptions(cardOptions1);
     const numbersToRemoveIn2 = [];
     NUMBERS_SORTED.forEach((number) => {
-      if (number >= maxNumberIn1 && isNumberTrueInCardOptions(number, cardOptions2)) {
+      if (cardNumberGE(number, maxNumberIn1) && isNumberTrueInCardOptions(number, cardOptions2)) {
         numbersToRemoveIn2.push(number);
       }
     });
@@ -1983,7 +1986,7 @@ export const getSortRuleNumbersHints = (solutionHandsIndex, solutionOptions, ind
     const minNumberIn2 = getMinNumberInCardOptions(cardOptions2);
     const numbersToRemoveIn1 = [];
     NUMBERS_SORTED.forEach((number) => {
-      if (number <= minNumberIn2 && isNumberTrueInCardOptions(number, cardOptions1)) {
+      if (cardNumberLE(number, minNumberIn2) && isNumberTrueInCardOptions(number, cardOptions1)) {
         numbersToRemoveIn1.push(number);
       }
     });
@@ -2358,7 +2361,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     }
 
     // hand type clue: high card
-    // TODO
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_HIGH_CARD) {
+      const sortRuleNumbersHints = getSortRuleNumbersHints(solutionHandsIndex, solutionOptions, [0, 1, 2, 3, 4], clue);
+      if (sortRuleNumbersHints.length) {
+        return sortRuleNumbersHints;
+      }
+    }
   }
 
   // no other hints yet

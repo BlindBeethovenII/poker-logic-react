@@ -13,7 +13,7 @@ import {
 } from './clue-functions';
 
 import {
-  // NUMBER_A,
+  NUMBER_A,
   NUMBER_2,
   NUMBER_3,
   NUMBER_4,
@@ -31,6 +31,10 @@ import {
   SUIT_HEARTS,
   SUIT_SPADES,
 } from './constants';
+
+// -------------------------- //
+// hard-coded solution hand 1 //
+// -------------------------- //
 
 export const solutionHands1 = [
   [
@@ -90,14 +94,11 @@ export const clues1 = [
   createClueNotNumber(NUMBER_10, 1, 3),
 ];
 
+// -------------------------- //
+// hard-coded solution hand 2 //
+// -------------------------- //
+
 export const solutionHands2 = [
-  // [
-  //   createCard(SUIT_DIAMONDS, NUMBER_5),
-  //   createCard(SUIT_DIAMONDS, NUMBER_4),
-  //   createCard(SUIT_DIAMONDS, NUMBER_3),
-  //   createCard(SUIT_DIAMONDS, NUMBER_2),
-  //   createCard(SUIT_DIAMONDS, NUMBER_A),
-  // ],
   [
     createCard(SUIT_SPADES, NUMBER_Q),
     createCard(SUIT_HEARTS, NUMBER_Q),
@@ -156,3 +157,65 @@ export const clues2 = [
 ];
 
 // export const clues2 = createCluesForSolutionHands(solution2);
+
+// -------------------------- //
+// hard-coded solution hand 3 //
+// -------------------------- //
+
+export const solutionHands3 = [
+  [
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+    createCard(SUIT_DIAMONDS, NUMBER_2),
+    createCard(SUIT_DIAMONDS, NUMBER_A),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_CLUBS, NUMBER_7),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_5),
+    createCard(SUIT_HEARTS, NUMBER_5),
+    createCard(SUIT_CLUBS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_7),
+    createCard(SUIT_CLUBS, NUMBER_3),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_K),
+    createCard(SUIT_HEARTS, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_6),
+    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_SPADES, NUMBER_3),
+  ],
+];
+
+export const solution3 = {
+  solutionHands: solutionHands3,
+  missingNumber: NUMBER_J,
+};
+
+export const clues3 = [
+  createClueHandOfType(calcHandType(solutionHands3[0]), 0),
+  createClueHandOfType(calcHandType(solutionHands3[1]), 1),
+  createClueHandOfType(calcHandType(solutionHands3[2]), 2),
+  createClueHandOfType(calcHandType(solutionHands3[3]), 3),
+  // createClueSuit(SUIT_HEARTS, 0, 4),
+  createClueNumber(NUMBER_9, 1, 2),
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
+  // createClueNumber(NUMBER_8, 1, 3),
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_7, 1, 4),
+  // createClueSuit(SUIT_SPADES, 2, 0),
+  // createClueSuit(SUIT_DIAMONDS, 2, 3),
+  // createClueNumber(NUMBER_3, 2, 4),
+  // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
+  // createClueSuit(SUIT_HEARTS, 3, 1),
+  // createClueNumber(NUMBER_5, 3, 2),
+  // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
+  // createClueSuit(SUIT_SPADES, 3, 4),
+  // createClueNotSuit(SUIT_HEARTS, 2, 1),
+  // createClueNotNumber(NUMBER_8, 3, 1),
+];
