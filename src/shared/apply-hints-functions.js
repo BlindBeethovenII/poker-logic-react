@@ -51,6 +51,7 @@ import {
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
   HINT_FLUSH_SUIT,
   HINT_SORT_RULE_NUMBERS,
+  HINT_FLUSH_POSSIBLE_SUITS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -674,6 +675,42 @@ export const applyFlushSuitHint = (solutionOptions, hint) => {
   return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyFlushPossibleSuitsHint = (solutionOptions, hint) => {
+  const {
+    suits,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // we do something different if suits is to a single suit, as opposed to multiple suits
+  if (suits.length === 1) {
+    const suit = suits[0];
+    // eslint-disable-next-line max-len
+    logIfDevEnv(`applying HINT_FLUSH_POSSIBLE_SUITS for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+    // we know this must be the suit
+    return setSuitOptionOnlyInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+  }
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_FLUSH_POSSIBLE_SUITS for suits ${suits} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  // toggle (to off) any other suit that is currently set
+  SUITS.forEach((suit) => {
+    if (!suits.includes(suit) && isSuitTrueInCardOptions(suit, cardOptions)) {
+      // this suit is not part of the solution, so toggle off
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+    }
+  });
+
+  return newSolutionOptions;
+};
+
 export const applySortRuleHint = (solutionOptions, hint) => {
   const {
     numbers,
@@ -795,6 +832,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_FLUSH_SUIT:
       return applyFlushSuitHint(solutionOptions, hint);
+
+    case HINT_FLUSH_POSSIBLE_SUITS:
+      return applyFlushPossibleSuitsHint(solutionOptions, hint);
 
     case HINT_SORT_RULE_NUMBERS:
       return applySortRuleHint(solutionOptions, hint);

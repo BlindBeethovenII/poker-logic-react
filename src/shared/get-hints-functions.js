@@ -30,7 +30,7 @@ import {
   getNumbersOfSuitInAvailable,
   getNumbersFromCardOptions,
   getSuitsFromCardOptions,
-  allNumbersFromFirstInSecond,
+  allItemsFromFirstInSecond,
   isAnotherSuitSetInCardOptions,
   isAnotherNumberSetInCardOptions,
   canPairOfSuitsOfNumberFitIn,
@@ -40,6 +40,7 @@ import {
   countWhichOfNumbersPossibleInCardOptions,
   getMaxNumberInCardOptions,
   getMinNumberInCardOptions,
+  suitPossibleInAllHandOptions,
 } from './solution-functions';
 
 import {
@@ -108,6 +109,7 @@ import {
   HINT_FLUSH_SUIT,
   HINT_SORT_RULE_NUMBERS,
   HAND_TYPE_HIGH_CARD,
+  HINT_FLUSH_POSSIBLE_SUITS,
 } from './constants';
 
 // -------------------- //
@@ -412,7 +414,7 @@ export const getFourOfAKindNumbersHints = (cardsStillAvailable, solutionHandsInd
   [0, 1, 2, 3].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
+    if (!allItemsFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintFourOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
@@ -788,7 +790,7 @@ export const getThreeOfAKindNumbersHints = (cardsAvailable, solutionHandsIndex, 
   [0, 1, 2].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions is not in numbersAvailable then we need a clue
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
+    if (!allItemsFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintThreeOfAKindNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
@@ -1011,7 +1013,7 @@ export const getPairNumbersHints = (cardsAvailable, solutionHandsIndex, solution
   [handOptionsIndex1, handOptionsIndex2].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
+    if (!allItemsFromFirstInSecond(cardOptionsNumbers, numbersAvailable)) {
       hints.push(createHintPairNumbers(numbersAvailable, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
@@ -1472,7 +1474,7 @@ export const getPairNumbersRestrictedBySuitHints = (cardsAvailable, solutionHand
   [handOptionsIndex1, handOptionsIndex2].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
+    if (!allItemsFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
       hints.push(createHintPairNumbersRestrictedBySuit(numbersAvailableRestricted, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
@@ -1557,7 +1559,7 @@ export const getThreeOfAKindNumbersRestrictedBySuitHints = (cardsAvailable, solu
   [0, 1, 2].forEach((handOptionsIndex) => {
     // if any of the numbers still available in this cardOptions are not in numbersAvailable then we need a clue to restrict this card to numbersAvailable
     const cardOptionsNumbers = getNumbersFromCardOptions(handOptions[handOptionsIndex]);
-    if (!allNumbersFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
+    if (!allItemsFromFirstInSecond(cardOptionsNumbers, numbersAvailableRestricted)) {
       hints.push(createHintThreeOfAKindNumbersRestrictedBySuit(numbersAvailableRestricted, solutionHandsIndex, handOptionsIndex, clue));
     }
   });
@@ -1871,7 +1873,7 @@ export const getAllNumbersOfSuitNotPossibleHints = (cardsStillAvailable, solutio
   solutionOptions.forEach((handOptions, solutionOptionsIndex) => {
     handOptions.forEach((cardOptions, handOptionsIndex) => {
       // only interested if there is more than one suit still possible, as a placed suit cannot be moved by this hint
-      if (countSuitsInCardOptions(cardOptions) > 1 > 0) {
+      if (countSuitsInCardOptions(cardOptions) > 1) {
         // consider each suit still allowed here
         const suits = getSuitsFromCardOptions(cardOptions);
         suits.forEach((suit) => {
@@ -1932,9 +1934,72 @@ export const getFlushSuitHints = (solutionHandsIndex, solutionOptions, clue) => 
   return hints;
 };
 
-// --------------------------- //
+// ------------------------- //
+// HINT_FLUSH_POSSIBLE_SUITS //
+// ------------------------- //
+
+// create HINT_FLUSH_POSSIBLE_SUITS
+export const createHintFlushPossibleSuits = (suits, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_FLUSH_POSSIBLE_SUITS,
+  suits,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// only cards of these suits are still available to make a flush
+// assumes 'FLUSH SUIT' hint already applied - so does nothing if a card has its suit set
+// takes notice of suits not allowed for cards of this hand
+export const getFlushPossibleSuitsHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // first look to see if a suit is set - if so, nothing for us to do
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countSuitsInCardOptions(cardOptions) === 1) {
+      return [];
+    }
+  }
+
+  // we want to determine which suits are still possible because a) that suit is still possible in all 5 cards of this hand; and b) there are still 5 cards of this suit left to place
+  const possibleSuitsInHandOptions = [];
+  SUITS.forEach((suit) => {
+    // if suit is possible in all cards then remember it
+    if (suitPossibleInAllHandOptions(suit, handOptions)) {
+      possibleSuitsInHandOptions.push(suit);
+    }
+  });
+
+  // of these only keep those for which there are 5 or more cards of this suit not yet placed
+  const possibleSuits = [];
+  possibleSuitsInHandOptions.forEach((suit) => {
+    // easy to count how many cards of this suit altogether
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+    const suitCardsAvailableCount = cardsAvailable[suitOptionsIndex].length;
+    const suitPlacedCount = countSuitPlacedInSolutionOptions(suit, solutionOptions);
+    // remember this suit cannot be placed in our cards at this point, so we can just say 5 or more that can still be placed are needed
+    if (suitCardsAvailableCount - suitPlacedCount >= 5) {
+      possibleSuits.push(suit);
+    }
+  });
+
+  // now look in each cardOption to see if a clue is needed to restrict it to these possible suits
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+    const cardOptionsSuits = getSuitsFromCardOptions(cardOptions);
+    if (!allItemsFromFirstInSecond(cardOptionsSuits, possibleSuits)) {
+      hints.push(createHintFlushPossibleSuits(possibleSuits, solutionHandsIndex, i, clue));
+    }
+  }
+
+  return hints;
+};
+
+// ---------------------- //
 // HINT_SORT_RULE_NUMBERS //
-// --------------------------- //
+// ---------------------- //
 
 // create HINT_SORT_RULE_NUMBERS
 export const createHintSortRuleNumbers = (numbers, solutionOptionsIndex, handOptionsIndex, clue) => ({
@@ -2153,14 +2218,19 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // hand type clue: straight flush (which has to be for the first hand, but we don't care about that actually)
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
+      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (suitsWithoutStraightFlushHints.length) {
+        return suitsWithoutStraightFlushHints;
+      }
+
       const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
       if (flushSuitHints.length) {
         return flushSuitHints;
       }
 
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
-      if (suitsWithoutStraightFlushHints.length) {
-        return suitsWithoutStraightFlushHints;
+      const flushPossibleSuitsHints = getFlushPossibleSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (flushPossibleSuitsHints.length) {
+        return flushPossibleSuitsHints;
       }
     }
 
@@ -2235,6 +2305,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
       if (flushSuitHints.length) {
         return flushSuitHints;
+      }
+
+      const flushPossibleSuitsHints = getFlushPossibleSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (flushPossibleSuitsHints.length) {
+        return flushPossibleSuitsHints;
       }
 
       const sortRuleNumbersHints = getSortRuleNumbersHints(solutionHandsIndex, solutionOptions, [0, 1, 2, 3, 4], clue);

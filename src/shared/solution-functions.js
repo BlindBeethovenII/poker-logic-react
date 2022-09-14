@@ -734,8 +734,8 @@ export const getSuitsFromCardOptions = (cardOptions) => {
   return result;
 };
 
-// return true if all numbers in the first array are in the second array
-export const allNumbersFromFirstInSecond = (array1, array2) => {
+// return true if all items in the first array are in the second array
+export const allItemsFromFirstInSecond = (array1, array2) => {
   for (let i = 0; i < array1.length; i += 1) {
     if (!array2.includes(array1[i])) {
       return false;
@@ -877,6 +877,19 @@ export const getSuitsOfNumberAvailableForGivenCardsOfHand = (numbers, cardsAvail
   });
 
   return suits;
+};
+
+// return true if the given suit is possible in all cards of the given handOptions
+export const suitPossibleInAllHandOptions = (suit, handOptions) => {
+  let suitPossible = true;
+  const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+  for (let i = 0; i < handOptions.length && suitPossible; i += 1) {
+    const cardOptions = handOptions[i];
+    if (!getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      suitPossible = false;
+    }
+  }
+  return suitPossible;
 };
 
 // return the count of which of the given suits are still possible in the given cardOptions
