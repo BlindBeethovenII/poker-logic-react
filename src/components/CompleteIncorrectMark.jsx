@@ -4,8 +4,6 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
-import { solutionOptionsValid, isSolutionOptionsComplete } from '../shared/solution-functions';
-
 import GameStateContext from '../contexts/GameStateContext';
 
 const Button = styled.button`
@@ -23,15 +21,7 @@ const left = colToLeft(6) - 16;
 const top = rowToTop(0);
 
 const CompleteIncorrectMark = () => {
-  const { solutionOptions, solutionHands, cardsAvailable } = useContext(GameStateContext);
-
-  // what to show
-  let boxText = 'OK';
-  if (!solutionOptionsValid(solutionOptions, solutionHands)) {
-    boxText = 'INVALID';
-  } else if (isSolutionOptionsComplete(cardsAvailable, solutionOptions)) {
-    boxText = 'DONE';
-  }
+  const { solutionOptionsState } = useContext(GameStateContext);
 
   const buttonDivStyle = {
     position: 'absolute',
@@ -45,7 +35,7 @@ const CompleteIncorrectMark = () => {
 
   return (
     <div style={buttonDivStyle}>
-      <Button>{boxText}</Button>
+      <Button>{solutionOptionsState}</Button>
     </div>
   );
 };

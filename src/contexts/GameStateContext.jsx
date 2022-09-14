@@ -17,6 +17,7 @@ import {
   convertSuitToSuitOptionsIndex,
   getSuitOptionsValue,
   getNumberOptionsValue,
+  solutionOptionsValid,
 } from '../shared/solution-functions';
 
 import { getHints } from '../shared/get-hints-functions';
@@ -40,6 +41,9 @@ import {
   CLUE_NUMBER,
   CLUE_NOT_SUIT,
   CLUE_NOT_NUMBER,
+  SOLUTION_OPTIONS_STATE_OK,
+  SOLUTION_OPTIONS_STATE_INVALID,
+  SOLUTION_OPTIONS_STATE_DONE,
 } from '../shared/constants';
 
 import {
@@ -66,7 +70,10 @@ export const GameStateContextProvider = ({ children }) => {
   // each card options is on object of
   //   suitOptions: array of 4 bools - S, H, D, C - true means visible - if only one true then that is the selected number
   //   numberOptions: array of 13 bools - A, 2, 3, ..., K - true means visible - if only one true then that is the selected number (missingNumber is always set to false)
-  const [solutionOptions, setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
+  const [solutionOptions, _setSolutionOptions] = useState(() => createSolutionOptions(solution.missingNumber));
+
+  // the state of the solution options
+  const [solutionOptionsState, setSolutionOptionsState] = useState(SOLUTION_OPTIONS_STATE_OK);
 
   // cards available are suit sorted cards from the generated solution
   const [cardsAvailable, setCardsAvailable] = useState(() => getCardsAvailable(solution.solutionHands));
@@ -80,6 +87,21 @@ export const GameStateContextProvider = ({ children }) => {
   // show or hide the solution
   const [showSolution, setShowSolution] = useState(false);
 
+  // --------------------------------------------------------------------- //
+  // replacement setSolutionOptions that sets solutionOptionsState as well //
+  // --------------------------------------------------------------------- //
+
+  const setSolutionOptions = (newSolutionOptions, solutionHands, theCardsAvailable) => {
+    _setSolutionOptions(newSolutionOptions);
+    let newSolutionOptionsState = SOLUTION_OPTIONS_STATE_OK;
+    if (!solutionOptionsValid(newSolutionOptions, solutionHands)) {
+      newSolutionOptionsState = SOLUTION_OPTIONS_STATE_INVALID;
+    } else if (isSolutionOptionsComplete(theCardsAvailable, newSolutionOptions)) {
+      newSolutionOptionsState = SOLUTION_OPTIONS_STATE_DONE;
+    }
+    setSolutionOptionsState(newSolutionOptionsState);
+  };
+
   // -------------------- //
   // card options setters //
   // -------------------- //
@@ -87,38 +109,38 @@ export const GameStateContextProvider = ({ children }) => {
   // set the given suit options index as the only selected suit option
   const setSuitOptionOnly = useCallback((suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // toggle the given suit option index
   const toggleSuitOption = useCallback((suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // reset all the suit options
   const resetSuitOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // set the given number options index as the only selected number option
   const setNumberOptionOnly = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // toggle the given number option index
   const toggleNumberOption = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // reset all the number options
   const resetNumberOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions, solution.missingNumber);
-    setSolutionOptions(newSolutionOptions);
-  }, [solutionOptions, solution]);
+    setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
 
   // ---------------------------------------------------------------------- //
   // helper function to set the clues and the showClues corresponding array //
@@ -134,10 +156,10 @@ export const GameStateContextProvider = ({ children }) => {
   // ------------------------------------- //
 
   // reset solution options - now needs to take missingNumber - so doesn't need to use useCallback
-  const resetSolutionOptions = (missingNumber, theClues) => {
-    setSolutionOptions(createSolutionOptions(missingNumber));
+  const resetSolutionOptions = useCallback((theSolution, theCardsAvailable, theClues) => {
+    setSolutionOptions(createSolutionOptions(theSolution.missingNumber), theSolution.solutionHands, theCardsAvailable);
     setShowClues(createInitialShowClues(theClues));
-  };
+  }, []);
 
   // get a new solution
   const newSolution = useCallback((newSolutionIndex) => {
@@ -158,12 +180,13 @@ export const GameStateContextProvider = ({ children }) => {
     const nextCluesPlusDeduced = addInDeducedClues(nextClues);
     setCluesAndShowClues(nextCluesPlusDeduced);
 
-    // need to reset the solution options as well
-    resetSolutionOptions(nextNewSolution.missingNumber, nextCluesPlusDeduced);
+    // find and set the cards available for this solution
+    const newCardsAvailable = getCardsAvailable(nextNewSolution.solutionHands);
+    setCardsAvailable(newCardsAvailable);
 
-    // and find the cards available for this solution
-    setCardsAvailable(getCardsAvailable(nextNewSolution.solutionHands));
-  }, []);
+    // need to reset the solution options as well
+    resetSolutionOptions(nextNewSolution, newCardsAvailable, nextCluesPlusDeduced);
+  }, [resetSolutionOptions]);
 
   // ----------- //
   // hint system //
@@ -179,7 +202,7 @@ export const GameStateContextProvider = ({ children }) => {
   const findAndApplyNextHint = useCallback(() => {
     const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
     if (newSolutionOptions) {
-      setSolutionOptions(newSolutionOptions);
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
     }
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
@@ -187,7 +210,7 @@ export const GameStateContextProvider = ({ children }) => {
   const findAndApplyAllHints = useCallback(() => {
     const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
     if (newSolutionOptions) {
-      setSolutionOptions(newSolutionOptions);
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
     }
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
@@ -304,12 +327,12 @@ export const GameStateContextProvider = ({ children }) => {
 
     if (cluesApplied) {
       // the solution options have change, so save them
-      setSolutionOptions(newSolutionOptions);
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
 
       // and we have hidden those clues
       setShowClues(newShowClues);
     }
-  }, [clues, showClues, solutionOptions]);
+  }, [clues, showClues, solutionOptions, solution, cardsAvailable]);
 
   // ------------------ //
   // showSolution stuff //
@@ -347,6 +370,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     // the solution options and setting functions
     solutionOptions,
+    solutionOptionsState,
     setSuitOptionOnly,
     toggleSuitOption,
     resetSuitOptions,
@@ -382,12 +406,14 @@ export const GameStateContextProvider = ({ children }) => {
     showWin,
     solution,
     solutionOptions,
+    solutionOptionsState,
     setSuitOptionOnly,
     toggleSuitOption,
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
     resetNumberOptions,
+    resetSolutionOptions,
     cardsAvailable,
     newSolution,
     findNextHint,

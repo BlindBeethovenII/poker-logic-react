@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import BorderTopLeftImage from '../images/borders/topleft.png';
 import BorderTopImage from '../images/borders/top.png';
@@ -27,7 +27,10 @@ import {
   SUIT_HEARTS,
   SUIT_DIAMONDS,
   SUIT_CLUBS,
+  SOLUTION_OPTIONS_STATE_INVALID,
 } from '../shared/constants';
+
+import GameStateContext from '../contexts/GameStateContext';
 
 const bordertopleft = {
   position: 'absolute',
@@ -93,51 +96,55 @@ const playbackgroundsvg = {
   height: '622px',
 };
 
-const playbackgroundrect = {
-  width: '920px',
-  height: '622px',
-  fill: 'rgb(85,107,47)',
-};
+const PlayArea = () => {
+  const { solutionOptionsState } = useContext(GameStateContext);
 
-const PlayArea = () => (
-  <div>
-    <svg style={playbackgroundsvg}>
-      <rect style={playbackgroundrect} />
-    </svg>
-    <img src={BorderTopLeftImage} alt="bordertopleft" style={bordertopleft} />
-    <img src={BorderTopImage} alt="bordertop" style={bordertop} />
-    <img src={BorderLeftImage} alt="borderleft" style={borderleft} />
-    <img src={BorderBottomLeftImage} alt="borderbottomleft" style={borderbottomleft} />
-    <img src={BorderBottomImage} alt="borderbottom" style={borderbottom} />
-    <img src={BorderTopRightImage} alt="bordertopright" style={bordertopright} />
-    <img src={BorderBottomRightImage} alt="borderbottomright" style={borderbottomright} />
-    <img src={BorderRightImage} alt="borderright" style={borderright} />
-    <SolutionHand solutionHandIndex={0} />
-    <SolutionHand solutionHandIndex={1} />
-    <SolutionHand solutionHandIndex={2} />
-    <SolutionHand solutionHandIndex={3} />
-    <SolutionPerson solutionPersonIndex={0} />
-    <SolutionPerson solutionPersonIndex={1} />
-    <SolutionPerson solutionPersonIndex={2} />
-    <SolutionPerson solutionPersonIndex={3} />
-    <AvailableCardsInSuit suit={SUIT_SPADES} />
-    <AvailableCardsInSuit suit={SUIT_HEARTS} />
-    <AvailableCardsInSuit suit={SUIT_DIAMONDS} />
-    <AvailableCardsInSuit suit={SUIT_CLUBS} />
-    <SolutionOptions />
-    <RestartButton />
-    <NewSolutionButton newSolutionIndex={0} />
-    <NewSolutionButton newSolutionIndex={1} />
-    <NewSolutionButton newSolutionIndex={2} />
-    <HintButton getHint />
-    <HintButton applyOne />
-    <HintButton applyAll />
-    <ReduceCluesButton />
-    <HideShowSolutionButton />
-    <ApplyBasicCluesButton />
-    <Clues />
-    <CompleteIncorrectMark />
-  </div>
-);
+  const playbackgroundrect = {
+    width: '920px',
+    height: '622px',
+    fill: solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID ? 'red' : 'rgb(85,107,47)',
+  };
+
+  return (
+    <div>
+      <svg style={playbackgroundsvg}>
+        <rect style={playbackgroundrect} />
+      </svg>
+      <img src={BorderTopLeftImage} alt="bordertopleft" style={bordertopleft} />
+      <img src={BorderTopImage} alt="bordertop" style={bordertop} />
+      <img src={BorderLeftImage} alt="borderleft" style={borderleft} />
+      <img src={BorderBottomLeftImage} alt="borderbottomleft" style={borderbottomleft} />
+      <img src={BorderBottomImage} alt="borderbottom" style={borderbottom} />
+      <img src={BorderTopRightImage} alt="bordertopright" style={bordertopright} />
+      <img src={BorderBottomRightImage} alt="borderbottomright" style={borderbottomright} />
+      <img src={BorderRightImage} alt="borderright" style={borderright} />
+      <SolutionHand solutionHandIndex={0} />
+      <SolutionHand solutionHandIndex={1} />
+      <SolutionHand solutionHandIndex={2} />
+      <SolutionHand solutionHandIndex={3} />
+      <SolutionPerson solutionPersonIndex={0} />
+      <SolutionPerson solutionPersonIndex={1} />
+      <SolutionPerson solutionPersonIndex={2} />
+      <SolutionPerson solutionPersonIndex={3} />
+      <AvailableCardsInSuit suit={SUIT_SPADES} />
+      <AvailableCardsInSuit suit={SUIT_HEARTS} />
+      <AvailableCardsInSuit suit={SUIT_DIAMONDS} />
+      <AvailableCardsInSuit suit={SUIT_CLUBS} />
+      <SolutionOptions />
+      <RestartButton />
+      <NewSolutionButton newSolutionIndex={0} />
+      <NewSolutionButton newSolutionIndex={1} />
+      <NewSolutionButton newSolutionIndex={2} />
+      <HintButton getHint />
+      <HintButton applyOne />
+      <HintButton applyAll />
+      <ReduceCluesButton />
+      <HideShowSolutionButton />
+      <ApplyBasicCluesButton />
+      <Clues />
+      <CompleteIncorrectMark />
+    </div>
+  );
+};
 
 export default PlayArea;

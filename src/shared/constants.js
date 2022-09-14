@@ -75,6 +75,10 @@ export const HAND_TYPE_TWO_PAIR = 3;
 export const HAND_TYPE_PAIR = 2;
 export const HAND_TYPE_HIGH_CARD = 1;
 
+export const SOLUTION_OPTIONS_STATE_OK = 'OK';
+export const SOLUTION_OPTIONS_STATE_INVALID = 'INVALID';
+export const SOLUTION_OPTIONS_STATE_DONE = 'DONE';
+
 // note: THREE_OF_A_KIND hints also apply to the three of a kind of a full house, as they are three cards of the same number in the same location
 // note: PAIR hints also apply to the pair in a full house and to two pairs
 export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';
