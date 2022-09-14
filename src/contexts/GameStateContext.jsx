@@ -380,10 +380,9 @@ export const GameStateContextProvider = ({ children }) => {
     // have we just won
     showWin,
 
-    // the missing number
+    // the whole solution, and its parts
+    solution,
     missingNumber: solution.missingNumber,
-
-    // the hands of the solution
     solutionHands: solution.solutionHands,
 
     // the solution options and setting functions

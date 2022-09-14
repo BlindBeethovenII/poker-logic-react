@@ -28,11 +28,16 @@ const Button = styled.button`
 `;
 
 const RestartButton = () => {
-  const { resetSolutionOptions, missingNumber, clues } = useContext(GameStateContext);
+  const {
+    resetSolutionOptions,
+    solution,
+    cardsAvailable,
+    clues,
+  } = useContext(GameStateContext);
 
   return (
     <div style={divstyle}>
-      <Button onClick={() => resetSolutionOptions(missingNumber, clues)}>Restart this Solution</Button>
+      <Button onClick={() => resetSolutionOptions(solution, cardsAvailable, clues)}>Restart this Solution</Button>
     </div>
   );
 };
