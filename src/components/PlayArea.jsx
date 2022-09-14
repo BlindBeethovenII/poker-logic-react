@@ -132,9 +132,8 @@ const PlayArea = () => {
       <AvailableCardsInSuit suit={SUIT_CLUBS} />
       <SolutionOptions />
       <RestartButton />
-      <NewSolutionButton newSolutionIndex={0} />
-      <NewSolutionButton newSolutionIndex={1} />
-      <NewSolutionButton newSolutionIndex={2} />
+      <NewSolutionButton />
+      <NewSolutionButton hardCoded />
       <HintButton getHint />
       <HintButton applyOne />
       <HintButton applyAll />

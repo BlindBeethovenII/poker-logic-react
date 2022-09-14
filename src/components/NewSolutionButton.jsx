@@ -19,9 +19,11 @@ const Button = styled.button`
 `;
 
 const NewSolutionButton = (props) => {
-  const { newSolutionIndex } = props;
+  const { hardCoded } = props;
 
-  const left = colToLeft(1.7 + (newSolutionIndex * 1.5));
+  const offset = hardCoded ? 3 : 0;
+
+  const left = colToLeft(1.7 + offset);
   const top = rowToTop(4);
 
   const divstyle = {
@@ -32,19 +34,31 @@ const NewSolutionButton = (props) => {
     height: '40px',
   };
 
-  const { newSolution } = useContext(GameStateContext);
+  const { newSolution, nextHardCodedSolution } = useContext(GameStateContext);
 
-  const buttonText = newSolutionIndex === 0 ? 'New Random Solution' : `New Solution ${newSolutionIndex}`;
+  const buttonText = hardCoded ? `New Solution ${nextHardCodedSolution}` : 'New Random Solution';
+
+  const callNewSolution = () => {
+    if (hardCoded) {
+      newSolution(nextHardCodedSolution);
+    } else {
+      newSolution();
+    }
+  };
 
   return (
     <div style={divstyle}>
-      <Button onClick={() => newSolution(newSolutionIndex)}>{buttonText}</Button>
+      <Button onClick={callNewSolution}>{buttonText}</Button>
     </div>
   );
 };
 
 NewSolutionButton.propTypes = {
-  newSolutionIndex: PropTypes.number.isRequired,
+  hardCoded: PropTypes.bool,
+};
+
+NewSolutionButton.defaultProps = {
+  hardCoded: false,
 };
 
 export default NewSolutionButton;
