@@ -1101,13 +1101,12 @@ export const createSolution = () => {
   let cards = createNewDeck(missingNumber);
 
   // the hand types
-  // TODO put back commented out ones
   let handTypes = [
-    // HAND_TYPE_STRAIGHT_FLUSH,
+    HAND_TYPE_STRAIGHT_FLUSH,
     HAND_TYPE_FOUR_OF_A_KIND,
     HAND_TYPE_FULL_HOUSE,
     HAND_TYPE_FLUSH,
-    // HAND_TYPE_STRAIGHT,
+    HAND_TYPE_STRAIGHT,
     HAND_TYPE_THREE_OF_A_KIND,
     HAND_TYPE_TWO_PAIR,
     HAND_TYPE_PAIR,

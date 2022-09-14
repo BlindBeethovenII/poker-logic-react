@@ -2153,6 +2153,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
 
     // hand type clue: straight flush (which has to be for the first hand, but we don't care about that actually)
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
+      const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
+      if (flushSuitHints.length) {
+        return flushSuitHints;
+      }
+
       const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
