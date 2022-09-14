@@ -19,6 +19,7 @@ import {
   NUMBER_J,
   NUMBER_Q,
   NUMBER_K,
+  NUMBERS_SORTED,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -204,13 +205,13 @@ const CardOptions = (props) => {
   }
 
   // work through the numbers and draw each, remembering to skip the missingNumber, drawing faded if not selected
-  for (let numberOptionsIndex = 0; numberOptionsIndex < 13; numberOptionsIndex += 1) {
-    const number = numberOptionsIndex + 1;
+  // we now go through the numbers in the order we want to draw them in CardOptions, which is A,K,Q,J, ... 5,4,3,2, which is NUMBERS_SORTED
+  NUMBERS_SORTED.forEach((number) => {
     if (number !== missingNumber) {
-      const faded = !numberOptions[numberOptionsIndex];
+      const faded = !numberOptions[number - 1];
 
       // is this the single number option? remember the missingNumber option is always false
-      const isSingleNumberOption = (numberOptionsCount === 1 && numberOptions[numberOptionsIndex]);
+      const isSingleNumberOption = (numberOptionsCount === 1 && numberOptions[number - 1]);
 
       const cardnumberstyle = {
         position: 'absolute',
@@ -229,7 +230,10 @@ const CardOptions = (props) => {
       };
 
       let textX = 5;
-      if (number === NUMBER_10) {
+      if (number === NUMBER_10 && missingNumber === NUMBER_J) {
+        textX = 0;
+      }
+      if (number === NUMBER_10 && missingNumber !== NUMBER_J) {
         textX = 2;
       }
       if (number === NUMBER_J) {
@@ -237,6 +241,9 @@ const CardOptions = (props) => {
       }
       if (number === NUMBER_Q && missingNumber !== NUMBER_J) {
         textX = 3;
+      }
+      if (number === NUMBER_Q && missingNumber === NUMBER_J) {
+        textX = 2;
       }
       if (number === NUMBER_K) {
         textX = 4;
@@ -271,7 +278,7 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        setNumberOptionOnly(numberOptionsIndex + 1, solutionOptionsIndex, handOptionsIndex);
+        setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
       };
 
       const numberToggleOption = (e) => {
@@ -285,7 +292,7 @@ const CardOptions = (props) => {
           resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
         } else {
           // toggle corresponding number
-          toggleNumberOption(numberOptionsIndex + 1, solutionOptionsIndex, handOptionsIndex);
+          toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
         }
       };
 
@@ -318,7 +325,7 @@ const CardOptions = (props) => {
         internalRow += 1;
       }
     }
-  }
+  });
 
   return components;
 };
