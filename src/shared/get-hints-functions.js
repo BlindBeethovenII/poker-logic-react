@@ -77,6 +77,7 @@ import {
   HAND_TYPE_TWO_PAIR,
   HINT_NUMBER_NOT_USED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
+  HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
   HINT_SAME_COUNT_LEFT_SUIT,
   HINT_SAME_COUNT_LEFT_NUMBER,
   HINT_FOUR_OF_A_KIND_NUMBERS,
@@ -158,7 +159,7 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
   clue,
 });
 
-// get the hints for the suits that cannot make a straight flush
+// get the hints for each suit that cannot make a straight flush
 export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -189,6 +190,70 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
       // we added a card to the end, so we need to sort again
       suitCardsAvailable = sortSuit(suitCardsAvailable);
     }
+
+    if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
+      // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
+      // BUT only if that is still a card suit option
+      // the solutionOptionsIndex is the same as the solutionHandsIndex here
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 0, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 0, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 1, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 1, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 2, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 2, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 3, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 3, clue));
+      }
+      if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, 4, suitOptionsIndex)) {
+        hints.push(createHintNoStraightFlushInSuit(suit, solutionHandsIndex, 4, clue));
+      }
+    }
+  });
+
+  return hints;
+};
+
+// -------------------------------- //
+// HINT_NO_STRAIGHT_FLUSH_IN_NUMBER //
+// -------------------------------- //
+
+// create HINT_NO_STRAIGHT_FLUSH_IN_NUMBER
+export const createHintNoStraightFlushInNumber = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// get the hints for the number that cannot make a straight flush
+export const getNumbersWithoutStraightFlushHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // TODO - for now we just look at case where the suit is known
+  SUITS.forEach((suit) => {
+    const handOptions = solutionOptions[solutionHandsIndex];
+
+    // for now, we only continue if this suit is placed in a card in this hand
+    // remember we are working from a valid solution, so if one card has suit set, it must be the suit of the flush
+    let suitSet = false;
+    for (let i = 0; i < handOptions.length && !suitSet; i += 1) {
+      const cardOptions = handOptions[i];
+      if (isSuitPlacedInCardOptions(suit, cardOptions)) {
+        suitSet = true;
+      }
+    }
+
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+    const suitCardsAvailable = [...cardsAvailable[suitOptionsIndex]];
+    // if (suitSet) {
+    //   // this is the suit of the flush - now look for straights in that suit
+    //   // convert suit name to suit options index which is the same as cardsAvailable index
+
+    // }
 
     if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
@@ -2231,6 +2296,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const flushPossibleSuitsHints = getFlushPossibleSuitsHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (flushPossibleSuitsHints.length) {
         return flushPossibleSuitsHints;
+      }
+
+      const numbersWithoutStraightFlushHints = getNumbersWithoutStraightFlushHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (numbersWithoutStraightFlushHints.length) {
+        return numbersWithoutStraightFlushHints;
       }
     }
 

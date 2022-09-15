@@ -1215,3 +1215,51 @@ export const cardNumberLE = (n1, n2) => {
   const n2Converted = n2 === NUMBER_A ? 14 : n2;
   return n1Converted <= n2Converted;
 };
+
+// return an array of all possible straights for the given array of cards
+// note: it is assumed that the array of cards are sorted
+// TODO: for now it is assumed there are no repeat numbers in the cards
+export const getStraights = (cards) => {
+  const result = [];
+
+  // walk down the cards array taking 5 at a time and put in results if these form a straight
+  for (let i = 0; i <= cards.length - 5; i += 1) {
+    const hand = [
+      cards[i],
+      cards[i + 1],
+      cards[i + 2],
+      cards[i + 3],
+      cards[i + 4],
+    ];
+
+    if (handIsStraight(hand)) {
+      result.push(hand);
+    }
+  }
+
+  // and need to consider A ... 5, 4, 3, 2
+  if (cards.length >= 5 && cards[0].number === NUMBER_A) {
+    // take this A and the last for cards, to look for this combination
+    const lastCardIndex = cards.length - 1;
+    const hand = [
+      cards[0],
+      cards[lastCardIndex - 3],
+      cards[lastCardIndex - 2],
+      cards[lastCardIndex - 1],
+      cards[lastCardIndex],
+    ];
+
+    if (handIsStraight(hand)) {
+      // note: This is returned as 5, 4, 3, 2, A as that is how it is sorted in the solution hands we are comparing with
+      result.push([
+        cards[lastCardIndex - 3],
+        cards[lastCardIndex - 2],
+        cards[lastCardIndex - 1],
+        cards[lastCardIndex],
+        cards[0],
+      ]);
+    }
+  }
+
+  return result;
+};
