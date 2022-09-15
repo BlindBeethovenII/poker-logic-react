@@ -41,12 +41,12 @@ import {
   getMaxNumberInCardOptions,
   getMinNumberInCardOptions,
   suitPossibleInAllHandOptions,
+  addPlacedCardsOfSuitFromHandOptions,
 } from './solution-functions';
 
 import {
   sortedSuitCardsContainStraight,
   createCard,
-  sortSuit,
   cardNumberGE,
   cardNumberLE,
 } from './card-functions';
@@ -166,30 +166,10 @@ export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionH
   SUITS.forEach((suit) => {
     // convert suit name to suit options index which is the same as cards still available index, to find the suits available cards
     const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-
-    let suitCardsAvailable = [...cardsStillAvailable[suitOptionsIndex]];
-
     const handOptions = solutionOptions[solutionHandsIndex];
 
-    let needToSortAgain = false;
-
-    // need to add back in in any cards that are already placed - as they are excluded from cardsStillAvailable
-    [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
-      const cardOptions = handOptions[handOptionsIndex];
-      if (isCardOptionsAPlacedCard(cardOptions)) {
-        const setSuit = getFirstSuitSet(cardOptions);
-        // only interested if this is for our suit
-        if (setSuit === suit) {
-          suitCardsAvailable.push(createCard(suit, getFirstNumberSet(cardOptions)));
-          needToSortAgain = true;
-        }
-      }
-    });
-
-    if (needToSortAgain) {
-      // we added a card to the end, so we need to sort again
-      suitCardsAvailable = sortSuit(suitCardsAvailable);
-    }
+    // get the cards available for this suit
+    const suitCardsAvailable = addPlacedCardsOfSuitFromHandOptions(cardsStillAvailable[suitOptionsIndex], suit, handOptions);
 
     if (!sortedSuitCardsContainStraight(suitCardsAvailable)) {
       // the available cards for this suit cannot make a straight, so generate hints to remove this suit from the card options for all these hand options
@@ -230,7 +210,7 @@ export const createHintNoStraightFlushInNumber = (number, solutionOptionsIndex, 
 });
 
 // get the hints for the number that cannot make a straight flush
-export const getNumbersWithoutStraightFlushHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   // TODO - for now we just look at case where the suit is known
@@ -248,7 +228,7 @@ export const getNumbersWithoutStraightFlushHints = (cardsAvailable, solutionHand
     }
 
     const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-    const suitCardsAvailable = [...cardsAvailable[suitOptionsIndex]];
+    const suitCardsAvailable = [...cardsStillAvailable[suitOptionsIndex]];
     // if (suitSet) {
     //   // this is the suit of the flush - now look for straights in that suit
     //   // convert suit name to suit options index which is the same as cardsAvailable index
@@ -2298,7 +2278,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return flushPossibleSuitsHints;
       }
 
-      const numbersWithoutStraightFlushHints = getNumbersWithoutStraightFlushHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      const numbersWithoutStraightFlushHints = getNumbersWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (numbersWithoutStraightFlushHints.length) {
         return numbersWithoutStraightFlushHints;
       }

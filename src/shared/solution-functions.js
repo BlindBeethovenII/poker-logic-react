@@ -1,6 +1,6 @@
 // useful solution functions
 
-import { createCard } from './card-functions';
+import { createCard, sortSuit } from './card-functions';
 
 import {
   INDEX_SUIT_CLUBS,
@@ -950,4 +950,30 @@ export const getMinNumberInCardOptions = (cardOptions) => {
   console.error(`getMinNumberInCardOptions could not find possible number in given cardOptions ${JSON.stringify(cardOptions)}`);
 
   return -1;
+};
+
+// common code for get hint functions - add cards back into given array of cards which are a placed card for the given suit in the given handOptions, sorting result
+export const addPlacedCardsOfSuitFromHandOptions = (cards, suit, handOptions) => {
+  let result = [...cards];
+
+  // need to add back in in any cards that are already placed for this suit in handOptions
+  let needToSortAgain = false;
+  [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
+    const cardOptions = handOptions[handOptionsIndex];
+    if (isCardOptionsAPlacedCard(cardOptions)) {
+      const setSuit = getFirstSuitSet(cardOptions);
+      // only interested if this is for our suit
+      if (setSuit === suit) {
+        result.push(createCard(suit, getFirstNumberSet(cardOptions)));
+        needToSortAgain = true;
+      }
+    }
+  });
+
+  if (needToSortAgain) {
+    // we added a card to the end, so we need to sort again
+    result = sortSuit(result);
+  }
+
+  return result;
 };
