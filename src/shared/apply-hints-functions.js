@@ -52,6 +52,7 @@ import {
   HINT_FLUSH_SUIT,
   HINT_SORT_RULE_NUMBERS,
   HINT_FLUSH_POSSIBLE_SUITS,
+  HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -80,6 +81,20 @@ export const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
   logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_SUIT for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
 
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyNoStraightFlushInNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_NO_STRAIGHT_FLUSH_IN_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
 export const applySameCountLeftSuitHint = (solutionOptions, hint) => {
@@ -745,6 +760,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
       return applyNoStraightFlushInSuitHint(solutionOptions, hint);
+
+    case HINT_NO_STRAIGHT_FLUSH_IN_NUMBER:
+      return applyNoStraightFlushInNumberHint(solutionOptions, hint);
 
     case HINT_SAME_COUNT_LEFT_SUIT:
       return applySameCountLeftSuitHint(solutionOptions, hint);
