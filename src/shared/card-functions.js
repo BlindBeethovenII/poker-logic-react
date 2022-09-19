@@ -1232,33 +1232,31 @@ export const getStraights = (cards) => {
       cards[i + 4],
     ];
 
+    // handIsStraight recognises A,5,4,3,2 which we deal with below
     if (handIsStraight(hand)) {
-      result.push(hand);
+      // need to exclude the case where we are given just A,5,4,3,2 as we deal with that below to return 5,4,3,2,A
+      if (hand[0].number !== NUMBER_A || hand[1].number !== NUMBER_5) {
+        result.push(hand);
+      }
     }
   }
 
   // and need to consider A ... 5, 4, 3, 2
-  if (cards.length >= 5 && cards[0].number === NUMBER_A) {
-    // take this A and the last for cards, to look for this combination
-    const lastCardIndex = cards.length - 1;
-    const hand = [
-      cards[0],
+  const lastCardIndex = cards.length - 1;
+  if (cards.length >= 5
+    && cards[0].number === NUMBER_A
+    && cards[lastCardIndex - 3].number === NUMBER_5
+    && cards[lastCardIndex - 2].number === NUMBER_4
+    && cards[lastCardIndex - 1].number === NUMBER_3
+    && cards[lastCardIndex].number === NUMBER_2) {
+    // note: This is returned as 5, 4, 3, 2, A as that is how it is sorted in the solution hands we are comparing with
+    result.push([
       cards[lastCardIndex - 3],
       cards[lastCardIndex - 2],
       cards[lastCardIndex - 1],
       cards[lastCardIndex],
-    ];
-
-    if (handIsStraight(hand)) {
-      // note: This is returned as 5, 4, 3, 2, A as that is how it is sorted in the solution hands we are comparing with
-      result.push([
-        cards[lastCardIndex - 3],
-        cards[lastCardIndex - 2],
-        cards[lastCardIndex - 1],
-        cards[lastCardIndex],
-        cards[0],
-      ]);
-    }
+      cards[0],
+    ]);
   }
 
   return result;

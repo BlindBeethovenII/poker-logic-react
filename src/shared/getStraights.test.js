@@ -1,9 +1,5 @@
 import { getStraights, createCard } from './card-functions';
 
-import { getCardsAvailable } from './solution-functions';
-
-import { solutionHands3 } from './test-hands';
-
 import {
   NUMBER_5,
   NUMBER_4,
@@ -11,7 +7,6 @@ import {
   NUMBER_2,
   NUMBER_A,
   SUIT_DIAMONDS,
-  INDEX_SUIT_DIAMONDS,
   NUMBER_K,
   NUMBER_Q,
   NUMBER_J,
@@ -20,8 +15,14 @@ import {
 } from './constants';
 
 describe('getStraights', () => {
-  it('will return one array of 5,4,3,2,A for the diamonds of solution hand 3', () => {
-    const cards = getCardsAvailable(solutionHands3)[INDEX_SUIT_DIAMONDS];
+  it('will return the straight 5,4,3,2,A for the cards A,5,4,3,2', () => {
+    const cards = [
+      createCard(SUIT_DIAMONDS, NUMBER_A),
+      createCard(SUIT_DIAMONDS, NUMBER_5),
+      createCard(SUIT_DIAMONDS, NUMBER_4),
+      createCard(SUIT_DIAMONDS, NUMBER_3),
+      createCard(SUIT_DIAMONDS, NUMBER_2),
+    ];
     const expectedResult = [
       [
         createCard(SUIT_DIAMONDS, NUMBER_5),
@@ -29,6 +30,26 @@ describe('getStraights', () => {
         createCard(SUIT_DIAMONDS, NUMBER_3),
         createCard(SUIT_DIAMONDS, NUMBER_2),
         createCard(SUIT_DIAMONDS, NUMBER_A),
+      ],
+    ];
+    expect(getStraights(cards)).toEqual(expectedResult);
+  });
+
+  it('will return the straight A,K,Q,J,10 for the cards A,K,Q,J,10', () => {
+    const cards = [
+      createCard(SUIT_DIAMONDS, NUMBER_A),
+      createCard(SUIT_DIAMONDS, NUMBER_K),
+      createCard(SUIT_DIAMONDS, NUMBER_Q),
+      createCard(SUIT_DIAMONDS, NUMBER_J),
+      createCard(SUIT_DIAMONDS, NUMBER_10),
+    ];
+    const expectedResult = [
+      [
+        createCard(SUIT_DIAMONDS, NUMBER_A),
+        createCard(SUIT_DIAMONDS, NUMBER_K),
+        createCard(SUIT_DIAMONDS, NUMBER_Q),
+        createCard(SUIT_DIAMONDS, NUMBER_J),
+        createCard(SUIT_DIAMONDS, NUMBER_10),
       ],
     ];
     expect(getStraights(cards)).toEqual(expectedResult);

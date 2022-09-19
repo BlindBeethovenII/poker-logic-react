@@ -288,75 +288,117 @@ export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutio
 
   const handOptions = solutionOptions[solutionHandsIndex];
 
-  // TODO - for now we just look at case where the suit is known
-  SUITS.forEach((suit) => {
-    // for now, we only continue if this suit is placed in a card in this hand
-    // remember we are working from a valid solution, so if one card has suit set, it must be the suit of the flush
-    let suitSet = false;
-    for (let i = 0; i < handOptions.length && !suitSet; i += 1) {
+  // first a quick check, if any numbers already set, then we will never generate a clue to remove a number
+  let numberSet = false;
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countNumbersInCardOptions(cardOptions) === 1) {
+      // logIfDevEnv('getNumbersWithoutStraightFlushHints does not need to do anything as it found a number set');
+      numberSet = true;
+    }
+  }
+  if (numberSet) {
+    // we won't reduce the numbers any further - HINT_STRAIGHT_NUMBER_KNOWN will have done that
+    return [];
+  }
+
+  // first consider the case where the suit is known
+  let suit;
+  for (let i = 0; i < handOptions.length && !suit; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countSuitsInCardOptions(cardOptions) === 1) {
+      suit = getFirstSuitSet(cardOptions);
+    }
+  }
+
+  if (suit) {
+    // this is the suit of the flush - now look for straights in that suit
+
+    // convert suit name to suit options index which is the same as the index used in cards still available, to find the suits still available cards
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+    // get the cards available for this suit - adding back in any already placed in this handOptions
+    const suitCardsAvailable = addPlacedCardsOfSuitFromHandOptions(
+      cardsStillAvailable[suitOptionsIndex],
+      suit,
+      handOptions,
+    );
+
+    // get all possible straights - this is an array of each possible straights
+    const allPossibleStraights = getStraights(suitCardsAvailable);
+
+    // convert these into the possible numbers for each hand
+    const possibleNumbersByHand = [];
+    [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
+      const possibleNumbersAtHand = [];
+      for (let i = 0; i < allPossibleStraights.length; i += 1) {
+        const possibleStraight = allPossibleStraights[i];
+        possibleNumbersAtHand.push(possibleStraight[handOptionsIndex].number);
+      }
+      possibleNumbersByHand.push(possibleNumbersAtHand);
+    });
+
+    // go through each cardOptions of this hand
+    for (let i = 0; i < handOptions.length; i += 1) {
       const cardOptions = handOptions[i];
-      if (isSuitPlacedInCardOptions(suit, cardOptions)) {
-        suitSet = true;
-      }
+
+      // look at each of the still possible numbers for this card
+      const currentPossibleNumbers = getNumbersFromCardOptions(cardOptions);
+
+      // any number not in possibleNumbersByHand for this hand can be removed by the HINT_NO_STRAIGHT_FLUSH_IN_NUMBER hint
+      const possibleNumbersForThisHand = possibleNumbersByHand[i];
+
+      currentPossibleNumbers.forEach((number) => {
+        if (!possibleNumbersForThisHand.includes(number)) {
+          hints.push(createHintNoStraightFlushInNumber(number, solutionHandsIndex, i, clue));
+        }
+      });
     }
 
-    if (suitSet) {
-      // this is the suit of the flush - now look for straights in that suit
+    return hints;
+  }
 
-      // first a quick check, if any numbers already set, then we will never generate a clue to remove a number
-      let numberSet = false;
-      for (let i = 0; i < handOptions.length; i += 1) {
-        const cardOptions = handOptions[i];
-        if (countNumbersInCardOptions(cardOptions) === 1) {
-          // logIfDevEnv('getNumbersWithoutStraightFlushHints does not need to do anything as it found a number set');
-          numberSet = true;
+  // it is not the case that a suit is set - so go through each suit, to gather its possible straights, and combine together to see if any numbers are not possible so can be removed by the hint
+  const possibleNumbersByHand = [[], [], [], [], []];
+  SUITS.forEach((suit1) => {
+    // convert suit name to suit options index which is the same as the index used in cards still available, to find the suits still available cards
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit1);
+
+    // get the cards available for this suit - we don't need to add any back, as none will have been placed in this handOptions - otherwise this would be the suit set case
+    const suitCardsAvailable = cardsStillAvailable[suitOptionsIndex];
+
+    // get all possible straights - this is an array of each possible straights
+    const allPossibleStraights = getStraights(suitCardsAvailable);
+
+    // add each number to the corresponding possibleNumbersByHand, if not already there
+    [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
+      const possibleNumbersAtHand = possibleNumbersByHand[handOptionsIndex];
+      for (let i = 0; i < allPossibleStraights.length; i += 1) {
+        const possibleStraight = allPossibleStraights[i];
+        const { number } = possibleStraight[handOptionsIndex];
+        if (!possibleNumbersAtHand.includes(number)) {
+          possibleNumbersAtHand.push(number);
         }
       }
-
-      if (!numberSet) {
-        // convert suit name to suit options index which is the same as the index used in cards still available, to find the suits still available cards
-        const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-
-        // get the cards available for this suit - adding back in any already placed in this handOptions
-        const suitCardsAvailable = addPlacedCardsOfSuitFromHandOptions(
-          cardsStillAvailable[suitOptionsIndex],
-          suit,
-          handOptions,
-        );
-
-        // get all possible straights - this is an array of each possible straights
-        const allPossibleStraights = getStraights(suitCardsAvailable);
-
-        // convert these into the possible numbers for each hand
-        const possibleNumbersByHand = [];
-        [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
-          const possibleNumbersAtHand = [];
-          for (let i = 0; i < allPossibleStraights.length; i += 1) {
-            const possibleStraight = allPossibleStraights[i];
-            possibleNumbersAtHand.push(possibleStraight[handOptionsIndex].number);
-          }
-          possibleNumbersByHand.push(possibleNumbersAtHand);
-        });
-
-        // go through each cardOptions of this hand
-        for (let i = 0; i < handOptions.length; i += 1) {
-          const cardOptions = handOptions[i];
-
-          // look at each of the still possible numbers for this card
-          const currentPossibleNumbers = getNumbersFromCardOptions(cardOptions);
-
-          // any number not in possibleNumbersByHand for this hand can be removed by the HINT_NO_STRAIGHT_FLUSH_IN_NUMBER hint
-          const possibleNumbersForThisHand = possibleNumbersByHand[i];
-
-          currentPossibleNumbers.forEach((number) => {
-            if (!possibleNumbersForThisHand.includes(number)) {
-              hints.push(createHintNoStraightFlushInNumber(number, solutionHandsIndex, i, clue));
-            }
-          });
-        }
-      }
-    }
+    });
   });
+
+  // go through each cardOptions of this hand
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+
+    // look at each of the still possible numbers for this card
+    const currentPossibleNumbers = getNumbersFromCardOptions(cardOptions);
+
+    // any number not in possibleNumbersByHand for this hand can be removed by the HINT_NO_STRAIGHT_FLUSH_IN_NUMBER hint
+    const possibleNumbersForThisHand = possibleNumbersByHand[i];
+
+    currentPossibleNumbers.forEach((number) => {
+      if (!possibleNumbersForThisHand.includes(number)) {
+        hints.push(createHintNoStraightFlushInNumber(number, solutionHandsIndex, i, clue));
+      }
+    });
+  }
 
   return hints;
 };
