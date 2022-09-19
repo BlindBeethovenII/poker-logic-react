@@ -358,6 +358,8 @@ export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutio
     return hints;
   }
 
+  // This following could just about be combined with the above - but I keep it separate to make it clearer what is going on in the two cases
+
   // it is not the case that a suit is set - so go through each suit, to gather its possible straights, and combine together to see if any numbers are not possible so can be removed by the hint
   const possibleNumbersByHand = [[], [], [], [], []];
   SUITS.forEach((suit1) => {
