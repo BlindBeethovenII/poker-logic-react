@@ -219,4 +219,6 @@ export const clues3 = [
   // createClueSuit(SUIT_SPADES, 3, 4),
   // createClueNotSuit(SUIT_HEARTS, 2, 1),
   // createClueNotNumber(NUMBER_8, 3, 1),
+  createClueSuit(SUIT_DIAMONDS, 2, 0),
+  createClueNotNumber(NUMBER_A, 2, 0),
 ];
