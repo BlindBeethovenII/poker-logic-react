@@ -36,7 +36,7 @@ const NewSolutionButton = (props) => {
     height: '40px',
   };
 
-  const buttonText = hardCoded ? `Solution ${nextHardCodedSolution}` : 'Random Solution';
+  const buttonText = hardCoded ? `Use Solution ${nextHardCodedSolution}` : 'New Random Solution';
 
   const callNewSolution = () => {
     if (hardCoded) {
