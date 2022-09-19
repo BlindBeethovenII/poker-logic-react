@@ -181,8 +181,8 @@ export const getStraightNumberKnownHints = (solutionHandsIndex, solutionOptions,
       return NUMBER_A;
     }
 
-    if (numberSet === NUMBER_A) {
-      // we need a different formula to set the K, Q, J or 10
+    if (numberSet === NUMBER_A && i !== 4) {
+      // we need a different formula to set the K, Q, J or 10 for A, K, Q, J, 10 - this does not apply to 5,4,3,2,A
       return 14 - j;
     }
 

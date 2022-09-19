@@ -205,7 +205,7 @@ export const clues3 = [
   createClueHandOfType(calcHandType(solutionHands3[3]), 3),
   // createClueSuit(SUIT_HEARTS, 0, 4),
   // createClueNumber(NUMBER_3, 0, 2),
-  createClueNumber(NUMBER_9, 1, 2),
+  // createClueNumber(NUMBER_9, 1, 2),
   // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
   // createClueNumber(NUMBER_8, 1, 3),
   // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_7, 1, 4),
@@ -219,6 +219,6 @@ export const clues3 = [
   // createClueSuit(SUIT_SPADES, 3, 4),
   // createClueNotSuit(SUIT_HEARTS, 2, 1),
   // createClueNotNumber(NUMBER_8, 3, 1),
-  createClueSuit(SUIT_DIAMONDS, 2, 0),
-  createClueNotNumber(NUMBER_A, 2, 0),
+  // createClueSuit(SUIT_DIAMONDS, 2, 0),
+  // createClueNotNumber(NUMBER_A, 2, 0),
 ];
