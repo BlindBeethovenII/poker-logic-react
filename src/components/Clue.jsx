@@ -41,9 +41,22 @@ const Clue = (props) => {
 
   const labelText = showClue ? clueText : '******************';
 
+  const preventDefaultAndToggle = (e) => {
+    // stop the context menu appearing
+    e.preventDefault();
+
+    toggleShowClue(clueIndex);
+  };
+
   return (
     <div style={divstyle}>
-      <Button onClick={() => toggleShowClue(clueIndex)}>{labelText}</Button>
+      <Button
+        onClick={preventDefaultAndToggle}
+        onKeyDown={preventDefaultAndToggle}
+        onContextMenu={preventDefaultAndToggle}
+      >
+        {labelText}
+      </Button>
     </div>
   );
 };

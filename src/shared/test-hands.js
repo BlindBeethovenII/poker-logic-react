@@ -180,7 +180,7 @@ export const solutionHands3 = [
   [
     createCard(SUIT_HEARTS, NUMBER_8),
     createCard(SUIT_DIAMONDS, NUMBER_7),
-    createCard(SUIT_SPADES, NUMBER_6),
+    createCard(SUIT_DIAMONDS, NUMBER_6),
     createCard(SUIT_SPADES, NUMBER_5),
     createCard(SUIT_CLUBS, NUMBER_4),
   ],
@@ -204,6 +204,7 @@ export const clues3 = [
   createClueHandOfType(calcHandType(solutionHands3[2]), 2),
   createClueHandOfType(calcHandType(solutionHands3[3]), 3),
   // createClueSuit(SUIT_HEARTS, 0, 4),
+  createClueNumber(NUMBER_3, 0, 2),
   createClueNumber(NUMBER_9, 1, 2),
   // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
   // createClueNumber(NUMBER_8, 1, 3),
