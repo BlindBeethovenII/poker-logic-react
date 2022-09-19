@@ -116,6 +116,7 @@ import {
   HAND_TYPE_STRAIGHT,
   NUMBER_K,
   NUMBER_A,
+  HINT_NO_STRAIGHT_IN_NUMBER,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -231,8 +232,8 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
   clue,
 });
 
-// get the hints for each suit that cannot make a straight flush
-export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+// get the hints to remove a suit for which a straight flush is not possible
+export const getNoStraightFlushInSuitHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const handOptions = solutionOptions[solutionHandsIndex];
@@ -282,23 +283,22 @@ export const createHintNoStraightFlushInNumber = (number, solutionOptionsIndex, 
   clue,
 });
 
-// get the hints for the number that cannot make a straight flush
-export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
+// get the hints to remove a number for which a straight flush is not possible
+export const getNoStraightFlushInNumberHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const handOptions = solutionOptions[solutionHandsIndex];
 
-  // first a quick check, if any numbers already set, then we will never generate a clue to remove a number
+  // first a quick check, if any numbers already set, then we will never generate a clue to remove a number as HINT_STRAIGHT_NUMBER_KNOWN will have done that
   let numberSet = false;
   for (let i = 0; i < handOptions.length; i += 1) {
     const cardOptions = handOptions[i];
     if (countNumbersInCardOptions(cardOptions) === 1) {
-      // logIfDevEnv('getNumbersWithoutStraightFlushHints does not need to do anything as it found a number set');
+      // logIfDevEnv('getNoStraightFlushInNumberHints does not need to do anything as it found a number set');
       numberSet = true;
     }
   }
   if (numberSet) {
-    // we won't reduce the numbers any further - HINT_STRAIGHT_NUMBER_KNOWN will have done that
     return [];
   }
 
@@ -398,6 +398,107 @@ export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutio
     currentPossibleNumbers.forEach((number) => {
       if (!possibleNumbersForThisHand.includes(number)) {
         hints.push(createHintNoStraightFlushInNumber(number, solutionHandsIndex, i, clue));
+      }
+    });
+  }
+
+  return hints;
+};
+
+// -------------------------- //
+// HINT_NO_STRAIGHT_IN_NUMBER //
+// -------------------------- //
+
+// create HINT_NO_STRAIGHT_IN_NUMBER
+export const createHintNoStraightInNumber = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_NO_STRAIGHT_IN_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// get hints to remove a number for which a straight is not possible
+export const getNoStraightInNumberHints = (cardsAvailable, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // first a quick check, if any numbers already set, then we will never generate a clue to remove a number as HINT_STRAIGHT_NUMBER_KNOWN will have done that
+  let numberSet = false;
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countNumbersInCardOptions(cardOptions) === 1) {
+      // logIfDevEnv('getNoStraightInNumberHints does not need to do anything as it found a number set');
+      numberSet = true;
+    }
+  }
+  if (numberSet) {
+    return [];
+  }
+
+  // creating cardsAvailable in spades but for the numbers that are available across all suits - so I can use getStraights() and same approach as for straight flush above
+  // not starting with cardsStillAvailable as we are just interested in numbers and card's number can be placed without its suit being placed
+  // and if given cardsStillAvailable we'd still have to hunt these down - so just as easy to work with cardsAvailable
+  const cardsOfNumbersAvailableForStraight = [];
+  NUMBERS_SORTED.forEach((number) => {
+    // how many of this number are in cards available
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // how many cards in solutionOptions have this number placed
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // so we need at least 1 available after numberPlacedClunt has been removed, for this number to be available for a straight
+    if (numberAvailableCount - numberPlacedCount >= 1) {
+      cardsOfNumbersAvailableForStraight.push(createCard(SUIT_SPADES, number));
+    }
+  });
+
+  // get all possible straights - this is an array of each possible straights - remember the cards are in spades, but we only care about the number - the suit is irrelevant
+  const allPossibleStraightsUnfiltered = getStraights(cardsOfNumbersAvailableForStraight);
+
+  // we need to filter out straights whose numbers are not a possible option in the corresponding cardOptions
+  const allPossibleStraights = [];
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+  const cardOptions4 = handOptions[3];
+  const cardOptions5 = handOptions[4];
+  for (let i = 0; i < allPossibleStraightsUnfiltered.length; i += 1) {
+    const possibleStraight = allPossibleStraightsUnfiltered[i];
+    if (getNumberOptionsValueInCardOptions(cardOptions1, possibleStraight[0].number)
+      && getNumberOptionsValueInCardOptions(cardOptions2, possibleStraight[1].number)
+      && getNumberOptionsValueInCardOptions(cardOptions3, possibleStraight[2].number)
+      && getNumberOptionsValueInCardOptions(cardOptions4, possibleStraight[3].number)
+      && getNumberOptionsValueInCardOptions(cardOptions5, possibleStraight[4].number)) {
+      allPossibleStraights.push(possibleStraight);
+    }
+  }
+
+  // convert these into the possible numbers for each hand
+  const possibleNumbersByHand = [];
+  [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
+    const possibleNumbersAtHand = [];
+    for (let i = 0; i < allPossibleStraights.length; i += 1) {
+      const possibleStraight = allPossibleStraights[i];
+      possibleNumbersAtHand.push(possibleStraight[handOptionsIndex].number);
+    }
+    possibleNumbersByHand.push(possibleNumbersAtHand);
+  });
+
+  // go through each cardOptions of this hand
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+
+    // look at each of the still possible numbers for this card
+    const currentPossibleNumbers = getNumbersFromCardOptions(cardOptions);
+
+    // any number not in possibleNumbersByHand for this hand can be removed by the HINT_NO_STRAIGHT_FLUSH_IN_NUMBER hint
+    const possibleNumbersForThisHand = possibleNumbersByHand[i];
+
+    currentPossibleNumbers.forEach((number) => {
+      if (!possibleNumbersForThisHand.includes(number)) {
+        hints.push(createHintNoStraightInNumber(number, solutionHandsIndex, i, clue));
       }
     });
   }
@@ -2413,9 +2514,9 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return straightNumberKnownHints;
       }
 
-      const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
-      if (suitsWithoutStraightFlushHints.length) {
-        return suitsWithoutStraightFlushHints;
+      const noStraightFlushInSuitHints = getNoStraightFlushInSuitHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (noStraightFlushInSuitHints.length) {
+        return noStraightFlushInSuitHints;
       }
 
       const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
@@ -2428,9 +2529,9 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return flushPossibleSuitsHints;
       }
 
-      const numbersWithoutStraightFlushHints = getNumbersWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
-      if (numbersWithoutStraightFlushHints.length) {
-        return numbersWithoutStraightFlushHints;
+      const noStraightFlushInNumberHints = getNoStraightFlushInNumberHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (noStraightFlushInNumberHints.length) {
+        return noStraightFlushInNumberHints;
       }
     }
 
@@ -2523,6 +2624,11 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const straightNumberKnownHints = getStraightNumberKnownHints(solutionHandsIndex, solutionOptions, clue);
       if (straightNumberKnownHints.length) {
         return straightNumberKnownHints;
+      }
+
+      const noStraightInNumberHints = getNoStraightInNumberHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
+      if (noStraightInNumberHints.length) {
+        return noStraightInNumberHints;
       }
     }
 
