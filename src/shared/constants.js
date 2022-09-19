@@ -82,6 +82,7 @@ export const SOLUTION_OPTIONS_STATE_DONE = 'DONE';
 // note: THREE_OF_A_KIND hints also apply to the three of a kind of a full house, as they are three cards of the same number in the same location
 // note: PAIR hints also apply to the pair in a full house and to two pairs
 export const HINT_NUMBER_NOT_USED = 'NUMBER NOT USED';
+export const HINT_STRAIGHT_NUMBER_KNOWN = 'STRAIGHT NUMBER KNOWN';
 export const HINT_NO_STRAIGHT_FLUSH_IN_SUIT = 'NO STRAIGHT FLUSH IN SUIT';
 export const HINT_NO_STRAIGHT_FLUSH_IN_NUMBER = 'NO STRAIGHT FLUSH IN NUMBER';
 export const HINT_SAME_COUNT_LEFT_SUIT = 'HINT SAME COUNT LEFT SUIT';

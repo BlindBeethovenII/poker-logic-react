@@ -3,11 +3,11 @@
 // ******************************************* //
 
 import {
-  toggleNumberOptionInSolutionOptions,
   toggleSuitOptionInSolutionOptions,
+  toggleNumberOptionInSolutionOptions,
   setSuitOptionOnlyInSolutionOptions,
-  convertSuitToSuitOptionsIndex,
   setNumberOptionOnlyInSolutionOptions,
+  convertSuitToSuitOptionsIndex,
   isSuitTrueInCardOptions,
   isNumberTrueInCardOptions,
 } from './solution-functions';
@@ -53,6 +53,7 @@ import {
   HINT_SORT_RULE_NUMBERS,
   HINT_FLUSH_POSSIBLE_SUITS,
   HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
+  HINT_STRAIGHT_NUMBER_KNOWN,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -67,6 +68,20 @@ export const applyNumberNotUsedHint = (solutionOptions, hint) => {
   logIfDevEnv(`applying HINT_NUMBER_NOT_USED for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
 
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyStraightNumberKnownHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_STRAIGHT_NUMBER_KNOWN for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
 export const applyNoStraightFlushInSuitHint = (solutionOptions, hint) => {
@@ -757,6 +772,9 @@ export const applyHint = (solutionOptions, hint) => {
   switch (hintType) {
     case HINT_NUMBER_NOT_USED:
       return applyNumberNotUsedHint(solutionOptions, hint);
+
+    case HINT_STRAIGHT_NUMBER_KNOWN:
+      return applyStraightNumberKnownHint(solutionOptions, hint);
 
     case HINT_NO_STRAIGHT_FLUSH_IN_SUIT:
       return applyNoStraightFlushInSuitHint(solutionOptions, hint);

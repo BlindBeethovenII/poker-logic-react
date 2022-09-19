@@ -112,6 +112,10 @@ import {
   HINT_SORT_RULE_NUMBERS,
   HAND_TYPE_HIGH_CARD,
   HINT_FLUSH_POSSIBLE_SUITS,
+  HINT_STRAIGHT_NUMBER_KNOWN,
+  HAND_TYPE_STRAIGHT,
+  NUMBER_K,
+  NUMBER_A,
 } from './constants';
 
 // -------------------- //
@@ -147,6 +151,71 @@ export const getNumberNotUsedHints = (solutionOptions, solutionHands, missingNum
   return hints;
 };
 
+// -------------------------- //
+// HINT_STRAIGHT_NUMBER_KNOWN //
+// -------------------------- //
+
+// create HINT_STRAIGHT_NUMBER_KNOWN
+export const createHintStraightNumberKnown = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_STRAIGHT_NUMBER_KNOWN,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// get the hints when a number in a straight can be set because another number in the straight is known
+export const getStraightNumberKnownHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // helper function to cope with AKQJ10
+  const getNumberFromNumberSetAndOffsets = (numberSet, i, j) => {
+    const result = numberSet + i - j;
+    if (result > NUMBER_K) {
+      // this must be the setting of the A, based on numberSet of K, Q, J or 10
+      return NUMBER_A;
+    }
+
+    if (numberSet === NUMBER_A) {
+      // we need a different formula to set the K, Q, J or 10
+      return 14 - j;
+    }
+
+    // otherwise straight formula
+    return result;
+  };
+
+  // look at each cardOptions in this hand
+  for (let i = 0; i < handOptions.length; i += 1) {
+    const cardOptions = handOptions[i];
+    if (countNumbersInCardOptions(cardOptions) === 1) {
+      // a number is set here, so raise hints to set other numbers
+      const numberSet = getFirstNumberSet(cardOptions);
+
+      // all cards before this, can't have been set, so we need a hint to set their number
+      for (let j = 0; j < i; j += 1) {
+        hints.push(createHintStraightNumberKnown(getNumberFromNumberSetAndOffsets(numberSet, i, j), solutionHandsIndex, j, clue));
+      }
+
+      // all cards after, we need to check and only create a clue if they don't have their number set yet
+      for (let j = i + 1; j < handOptions.length; j += 1) {
+        const cardOptions2 = handOptions[j];
+        if (countNumbersInCardOptions(cardOptions2) > 1) {
+          hints.push(createHintStraightNumberKnown(getNumberFromNumberSetAndOffsets(numberSet, i, j), solutionHandsIndex, j, clue));
+        }
+      }
+
+      // return any hints found - if none found, then all numbers of straight are set correctly
+      return hints;
+    }
+  }
+
+  // didn't find a set number
+  return [];
+};
+
 // ------------------------------ //
 // HINT_NO_STRAIGHT_FLUSH_IN_SUIT //
 // ------------------------------ //
@@ -164,9 +233,9 @@ export const createHintNoStraightFlushInSuit = (suit, solutionOptionsIndex, hand
 export const getSuitsWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
-  SUITS.forEach((suit) => {
-    const handOptions = solutionOptions[solutionHandsIndex];
+  const handOptions = solutionOptions[solutionHandsIndex];
 
+  SUITS.forEach((suit) => {
     // convert suit name to suit options index which is the same as the index used in cards still available, to find the suits still available cards
     const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
 
@@ -215,10 +284,10 @@ export const createHintNoStraightFlushInNumber = (number, solutionOptionsIndex, 
 export const getNumbersWithoutStraightFlushHints = (cardsStillAvailable, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
+  const handOptions = solutionOptions[solutionHandsIndex];
+
   // TODO - for now we just look at case where the suit is known
   SUITS.forEach((suit) => {
-    const handOptions = solutionOptions[solutionHandsIndex];
-
     // for now, we only continue if this suit is placed in a card in this hand
     // remember we are working from a valid solution, so if one card has suit set, it must be the suit of the flush
     let suitSet = false;
@@ -2275,8 +2344,13 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;
 
-    // hand type clue: straight flush (which has to be for the first hand, but we don't care about that actually)
+    // hand type clue: HAND_TYPE_STRAIGHT_FLUSH
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {
+      const straightNumberKnownHints = getStraightNumberKnownHints(solutionHandsIndex, solutionOptions, clue);
+      if (straightNumberKnownHints.length) {
+        return straightNumberKnownHints;
+      }
+
       const suitsWithoutStraightFlushHints = getSuitsWithoutStraightFlushHints(cardsStillAvailable, solutionHandsIndex, solutionOptions, clue);
       if (suitsWithoutStraightFlushHints.length) {
         return suitsWithoutStraightFlushHints;
@@ -2298,7 +2372,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand of type clue: four of a kind
+    // hand of type clue: HAND_TYPE_FOUR_OF_A_KIND
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FOUR_OF_A_KIND) {
       const fourOfAKindSuitHints = getFourOfAKindSuitHints(solutionHandsIndex, solutionOptions, clue);
       if (fourOfAKindSuitHints.length) {
@@ -2311,7 +2385,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: full house
+    // hand type clue: HAND_TYPE_FULL_HOUSE
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FULL_HOUSE) {
       const threeOfAKindNumbersHints = getThreeOfAKindNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindNumbersHints.length) {
@@ -2364,7 +2438,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: flush
+    // hand type clue: HAND_TYPE_FLUSH
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_FLUSH) {
       const flushSuitHints = getFlushSuitHints(solutionHandsIndex, solutionOptions, clue);
       if (flushSuitHints.length) {
@@ -2382,10 +2456,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: straight
-    // TODO
+    // hand type clue: HAND_TYPE_STRAIGHT
+    if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT) {
+      const straightNumberKnownHints = getStraightNumberKnownHints(solutionHandsIndex, solutionOptions, clue);
+      if (straightNumberKnownHints.length) {
+        return straightNumberKnownHints;
+      }
+    }
 
-    // hand type clue: three of a kind
+    // hand type clue: HAND_TYPE_THREE_OF_A_KIND
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_THREE_OF_A_KIND) {
       const threeOfAKindNumbersHints = getThreeOfAKindNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue);
       if (threeOfAKindNumbersHints.length) {
@@ -2418,7 +2497,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: two pair
+    // hand type clue: HAND_TYPE_TWO_PAIR
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_TWO_PAIR) {
       const pairNumbersHints1 = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairNumbersHints1.length) {
@@ -2471,7 +2550,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: pair
+    // hand type clue: HAND_TYPE_PAIR
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_PAIR) {
       const pairNumbersHints = getPairNumbersHints(cardsAvailable, solutionHandsIndex, solutionOptions, clue, 0, 1);
       if (pairNumbersHints.length) {
@@ -2504,7 +2583,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // hand type clue: high card
+    // hand type clue: HAND_TYPE_HIGH_CARD
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_HIGH_CARD) {
       const sortRuleNumbersHints = getSortRuleNumbersHints(solutionHandsIndex, solutionOptions, [0, 1, 2, 3, 4], clue);
       if (sortRuleNumbersHints.length) {
