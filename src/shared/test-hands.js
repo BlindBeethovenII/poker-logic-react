@@ -185,11 +185,11 @@ export const solutionHands3 = [
     createCard(SUIT_HEARTS, NUMBER_2),
   ],
   [
-    createCard(SUIT_HEARTS, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_SPADES, NUMBER_A),
+    createCard(SUIT_HEARTS, NUMBER_7),
+    createCard(SUIT_HEARTS, NUMBER_6),
     createCard(SUIT_HEARTS, NUMBER_5),
     createCard(SUIT_HEARTS, NUMBER_4),
-    createCard(SUIT_SPADES, NUMBER_3),
   ],
 ];
 

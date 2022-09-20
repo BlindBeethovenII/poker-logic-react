@@ -977,3 +977,24 @@ export const addPlacedCardsOfSuitFromHandOptions = (cards, suit, handOptions) =>
 
   return result;
 };
+
+// filter out straights not possible in the given handOptions
+export const filterOutImpossibleByNumberStraightsInHandOptions = (allPossibleStraightsUnfiltered, handOptions) => {
+  const allPossibleStraights = [];
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+  const cardOptions4 = handOptions[3];
+  const cardOptions5 = handOptions[4];
+  for (let i = 0; i < allPossibleStraightsUnfiltered.length; i += 1) {
+    const possibleStraight = allPossibleStraightsUnfiltered[i];
+    if (getNumberOptionsValueInCardOptions(cardOptions1, possibleStraight[0].number)
+      && getNumberOptionsValueInCardOptions(cardOptions2, possibleStraight[1].number)
+      && getNumberOptionsValueInCardOptions(cardOptions3, possibleStraight[2].number)
+      && getNumberOptionsValueInCardOptions(cardOptions4, possibleStraight[3].number)
+      && getNumberOptionsValueInCardOptions(cardOptions5, possibleStraight[4].number)) {
+      allPossibleStraights.push(possibleStraight);
+    }
+  }
+  return allPossibleStraights;
+};

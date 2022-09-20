@@ -42,6 +42,7 @@ import {
   getMinNumberInCardOptions,
   suitPossibleInAllHandOptions,
   addPlacedCardsOfSuitFromHandOptions,
+  filterOutImpossibleByNumberStraightsInHandOptions,
 } from './solution-functions';
 
 import {
@@ -325,7 +326,8 @@ export const getNoStraightFlushInNumberHints = (cardsStillAvailable, solutionHan
     );
 
     // get all possible straights - this is an array of each possible straights
-    const allPossibleStraights = getStraights(suitCardsAvailable);
+    // and filter out straights whose numbers are not a possible option in the corresponding cards of handOptions
+    const allPossibleStraights = filterOutImpossibleByNumberStraightsInHandOptions(getStraights(suitCardsAvailable), handOptions);
 
     // convert these into the possible numbers for each hand
     const possibleNumbersByHand = [];
@@ -370,7 +372,8 @@ export const getNoStraightFlushInNumberHints = (cardsStillAvailable, solutionHan
     const suitCardsAvailable = cardsStillAvailable[suitOptionsIndex];
 
     // get all possible straights - this is an array of each possible straights
-    const allPossibleStraights = getStraights(suitCardsAvailable);
+    // and filter out straights whose numbers are not a possible option in the corresponding cards of handOptions
+    const allPossibleStraights = filterOutImpossibleByNumberStraightsInHandOptions(getStraights(suitCardsAvailable), handOptions);
 
     // add each number to the corresponding possibleNumbersByHand, if not already there
     [0, 1, 2, 3, 4].forEach((handOptionsIndex) => {
@@ -455,25 +458,8 @@ export const getNoStraightInNumberHints = (cardsAvailable, solutionHandsIndex, s
   });
 
   // get all possible straights - this is an array of each possible straights - remember the cards are in spades, but we only care about the number - the suit is irrelevant
-  const allPossibleStraightsUnfiltered = getStraights(cardsOfNumbersAvailableForStraight);
-
-  // we need to filter out straights whose numbers are not a possible option in the corresponding cardOptions
-  const allPossibleStraights = [];
-  const cardOptions1 = handOptions[0];
-  const cardOptions2 = handOptions[1];
-  const cardOptions3 = handOptions[2];
-  const cardOptions4 = handOptions[3];
-  const cardOptions5 = handOptions[4];
-  for (let i = 0; i < allPossibleStraightsUnfiltered.length; i += 1) {
-    const possibleStraight = allPossibleStraightsUnfiltered[i];
-    if (getNumberOptionsValueInCardOptions(cardOptions1, possibleStraight[0].number)
-      && getNumberOptionsValueInCardOptions(cardOptions2, possibleStraight[1].number)
-      && getNumberOptionsValueInCardOptions(cardOptions3, possibleStraight[2].number)
-      && getNumberOptionsValueInCardOptions(cardOptions4, possibleStraight[3].number)
-      && getNumberOptionsValueInCardOptions(cardOptions5, possibleStraight[4].number)) {
-      allPossibleStraights.push(possibleStraight);
-    }
-  }
+  // and filter out straights whose numbers are not a possible option in the corresponding cards of handOptions
+  const allPossibleStraights = filterOutImpossibleByNumberStraightsInHandOptions(getStraights(cardsOfNumbersAvailableForStraight), handOptions);
 
   // convert these into the possible numbers for each hand
   const possibleNumbersByHand = [];
