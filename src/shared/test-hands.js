@@ -186,10 +186,10 @@ export const solutionHands3 = [
   ],
   [
     createCard(SUIT_SPADES, NUMBER_A),
-    createCard(SUIT_HEARTS, NUMBER_7),
-    createCard(SUIT_HEARTS, NUMBER_6),
+    createCard(SUIT_CLUBS, NUMBER_J),
     createCard(SUIT_HEARTS, NUMBER_5),
     createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_SPADES, NUMBER_3),
   ],
 ];
 
@@ -203,22 +203,28 @@ export const clues3 = [
   createClueHandOfType(calcHandType(solutionHands3[1]), 1),
   createClueHandOfType(calcHandType(solutionHands3[2]), 2),
   createClueHandOfType(calcHandType(solutionHands3[3]), 3),
+
   // createClueSuit(SUIT_HEARTS, 0, 4),
-  // createClueNumber(NUMBER_3, 0, 2),
-  // createClueNumber(NUMBER_9, 1, 2),
-  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
-  // createClueNumber(NUMBER_8, 1, 3),
-  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_7, 1, 4),
   // createClueSuit(SUIT_SPADES, 2, 0),
   // createClueSuit(SUIT_DIAMONDS, 2, 3),
-  // createClueNumber(NUMBER_3, 2, 4),
-  // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
   // createClueSuit(SUIT_HEARTS, 3, 1),
-  // createClueNumber(NUMBER_5, 3, 2),
-  // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
   // createClueSuit(SUIT_SPADES, 3, 4),
+  createClueSuit(SUIT_DIAMONDS, 2, 0),
+
+  // createClueNumber(NUMBER_3, 0, 2),
+  // createClueNumber(NUMBER_9, 1, 2),
+  // createClueNumber(NUMBER_8, 1, 3),
+  // createClueNumber(NUMBER_3, 2, 4),
+  // createClueNumber(NUMBER_5, 3, 2),
+
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_7, 1, 4),
+  // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
+  // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
+
   // createClueNotSuit(SUIT_HEARTS, 2, 1),
+
   // createClueNotNumber(NUMBER_8, 3, 1),
-  // createClueSuit(SUIT_DIAMONDS, 2, 0),
   // createClueNotNumber(NUMBER_A, 2, 0),
+  createClueNotNumber(NUMBER_J, 0, 0),
 ];

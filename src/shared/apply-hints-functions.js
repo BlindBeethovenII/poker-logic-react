@@ -55,6 +55,7 @@ import {
   HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
   HINT_STRAIGHT_NUMBER_KNOWN,
   HINT_NO_STRAIGHT_IN_NUMBER,
+  HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -777,6 +778,18 @@ export const applySortRuleHint = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
+export const applyAllSuitPlacedOnlyPlaceForNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+  } = hint;
+
+  logIfDevEnv(`applying HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex}`);
+
+  return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 // -----------//
 //  applyHint //
 // -----------//
@@ -892,6 +905,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_SORT_RULE_NUMBERS:
       return applySortRuleHint(solutionOptions, hint);
+
+    case HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER:
+      return applyAllSuitPlacedOnlyPlaceForNumberHint(solutionOptions, hint);
 
     default:
       console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);

@@ -43,6 +43,7 @@ import {
   suitPossibleInAllHandOptions,
   addPlacedCardsOfSuitFromHandOptions,
   filterOutImpossibleByNumberStraightsInHandOptions,
+  isCardPlacedInCardOptions,
 } from './solution-functions';
 
 import {
@@ -118,6 +119,7 @@ import {
   NUMBER_K,
   NUMBER_A,
   HINT_NO_STRAIGHT_IN_NUMBER,
+  HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -2342,6 +2344,68 @@ export const getSortRuleNumbersHints = (solutionHandsIndex, solutionOptions, ind
   return hints;
 };
 
+// ------------------------------------------ //
+// HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER //
+// ------------------------------------------ //
+
+// create HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER
+export const createHintAllSuitPlacedOnlyPlaceForNumber = (number, solutionOptionsIndex, handOptionsIndex) => ({
+  hintType: HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// if all of a suit is placed, and a number of a card of that suit can only go in one place, and is not yet placed there, then it must go there
+export const getAllSuitPlacedOnlyPlaceForNumberHints = (cardsAvailable, solutionOptions) => {
+  const hints = [];
+
+  SUITS.forEach((suit) => {
+    // convert suit name to suit options index which is the same index into cards available
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+    // easy to count the cards available for this suit - just the length
+    const suitCardsAvailableCount = cardsAvailable[suitOptionsIndex].length;
+
+    // how many cards in solutionOptions still allow this suit
+    const countSuitTrue = countSuitTrueInSolutionOptions(solutionOptions, suitOptionsIndex);
+
+    // this hint is used after HINT_SAME_COUNT_LEFT_SUIT, so if these counts are the same then all are placed for this suit
+    if (suitCardsAvailableCount === countSuitTrue) {
+      // go through each card available in this suit
+      const suitCardsAvailable = cardsAvailable[suitOptionsIndex];
+      suitCardsAvailable.forEach((card) => {
+        // look through all cardOptions of the solutionOptions, noting where this card of this suit can still be placed
+        const { number } = card;
+
+        // remember that if this card is placed, then no hint is needed
+        const cardCanBePlaced = [];
+        let cardIsPlaced = false;
+        for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length && !cardIsPlaced; solutionOptionsIndex += 1) {
+          const handOptions = solutionOptions[solutionOptionsIndex];
+          for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length && !cardIsPlaced; handOptionsIndex += 1) {
+            const cardOptions = handOptions[handOptionsIndex];
+            if (isCardPlacedInCardOptions(card, cardOptions)) {
+              cardIsPlaced = true;
+            } else if (isSuitPlacedInCardOptions(suit, cardOptions) && getNumberOptionsValueInCardOptions(cardOptions, number)) {
+              // if the suit is placed and the number is possible, then note that this card can be placed where
+              cardCanBePlaced.push({ solutionOptionsIndex, handOptionsIndex });
+            }
+          }
+        }
+
+        // if card wasn't placed, and only one place that it can be placed, then create the hint
+        if (!cardIsPlaced && cardCanBePlaced.length === 1) {
+          const { solutionOptionsIndex, handOptionsIndex } = cardCanBePlaced[0];
+          hints.push(createHintAllSuitPlacedOnlyPlaceForNumber(number, solutionOptionsIndex, handOptionsIndex));
+        }
+      });
+    }
+  });
+
+  return hints;
+};
+
 // --------- //
 // get hints //
 // --------- //
@@ -2441,6 +2505,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   const sameCountLeftNumberHints = getSameCountLeftNumberHints(cardsAvailable, solutionOptions);
   if (sameCountLeftNumberHints.length) {
     return sameCountLeftNumberHints;
+  }
+
+  // see if all of a suit is placed, and a number of a card of that suit can only go in one place, and is not yet placed there, then it must go there
+  const allSuitPlacedOnlyPlaceForNumberHints = getAllSuitPlacedOnlyPlaceForNumberHints(cardsAvailable, solutionOptions);
+  if (allSuitPlacedOnlyPlaceForNumberHints.length) {
+    return allSuitPlacedOnlyPlaceForNumberHints;
   }
 
   // which of the cards available are still available after the solutionOptions have been considered
