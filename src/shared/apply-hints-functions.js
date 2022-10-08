@@ -794,7 +794,7 @@ export const applyAllSuitPlacedOnlyPlaceForNumberHint = (solutionOptions, hint) 
 //  applyHint //
 // -----------//
 
-// apply the given hint - this assumes it is a valid hint for the given solutionOptions
+// apply the given hint - this assumes that it is a valid hint for the given solutionOptions
 export const applyHint = (solutionOptions, hint) => {
   const { hintType } = hint;
   switch (hintType) {
