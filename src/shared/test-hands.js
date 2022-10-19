@@ -151,11 +151,12 @@ export const clues2 = [
   // createClueNumber(NUMBER_3, 2, 4),
   // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
   // createClueSuit(SUIT_HEARTS, 3, 1),
-  createClueNumber(NUMBER_5, 3, 2),
+  // createClueNumber(NUMBER_5, 3, 2),  HERE
   // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
   createClueSuit(SUIT_SPADES, 3, 4),
   createClueNotSuit(SUIT_HEARTS, 2, 1),
-  // createClueNotNumber(NUMBER_8, 3, 1),
+  createClueNotNumber(NUMBER_Q, 3, 2),
+  createClueCardsSameNumber(2, 2, 3, 2),
 ];
 
 // export const clues2 = createCluesForSolutionHands(solution2);
@@ -188,7 +189,7 @@ export const solutionHands3 = [
   ],
   [
     createCard(SUIT_SPADES, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
     createCard(SUIT_HEARTS, NUMBER_5),
     createCard(SUIT_HEARTS, NUMBER_4),
     createCard(SUIT_SPADES, NUMBER_3),
@@ -229,4 +230,6 @@ export const clues3 = [
   // createClueNotNumber(NUMBER_8, 3, 1),
   // createClueNotNumber(NUMBER_A, 2, 0),
   createClueNotNumber(NUMBER_J, 0, 0),
+
+  createClueCardsSameNumber(0, 4, 1, 0),
 ];
