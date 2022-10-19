@@ -56,6 +56,7 @@ import {
   HINT_STRAIGHT_NUMBER_KNOWN,
   HINT_NO_STRAIGHT_IN_NUMBER,
   HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
+  ALL_HINTS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -948,6 +949,9 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
   let finalSolutionOptions = solutionOptions;
   let hintsApplied = false;
 
+  const hintsUnused = new Set(ALL_HINTS);
+  const hintsUsed = new Set();
+
   while (lookForMore) {
     const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable);
     console.log(`getHints returns ${JSON.stringify(hints)}`);
@@ -957,6 +961,11 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
       let newSolutionOptions = finalSolutionOptions;
       hints.forEach((hint) => {
         newSolutionOptions = applyHint(newSolutionOptions, hint);
+
+        // remember we've used this hint
+        const { hintType } = hint;
+        hintsUnused.delete(hintType);
+        hintsUsed.add(hintType);
       });
       // had to do something weird here as could not re-assign newSolutionOptions to the outer one here??
       finalSolutionOptions = newSolutionOptions;
@@ -970,6 +979,8 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
   }
 
   if (hintsApplied) {
+    logIfDevEnv(`hints used: ${Array.from(hintsUsed)}`);
+    logIfDevEnv(`hints not used: ${Array.from(hintsUnused)}`);
     return finalSolutionOptions;
   }
 
