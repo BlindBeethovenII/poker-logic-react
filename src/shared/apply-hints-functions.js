@@ -41,6 +41,7 @@ import {
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
+  HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -542,6 +543,20 @@ export const applyClueNumberHint = (solutionOptions, hint) => {
   return setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyClueCardsSameNumberHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_NUMBER for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 export const applyClueNotNumberHint = (solutionOptions, hint) => {
   const {
     number,
@@ -873,6 +888,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_NOT_NUMBER:
       return applyClueNotNumberHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARDS_SAME_NUMBER:
+      return applyClueCardsSameNumberHint(solutionOptions, hint);
 
     case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
       return applyPairNumbersRestrictedBySuitHint(solutionOptions, hint);

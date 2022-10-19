@@ -72,6 +72,7 @@ import {
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
+  CLUE_CARDS_SAME_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -101,6 +102,7 @@ import {
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
+  HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -1678,6 +1680,46 @@ export const getClueNotNumberHints = (number, solutionHandsIndex, handOptionsInd
   return hints;
 };
 
+// --------------------------- //
+// HINT_CLUE_CARDS_SAME_NUMBER //
+// --------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_NUMBER
+export const createHintClueCardsSameNumber = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARDS_SAME_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card still allows the suit then create a HINT_CLUE_CARDS_SAME_NUMBER hint to remove it
+export const getClueCardsSameNumberHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+
+  // for through all possible numbers from the first, and if it is not possible in the second then create a hint to remove it from the first
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  numbers1.forEach((number) => {
+    if (!getNumberOptionsValueInCardOptions(cardOptions2, number)) {
+      hints.push(createHintClueCardsSameNumber(number, solutionHandsIndex1, handOptionsIndex1, clue));
+    }
+  });
+
+  // and vice versa
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+  numbers2.forEach((number) => {
+    if (!getNumberOptionsValueInCardOptions(cardOptions1, number)) {
+      hints.push(createHintClueCardsSameNumber(number, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  });
+
+  return hints;
+};
+
 // ------------------------------------ //
 // HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
 // ------------------------------------ //
@@ -2558,10 +2600,24 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     return placedCardRemoveNumberHints;
   }
 
-  // look through each clue individually
+  // look through all the other clue individually
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;
+
+    // hand type clue: CLUE_CARDS_SAME_NUMBER
+    if (clueType === CLUE_CARDS_SAME_NUMBER) {
+      const {
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsSameNumberHints = getClueCardsSameNumberHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsSameNumberHints.length) {
+        return clueCardsSameNumberHints;
+      }
+    }
 
     // hand type clue: HAND_TYPE_STRAIGHT_FLUSH
     if (clueType === CLUE_HAND_OF_TYPE && handType === HAND_TYPE_STRAIGHT_FLUSH) {

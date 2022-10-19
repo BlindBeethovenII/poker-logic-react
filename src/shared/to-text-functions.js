@@ -9,6 +9,7 @@ import {
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
+  CLUE_CARDS_SAME_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -110,6 +111,16 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_NOT_NUMBER) {
     const { number, solutionHandsIndex, handOptionsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is not a ${cardNumberToString(number)}`;
+  }
+
+  if (clueType === CLUE_CARDS_SAME_NUMBER) {
+    const {
+      solutionHandsIndex1,
+      handOptionsIndex1,
+      solutionHandsIndex2,
+      handOptionsIndex2,
+    } = clue;
+    return `Hand ${solutionHandsIndex1 + 1} Card ${handOptionsIndex1 + 1} has the same number as Hand ${solutionHandsIndex2 + 1} Card ${handOptionsIndex2 + 1}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

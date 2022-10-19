@@ -10,6 +10,7 @@ import {
   createClueNumber,
   createClueNotNumber,
   // createCluesForSolutionHands,
+  createClueCardsSameNumber,
 } from './clue-functions';
 
 import {
@@ -78,7 +79,7 @@ export const clues1 = [
   createClueHandOfType(calcHandType(solutionHands1[2]), 2),
   createClueHandOfType(calcHandType(solutionHands1[3]), 3),
   // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_9, 3, 2),
-  createClueSuit(SUIT_DIAMONDS, 2, 1),
+  // createClueSuit(SUIT_DIAMONDS, 2, 1),
   createClueSuit(SUIT_HEARTS, 0, 4),
   createClueSuit(SUIT_CLUBS, 2, 3),
   createClueNumber(NUMBER_5, 1, 1),
@@ -91,7 +92,8 @@ export const clues1 = [
   // createClueNotNumber(NUMBER_8, 1, 4),
   // createClueNotNumber(NUMBER_9, 1, 3),
   createClueNotNumber(NUMBER_9, 1, 4),
-  createClueNotNumber(NUMBER_10, 1, 3),
+  // createClueNotNumber(NUMBER_10, 1, 3),
+  createClueCardsSameNumber(0, 4, 3, 0),
 ];
 
 // -------------------------- //

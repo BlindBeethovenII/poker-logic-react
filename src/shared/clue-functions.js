@@ -23,6 +23,7 @@ import {
   CLUE_NOT_SUIT,
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
+  CLUE_CARDS_SAME_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -82,17 +83,6 @@ export const createClueNotSuit = (suit, solutionHandsIndex, handOptionsIndex) =>
   handOptionsIndex,
 });
 
-// --------------- //
-// CLUE_NOT_NUMBER //
-// --------------- //
-
-export const createClueNotNumber = (number, solutionHandsIndex, handOptionsIndex) => ({
-  clueType: CLUE_NOT_NUMBER,
-  number,
-  solutionHandsIndex,
-  handOptionsIndex,
-});
-
 // ----------- //
 // CLUE_NUMBER //
 // ----------- //
@@ -104,6 +94,27 @@ export const createClueNumber = (number, solutionHandsIndex, handOptionsIndex) =
   handOptionsIndex,
 });
 
+// --------------- //
+// CLUE_NOT_NUMBER //
+// --------------- //
+
+export const createClueNotNumber = (number, solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_NOT_NUMBER,
+  number,
+  solutionHandsIndex,
+  handOptionsIndex,
+});
+
+// ---------------------- //
+// CLUE_CARDS_SAME_NUMBER //
+// ---------------------- //
+export const createClueCardsSameNumber = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
+  clueType: CLUE_CARDS_SAME_NUMBER,
+  solutionHandsIndex1,
+  handOptionsIndex1,
+  solutionHandsIndex2,
+  handOptionsIndex2,
+});
 // --------------------------- //
 // createCluesForSolutionHands //
 // --------------------------- //
