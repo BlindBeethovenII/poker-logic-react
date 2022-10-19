@@ -220,6 +220,25 @@ export const createCluesForSolutionHands = (solution) => {
     });
   });
 
+  // TODO change approach here later
+  // create some random 'CARDS SAME NUMBER' clues
+  // iterate over all but the last hand
+  for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
+    const solutionHand1 = solutionHands[solutionHandsIndex1];
+    solutionHand1.forEach((card1, solutionHandIndex1) => {
+      // then iterate over the remaining hands
+      for (let solutionHandsIndex2 = solutionHandsIndex1 + 1; solutionHandsIndex2 < solutionHands.length; solutionHandsIndex2 += 1) {
+        const solutionHand2 = solutionHands[solutionHandsIndex2];
+        solutionHand2.forEach((card2, solutionHandIndex2) => {
+          // if these are the same number, add a clue
+          if (card1.number === card2.number) {
+            clues.push(createClueCardsSameNumber(solutionHandsIndex1, solutionHandIndex1, solutionHandsIndex2, solutionHandIndex2));
+          }
+        });
+      }
+    });
+  }
+
   // sometimes these clues can't solve the puzzle - so apply the above to a new solutionOptions and fill in the gaps with NOT_SUIT and NOT_NUMBER clues
   const solutionOptions = createSolutionOptions(missingNumber);
   const cardsAvailable = getCardsAvailable(solutionHands);
