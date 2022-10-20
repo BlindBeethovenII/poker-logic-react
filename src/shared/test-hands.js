@@ -13,6 +13,7 @@ import {
   createClueCardsSameNumber,
   createClueCardsNotSameNumber,
   createClueCardsSameSuit,
+  createClueCardsNotSameSuit,
 } from './clue-functions';
 
 import {
@@ -238,4 +239,7 @@ export const clues3 = [
   createClueCardsNotSameNumber(1, 4, 0, 1),
 
   createClueCardsSameSuit(3, 2, 2, 4),
+  createClueCardsSameSuit(2, 3, 3, 3),
+
+  createClueCardsNotSameSuit(3, 3, 1, 0),
 ];

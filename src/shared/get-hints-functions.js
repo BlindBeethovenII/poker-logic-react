@@ -75,6 +75,7 @@ import {
   CLUE_CARDS_SAME_NUMBER,
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_SAME_SUIT,
+  CLUE_CARDS_NOT_SAME_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -107,6 +108,7 @@ import {
   HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
+  HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -1746,7 +1748,7 @@ export const getClueCardsNotSameNumberHints = (solutionHandsIndex1, handOptionsI
   const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
 
   if (countNumbersInCardOptions(cardOptions1) === 1) {
-    // a number is set here, create a hint it if it still possible in the other card options
+    // a number is set here, create a hint if it still possible in the other card options
     const numberSet1 = getFirstNumberSet(cardOptions1);
     if (getNumberOptionsValueInCardOptions(cardOptions2, numberSet1)) {
       hints.push(createHintClueCardsNotSameNumber(numberSet1, solutionHandsIndex2, handOptionsIndex2, clue));
@@ -1754,7 +1756,7 @@ export const getClueCardsNotSameNumberHints = (solutionHandsIndex1, handOptionsI
   }
 
   if (countNumbersInCardOptions(cardOptions2) === 1) {
-    // a number is set here, create a hint it if it still possible in the other card options
+    // a number is set here, create a hint if it still possible in the other card options
     const numberSet2 = getFirstNumberSet(cardOptions2);
     if (getNumberOptionsValueInCardOptions(cardOptions1, numberSet2)) {
       hints.push(createHintClueCardsNotSameNumber(numberSet2, solutionHandsIndex1, handOptionsIndex1, clue));
@@ -1802,6 +1804,48 @@ export const getClueCardsSameSuitHints = (solutionHandsIndex1, handOptionsIndex1
       hints.push(createHintClueCardsSameSuit(suit, solutionHandsIndex2, handOptionsIndex2, clue));
     }
   });
+
+  return hints;
+};
+
+// ----------------------------- //
+// HINT_CLUE_CARDS_NOT_SAME_SUIT //
+// ----------------------------- //
+
+// create HINT_CLUE_CARDS_NOT_SAME_SUIT
+export const createHintClueCardsNotSameSuit = (suit, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARDS_NOT_SAME_SUIT,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if card1 or card2 has a defined suit, and the other card still allows that suit, then create HINT_CLUE_CARDS_NOT_SAME_SUIT hint to remove that suit
+export const getClueCardsNotSameSuitHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+
+  if (countSuitsInCardOptions(cardOptions1) === 1) {
+    // a suit is set here, create a hint if it still possible in the other card options
+    const suitSet1 = getFirstSuitSet(cardOptions1);
+    const suitOptionsIndex1 = convertSuitToSuitOptionsIndex(suitSet1);
+    if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex1)) {
+      hints.push(createHintClueCardsNotSameSuit(suitSet1, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  }
+
+  if (countSuitsInCardOptions(cardOptions2) === 1) {
+    // a suit is set here, create a hint if it still possible in the other card options
+    const suitSet2 = getFirstSuitSet(cardOptions2);
+    const suitOptionsIndex2 = convertSuitToSuitOptionsIndex(suitSet2);
+    if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex2)) {
+      hints.push(createHintClueCardsNotSameSuit(suitSet2, solutionHandsIndex1, handOptionsIndex1, clue));
+    }
+  }
 
   return hints;
 };
@@ -2730,6 +2774,20 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueCardsSameSuitHints = getClueCardsSameSuitHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
       if (clueCardsSameSuitHints.length) {
         return clueCardsSameSuitHints;
+      }
+    }
+
+    // clue: CLUE_CARDS_NOT_SAME_SUIT
+    if (clueType === CLUE_CARDS_NOT_SAME_SUIT) {
+      const {
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsNotSameSuitHints = getClueCardsNotSameSuitHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsNotSameSuitHints.length) {
+        return clueCardsNotSameSuitHints;
       }
     }
 
