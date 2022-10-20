@@ -1,5 +1,7 @@
 // useful clue functions
 
+import shuffle from 'lodash.shuffle';
+
 import { calcHandType } from './card-functions';
 
 import {
@@ -274,6 +276,53 @@ export const createCluesForSolutionHands = (solution) => {
         });
       }
     });
+  }
+
+  // TODO change approach here later
+  // create some random 'CARDS SAME SUIT' clues
+  // iterate over all but the last hand
+  for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
+    const solutionHand1 = solutionHands[solutionHandsIndex1];
+
+    // choose a random card from this hand
+    const solutionHandIndex1 = shuffle([0, 1, 2, 3, 4])[0];
+    const card1 = solutionHand1[solutionHandIndex1];
+
+    // then iterate over the remaining hands
+    for (let solutionHandsIndex2 = solutionHandsIndex1 + 1; solutionHandsIndex2 < solutionHands.length; solutionHandsIndex2 += 1) {
+      const solutionHand2 = solutionHands[solutionHandsIndex2];
+      solutionHand2.forEach((card2, solutionHandIndex2) => {
+        // if these are the same suit, add a clue
+        if (card1.suit === card2.suit) {
+          clues.push(createClueCardsSameSuit(solutionHandsIndex1, solutionHandIndex1, solutionHandsIndex2, solutionHandIndex2));
+        }
+      });
+    }
+  }
+
+  // TODO change approach here later
+  // create some random 'CARDS NOT SAME NUMBER' clues
+  // iterate over all but the last hand
+  for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
+    const solutionHand1 = solutionHands[solutionHandsIndex1];
+
+    // choose a random card from this hand
+    const solutionHandIndex1 = shuffle([0, 1, 2, 3, 4])[0];
+    const card1 = solutionHand1[solutionHandIndex1];
+
+    // then iterate over the remaining hands
+    for (let solutionHandsIndex2 = solutionHandsIndex1 + 1; solutionHandsIndex2 < solutionHands.length; solutionHandsIndex2 += 1) {
+      const solutionHand2 = solutionHands[solutionHandsIndex2];
+
+      // choose a random card from this hand
+      const solutionHandIndex2 = shuffle([0, 1, 2, 3, 4])[0];
+      const card2 = solutionHand2[solutionHandIndex2];
+
+      // if these are not the same number, add a clue
+      if (card1.number !== card2.number) {
+        clues.push(createClueCardsNotSameNumber(solutionHandsIndex1, solutionHandIndex1, solutionHandsIndex2, solutionHandIndex2));
+      }
+    }
   }
 
   // sometimes these clues can't solve the puzzle - so apply the above to a new solutionOptions and fill in the gaps with NOT_SUIT and NOT_NUMBER clues
