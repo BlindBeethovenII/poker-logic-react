@@ -24,6 +24,7 @@ import {
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
   CLUE_CARDS_SAME_NUMBER,
+  CLUE_CARDS_NOT_SAME_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -115,6 +116,18 @@ export const createClueCardsSameNumber = (solutionHandsIndex1, handOptionsIndex1
   solutionHandsIndex2,
   handOptionsIndex2,
 });
+
+// -------------------------- //
+// CLUE_CARDS_NOT_SAME_NUMBER //
+// -------------------------- //
+export const createClueCardsNotSameNumber = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
+  clueType: CLUE_CARDS_NOT_SAME_NUMBER,
+  solutionHandsIndex1,
+  handOptionsIndex1,
+  solutionHandsIndex2,
+  handOptionsIndex2,
+});
+
 // --------------------------- //
 // createCluesForSolutionHands //
 // --------------------------- //

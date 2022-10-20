@@ -73,6 +73,7 @@ import {
   CLUE_NUMBER,
   CLUE_NOT_NUMBER,
   CLUE_CARDS_SAME_NUMBER,
+  CLUE_CARDS_NOT_SAME_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -103,6 +104,7 @@ import {
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER,
+  HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -1693,7 +1695,7 @@ export const createHintClueCardsSameNumber = (number, solutionOptionsIndex, hand
   clue,
 });
 
-// if the named card still allows the suit then create a HINT_CLUE_CARDS_SAME_NUMBER hint to remove it
+// create HINT_CLUE_CARDS_SAME_NUMBER hint to remove any numbers that are not possible in the other card, for both the first and second given card positions
 export const getClueCardsSameNumberHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
   const hints = [];
 
@@ -1716,6 +1718,46 @@ export const getClueCardsSameNumberHints = (solutionHandsIndex1, handOptionsInde
       hints.push(createHintClueCardsSameNumber(number, solutionHandsIndex2, handOptionsIndex2, clue));
     }
   });
+
+  return hints;
+};
+
+// ------------------------------- //
+// HINT_CLUE_CARDS_NOT_SAME_NUMBER //
+// ------------------------------- //
+
+// create HINT_CLUE_CARDS_NOT_SAME_NUMBER
+export const createHintClueCardsNotSameNumber = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARDS_NOT_SAME_NUMBER,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if card1 or card2 has a defined number, and the other card still allows that number, then create HINT_CLUE_CARDS_NOT_SAME_NUMBER hint to remove that number
+export const getClueCardsNotSameNumberHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+
+  if (countNumbersInCardOptions(cardOptions1) === 1) {
+    // a number is set here, create a hint it if it still possible in the other card options
+    const numberSet1 = getFirstNumberSet(cardOptions1);
+    if (getNumberOptionsValueInCardOptions(cardOptions2, numberSet1)) {
+      hints.push(createHintClueCardsNotSameNumber(numberSet1, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  }
+
+  if (countNumbersInCardOptions(cardOptions2) === 1) {
+    // a number is set here, create a hint it if it still possible in the other card options
+    const numberSet2 = getFirstNumberSet(cardOptions2);
+    if (getNumberOptionsValueInCardOptions(cardOptions1, numberSet2)) {
+      hints.push(createHintClueCardsNotSameNumber(numberSet2, solutionHandsIndex1, handOptionsIndex1, clue));
+    }
+  }
 
   return hints;
 };
@@ -2605,7 +2647,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;
 
-    // hand type clue: CLUE_CARDS_SAME_NUMBER
+    // clue: CLUE_CARDS_SAME_NUMBER
     if (clueType === CLUE_CARDS_SAME_NUMBER) {
       const {
         solutionHandsIndex1,
@@ -2616,6 +2658,20 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueCardsSameNumberHints = getClueCardsSameNumberHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
       if (clueCardsSameNumberHints.length) {
         return clueCardsSameNumberHints;
+      }
+    }
+
+    // clue: CLUE_CARDS_NOT_SAME_NUMBER
+    if (clueType === CLUE_CARDS_NOT_SAME_NUMBER) {
+      const {
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsNotSameNumberHints = getClueCardsNotSameNumberHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsNotSameNumberHints.length) {
+        return clueCardsNotSameNumberHints;
       }
     }
 

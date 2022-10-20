@@ -11,6 +11,7 @@ import {
   createClueNotNumber,
   // createCluesForSolutionHands,
   createClueCardsSameNumber,
+  createClueCardsNotSameNumber,
 } from './clue-functions';
 
 import {
@@ -232,4 +233,6 @@ export const clues3 = [
   createClueNotNumber(NUMBER_J, 0, 0),
 
   createClueCardsSameNumber(0, 4, 1, 0),
+
+  createClueCardsNotSameNumber(1, 4, 0, 1),
 ];
