@@ -2,6 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
+import shuffle from 'lodash.shuffle';
+
 import { createSolution } from '../shared/card-functions';
 
 import {
@@ -251,14 +253,12 @@ export const GameStateContextProvider = ({ children }) => {
       return;
     }
 
-    // now order the clues, bringing the those to the front that we prefer to lose if possible
-    // TODO - hand 1's clues are already in order
-
     // need to remember if we remove any clues
     let removedAnyClues = false;
 
-    // and the final clues
-    let finalClues = clues;
+    // TODO: order the clues, bringing the those to the front that we prefer to lose if possible??
+    // for now trying shuffling the clues
+    let finalClues = shuffle(clues);
 
     // keep removing while possible
     let lookForMore = true;

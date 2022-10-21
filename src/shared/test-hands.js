@@ -11,7 +11,7 @@ import {
   createClueNotNumber,
   // createCluesForSolutionHands,
   createClueCardsSameNumber,
-  createClueCardsNotSameNumber,
+  // createClueCardsNotSameNumber,
   createClueCardsSameSuit,
   createClueCardsNotSameSuit,
   // createClueRedSuit,
@@ -234,11 +234,11 @@ export const clues3 = [
 
   // createClueNotNumber(NUMBER_8, 3, 1),
   // createClueNotNumber(NUMBER_A, 2, 0),
-  createClueNotNumber(NUMBER_J, 0, 0),
+  // createClueNotNumber(NUMBER_J, 0, 0),
 
   createClueCardsSameNumber(0, 4, 1, 0),
 
-  createClueCardsNotSameNumber(1, 4, 0, 1),
+  // createClueCardsNotSameNumber(1, 4, 0, 1),
 
   createClueCardsSameSuit(3, 2, 2, 4),
   // createClueCardsSameSuit(2, 3, 3, 3),
