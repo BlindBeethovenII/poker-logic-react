@@ -30,6 +30,7 @@ import {
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
+  CLUE_BLACK_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -167,6 +168,16 @@ export const createClueRedSuit = (solutionHandsIndex, handOptionsIndex) => ({
   handOptionsIndex,
 });
 
+// --------------- //
+// CLUE_BLACK_SUIT //
+// --------------- //
+
+export const createClueBlackSuit = (solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_BLACK_SUIT,
+  solutionHandsIndex,
+  handOptionsIndex,
+});
+
 // --------------------------- //
 // createCluesForSolutionHands //
 // --------------------------- //
@@ -266,9 +277,11 @@ export const createCluesForSolutionHands = (solution) => {
         clues.push(createClueSuit(suit, solutionHandsIndex, solutionHandIndex));
         nextClueType = CLUE_RED_SUIT;
       } else if (nextClueType === CLUE_RED_SUIT) {
-        // TODO we cover red suit and black suit here
+        // note: this covers both red suit and black suits
         if (suit === SUIT_HEARTS || suit === SUIT_DIAMONDS) {
           clues.push(createClueRedSuit(solutionHandsIndex, solutionHandIndex));
+        } else {
+          clues.push(createClueBlackSuit(solutionHandsIndex, solutionHandIndex));
         }
         nextClueType = CLUE_NUMBER;
       } else {

@@ -14,7 +14,8 @@ import {
   createClueCardsNotSameNumber,
   createClueCardsSameSuit,
   createClueCardsNotSameSuit,
-  createClueRedSuit,
+  // createClueRedSuit,
+  createClueBlackSuit,
 } from './clue-functions';
 
 import {
@@ -244,5 +245,7 @@ export const clues3 = [
 
   createClueCardsNotSameSuit(3, 3, 1, 0),
 
-  createClueRedSuit(2, 3),
+  // createClueRedSuit(2, 3),
+
+  createClueBlackSuit(3, 4),
 ];

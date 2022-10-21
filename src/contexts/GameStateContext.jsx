@@ -51,11 +51,14 @@ import {
   CLUE_NOT_SUIT,
   CLUE_NOT_NUMBER,
   CLUE_RED_SUIT,
+  CLUE_BLACK_SUIT,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_CLUBS,
+  INDEX_SUIT_HEARTS,
+  INDEX_SUIT_DIAMONDS,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -350,6 +353,16 @@ export const GameStateContextProvider = ({ children }) => {
         }
         if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_CLUBS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_BLACK_SUIT) {
+        const { solutionHandsIndex, handOptionsIndex } = clue;
+        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_HEARTS)) {
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_HEARTS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_DIAMONDS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;

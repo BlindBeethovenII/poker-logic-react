@@ -47,6 +47,7 @@ import {
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
+  HINT_CLUE_BLACK_SUIT,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -65,6 +66,8 @@ import {
   ALL_HINTS,
   INDEX_SUIT_SPADES,
   INDEX_SUIT_CLUBS,
+  INDEX_SUIT_HEARTS,
+  INDEX_SUIT_DIAMONDS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -646,6 +649,34 @@ export const applyClueRedSuitHint = (solutionOptions, hint) => {
 
   return newSolutionOptions;
 };
+
+export const applyClueBlackSuitHint = (solutionOptions, hint) => {
+  const {
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_BLACK_SUIT to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_HEARTS)) {
+    // hearts is currently an option - so remove it
+    newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_HEARTS, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_DIAMONDS)) {
+    // diamonds is currently an option - so remove it
+    newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_DIAMONDS, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  return newSolutionOptions;
+};
+
 export const applyPairNumbersRestrictedBySuitHint = (solutionOptions, hint) => {
   const {
     numbers,
@@ -978,6 +1009,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_RED_SUIT:
       return applyClueRedSuitHint(solutionOptions, hint);
+
+    case HINT_CLUE_BLACK_SUIT:
+      return applyClueBlackSuitHint(solutionOptions, hint);
 
     case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
       return applyPairNumbersRestrictedBySuitHint(solutionOptions, hint);
