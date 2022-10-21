@@ -40,6 +40,8 @@ import {
   HAND_TYPE_HIGH_CARD,
   NUMBERS,
   SUITS,
+  SUIT_DIAMONDS,
+  SUIT_HEARTS,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -252,7 +254,7 @@ export const createCluesForSolutionHands = (solution) => {
 
   // TODO change approach here later
   // not good to do a SUIT_AND_NUMBER for every card, otherwise it just removes the HAND_TYPE clues and leaves 19 SUIT_AND_NUMBER clues
-  // so for now rotate through SUIT_AND_NUMBER, SUIT and NUMBER clues for the cards
+  // so for now rotate through SUIT_AND_NUMBER, SUIT, SUIT_RED and NUMBER clues for the cards
   let nextClueType = CLUE_SUIT_AND_NUMBER;
   solutionHands.forEach((solutionHand, solutionHandsIndex) => {
     solutionHand.forEach((card, solutionHandIndex) => {
@@ -262,6 +264,12 @@ export const createCluesForSolutionHands = (solution) => {
         nextClueType = CLUE_SUIT;
       } else if (nextClueType === CLUE_SUIT) {
         clues.push(createClueSuit(suit, solutionHandsIndex, solutionHandIndex));
+        nextClueType = CLUE_RED_SUIT;
+      } else if (nextClueType === CLUE_RED_SUIT) {
+        // TODO we cover red suit and black suit here
+        if (suit === SUIT_HEARTS || suit === SUIT_DIAMONDS) {
+          clues.push(createClueRedSuit(solutionHandsIndex, solutionHandIndex));
+        }
         nextClueType = CLUE_NUMBER;
       } else {
         clues.push(createClueNumber(number, solutionHandsIndex, solutionHandIndex));
