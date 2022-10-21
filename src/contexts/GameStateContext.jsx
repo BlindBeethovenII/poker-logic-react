@@ -33,6 +33,7 @@ import {
   createCluesForSolutionHands,
   addInDeducedClues,
   createInitialShowClues,
+  sortClues,
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
@@ -61,6 +62,7 @@ import {
   INDEX_SUIT_CLUBS,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
+  CLUE_HAND_OF_TYPE,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -245,7 +247,7 @@ export const GameStateContextProvider = ({ children }) => {
   // ------------ //
 
   // see if any clues can be removed and the puzzle can still be solved
-  const reduceClues = useCallback(() => {
+  const reduceClues = useCallback((keepHandTypes) => {
     // first check that the puzzle can be solved with the current clues
     const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
     if (!isSolutionOptionsComplete(cardsAvailable, newSolutionOptions)) {
@@ -257,8 +259,8 @@ export const GameStateContextProvider = ({ children }) => {
     let removedAnyClues = false;
 
     // TODO: order the clues, bringing the those to the front that we prefer to lose if possible??
-    // for now trying shuffling the clues
-    let finalClues = shuffle(clues);
+    // for now trying shuffling the clues, and put the 'HAND OF TYPE' clues back at the front, as easiest for human to understand
+    let finalClues = sortClues(shuffle(clues));
 
     // keep removing while possible
     let lookForMore = true;
@@ -266,15 +268,20 @@ export const GameStateContextProvider = ({ children }) => {
       let indexToRemove = -1;
       for (let i = 0; i < finalClues.length && indexToRemove === -1; i += 1) {
         const clue = finalClues[i];
+        const { clueType } = clue;
 
-        // the new clues without that one
-        const newClues = [...finalClues.slice(0, i), ...finalClues.slice(i + 1)];
-        const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
-        if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
-          logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, i)}`);
-          indexToRemove = i;
+        // only consider 'HAND OF TYPE' clues if not instructed to keep them
+        if (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes) {
+          // the new clues without that one
+          const newClues = [...finalClues.slice(0, i), ...finalClues.slice(i + 1)];
+          const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
+          if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
+            logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, i)}`);
+            indexToRemove = i;
+          }
         }
       }
+
       if (indexToRemove === -1) {
         // didn't find any to remove, so give up here
         lookForMore = false;

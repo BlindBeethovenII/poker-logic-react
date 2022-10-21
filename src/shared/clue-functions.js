@@ -577,3 +577,38 @@ export const createInitialShowClues = (clues) => {
   }
   return result;
 };
+
+// helper function to sort clues - currently just puts 'HAND OF TYPE' clues at the front
+export const sortClues = (cluesParam) => {
+  // copy of clues param (just to get around eslint complaint about assigning to function params)
+  const clues = [...cluesParam];
+
+  // do bubble sort to order the clues
+  for (let { length } = clues; length > 1; length -= 1) {
+    // move the smallest card from first entry to length
+    for (let i = 0; i < length - 1; i += 1) {
+      const thisClue = clues[i];
+      const thisClueType = thisClue.clueType;
+      const nextClue = clues[i + 1];
+      const nextClueType = nextClue.clueType;
+      let swap = false;
+      if (thisClueType !== CLUE_HAND_OF_TYPE && nextClueType === CLUE_HAND_OF_TYPE) {
+        // 'HAND OF TYPE' clues always bubble up
+        swap = true;
+      } else if (thisClueType === CLUE_HAND_OF_TYPE && nextClueType === CLUE_HAND_OF_TYPE) {
+        // lower handTypes move to the right
+        if (thisClue.handType < nextClue.handType) {
+          swap = true;
+        }
+      }
+      if (swap) {
+        // this is smaller, so move to the right
+        const clue = clues[i + 1];
+        clues[i + 1] = clues[i];
+        clues[i] = clue;
+      }
+    }
+  }
+
+  return clues;
+};

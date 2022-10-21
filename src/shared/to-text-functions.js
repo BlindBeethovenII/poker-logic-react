@@ -85,7 +85,7 @@ export const clueToString = (clue, doNotShowDeduced) => {
         deducedText = `, deduced from clue ${clueToString(deduced[0])}`;
       }
     }
-    return `Hand ${solutionHandsIndex + 1} has ${handTypeToText(handType)}${deducedText}`;
+    return `Hand ${solutionHandsIndex + 1} is ${handTypeToText(handType)}${deducedText}`;
   }
 
   if (clueType === CLUE_SUIT_AND_NUMBER) {

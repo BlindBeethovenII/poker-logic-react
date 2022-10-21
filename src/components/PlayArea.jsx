@@ -140,6 +140,7 @@ const PlayArea = () => {
       <HintButton applyOne />
       <HintButton applyAll />
       <ReduceCluesButton />
+      <ReduceCluesButton keepHandTypes />
       <HideShowSolutionButton />
       <ApplyBasicCluesButton />
       <Clues />
