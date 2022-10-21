@@ -76,6 +76,7 @@ import {
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
+  CLUE_RED_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -109,6 +110,7 @@ import {
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
+  HINT_CLUE_RED_SUIT,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -1850,6 +1852,32 @@ export const getClueCardsNotSameSuitHints = (solutionHandsIndex1, handOptionsInd
   return hints;
 };
 
+// ------------------ //
+// HINT_CLUE_RED_SUIT //
+// ------------------ //
+
+// create HINT_CLUE_RED_SUIT
+export const createHintClueRedSuit = (solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_RED_SUIT,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card still allows a black suits then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits
+export const getClueRedSuitHints = (solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_SPADES) || getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_CLUBS)) {
+    hints.push(createHintClueRedSuit(solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // ------------------------------------ //
 // HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
 // ------------------------------------ //
@@ -2651,6 +2679,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueNotNumberHints = getClueNotNumberHints(number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
       if (clueNotNumberHints.length) {
         return clueNotNumberHints;
+      }
+    }
+
+    // clue red suit
+    if (clueType === CLUE_RED_SUIT) {
+      const { solutionHandsIndex, handOptionsIndex } = clue;
+      const clueRedSuitHints = getClueRedSuitHints(solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueRedSuitHints.length) {
+        return clueRedSuitHints;
       }
     }
   }

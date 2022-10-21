@@ -13,6 +13,7 @@ import {
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
+  CLUE_RED_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -154,6 +155,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
       handOptionsIndex2,
     } = clue;
     return `Hand ${solutionHandsIndex1 + 1} Card ${handOptionsIndex1 + 1} is not the same suit as Hand ${solutionHandsIndex2 + 1} Card ${handOptionsIndex2 + 1}`;
+  }
+
+  if (clueType === CLUE_RED_SUIT) {
+    const { solutionHandsIndex, handOptionsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is a red suit`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

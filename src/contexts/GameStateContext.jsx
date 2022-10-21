@@ -50,9 +50,12 @@ import {
   CLUE_NUMBER,
   CLUE_NOT_SUIT,
   CLUE_NOT_NUMBER,
+  CLUE_RED_SUIT,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
+  INDEX_SUIT_SPADES,
+  INDEX_SUIT_CLUBS,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -337,6 +340,16 @@ export const GameStateContextProvider = ({ children }) => {
         const { number, solutionHandsIndex, handOptionsIndex } = clue;
         if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_RED_SUIT) {
+        const { solutionHandsIndex, handOptionsIndex } = clue;
+        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_SPADES, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_CLUBS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;

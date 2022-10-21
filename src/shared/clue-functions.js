@@ -29,6 +29,7 @@ import {
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
+  CLUE_RED_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -152,6 +153,16 @@ export const createClueCardsNotSameSuit = (solutionHandsIndex1, handOptionsIndex
   handOptionsIndex1,
   solutionHandsIndex2,
   handOptionsIndex2,
+});
+
+// ------------- //
+// CLUE_RED_SUIT //
+// ------------- //
+
+export const createClueRedSuit = (solutionHandsIndex, handOptionsIndex) => ({
+  clueType: CLUE_RED_SUIT,
+  solutionHandsIndex,
+  handOptionsIndex,
 });
 
 // --------------------------- //
