@@ -57,6 +57,7 @@ import {
   CLUE_NOT_NUMBER,
   CLUE_RED_SUIT,
   CLUE_BLACK_SUIT,
+  CLUE_RED_SUITS,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
@@ -380,6 +381,19 @@ export const GameStateContextProvider = ({ children }) => {
         }
         if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_DIAMONDS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_RED_SUITS) {
+        const { solutionHandsIndex } = clue;
+        const handOptions = solutionOptions[solutionHandsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_SPADES, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_CLUBS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
         }
         newShowClues[i] = false;
         cluesApplied = true;
