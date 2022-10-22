@@ -38,6 +38,8 @@ import {
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
+  SUIT_BLACK,
+  SUIT_RED,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -78,8 +80,8 @@ export const cardSuitToImage = (suit) => {
 };
 
 export const cardSuitToFillColour = (suit) => {
-  if (suit === SUIT_CLUBS || SUIT_SPADES) return 'black';
-  return 'red';
+  if (suit === SUIT_CLUBS || suit === SUIT_SPADES) return SUIT_BLACK;
+  return SUIT_RED;
 };
 
 export const cardSuitIndexToSuit = (suitIndex) => {

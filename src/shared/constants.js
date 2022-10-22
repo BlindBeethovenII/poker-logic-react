@@ -8,6 +8,9 @@ export const SUIT_CLUBS = 'C';
 export const SUITS = [SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS, SUIT_CLUBS];
 export const SUIT_NONE = 'NONE';
 
+export const SUIT_BLACK = 'black';
+export const SUIT_RED = 'red';
+
 export const INDEX_SUIT_SPADES = 0;
 export const INDEX_SUIT_HEARTS = 1;
 export const INDEX_SUIT_DIAMONDS = 2;

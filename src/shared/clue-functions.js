@@ -2,7 +2,7 @@
 
 import shuffle from 'lodash.shuffle';
 
-import { calcHandType } from './card-functions';
+import { calcHandType, cardSuitToFillColour } from './card-functions';
 
 import {
   createSolutionOptions,
@@ -45,6 +45,8 @@ import {
   SUITS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
+  SUIT_RED,
+  SUIT_BLACK,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -310,6 +312,30 @@ export const createCluesForSolutionHands = (solution) => {
       }
     });
   });
+
+  // TODO change approach here later
+  // add in all red or all back clue if a hand is solely made of red or black cards
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length - 1; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    let soleColour;
+    solutionHand.forEach((card) => {
+      const nextColour = cardSuitToFillColour(card.suit);
+      if (!soleColour) {
+        // first card
+        soleColour = nextColour;
+      } else if (soleColour !== nextColour) {
+        // not the first card and colours and different, so remember
+        soleColour = 'DIFFERENT';
+      }
+    });
+
+    // if soleColour is red or black then create corresponding clue
+    if (soleColour === SUIT_RED) {
+      clues.push(createClueRedSuits(solutionHandsIndex));
+    } else if (soleColour === SUIT_BLACK) {
+      clues.push(createClueBlackSuits(solutionHandsIndex));
+    }
+  }
 
   // TODO change approach here later
   // create some random 'CARDS SAME NUMBER' clues
