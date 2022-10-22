@@ -17,6 +17,7 @@ import {
   // createClueRedSuit,
   createClueBlackSuit,
   createClueRedSuits,
+  createClueBlackSuits,
 } from './clue-functions';
 
 import {
@@ -336,4 +337,6 @@ export const clues4 = [
 
   createClueRedSuits(0),
   createClueRedSuits(3),
+
+  createClueBlackSuits(1),
 ];

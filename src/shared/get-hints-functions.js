@@ -79,6 +79,7 @@ import {
   CLUE_RED_SUIT,
   CLUE_BLACK_SUIT,
   CLUE_RED_SUITS,
+  CLUE_BLACK_SUITS,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1867,7 +1868,7 @@ export const createHintClueRedSuit = (solutionOptionsIndex, handOptionsIndex, cl
   clue,
 });
 
-// if the named card still allows a black suits then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits
+// if the named card still allows a black suit then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits
 export const getClueRedSuitHints = (solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -1881,7 +1882,7 @@ export const getClueRedSuitHints = (solutionHandsIndex, handOptionsIndex, soluti
   return hints;
 };
 
-// if any cards in this hand still allows a black suits then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits from that card
+// if any cards in this hand still allows a black suit then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits from that card
 export const getClueRedSuitsHints = (solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -1908,7 +1909,7 @@ export const createHintClueBlackSuit = (solutionOptionsIndex, handOptionsIndex, 
   clue,
 });
 
-// if the named card still allows a red suits then create a HINT_CLUE_BLACK_SUIT hint to remove one or both red suits
+// if the named card still allows a red suit then create a HINT_CLUE_BLACK_SUIT hint to remove one or both red suits
 export const getClueBlackSuitHints = (solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
   const hints = [];
 
@@ -1918,6 +1919,21 @@ export const getClueBlackSuitHints = (solutionHandsIndex, handOptionsIndex, solu
   if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_HEARTS) || getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_DIAMONDS)) {
     hints.push(createHintClueBlackSuit(solutionHandsIndex, handOptionsIndex, clue));
   }
+
+  return hints;
+};
+
+// if any cards in this hand still allows a red suit then create a HINT_CLUE_BLACK_SUIT hint to remove one or both red suits from that card
+export const getClueBlackSuitsHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_HEARTS) || getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_DIAMONDS)) {
+      hints.push(createHintClueBlackSuit(solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
 
   return hints;
 };
@@ -2750,6 +2766,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueRedSuitsHints = getClueRedSuitsHints(solutionHandsIndex, solutionOptions, clue);
       if (clueRedSuitsHints.length) {
         return clueRedSuitsHints;
+      }
+    }
+
+    // clue black suits
+    if (clueType === CLUE_BLACK_SUITS) {
+      const { solutionHandsIndex } = clue;
+      const clueBlackSuitsHints = getClueBlackSuitsHints(solutionHandsIndex, solutionOptions, clue);
+      if (clueBlackSuitsHints.length) {
+        return clueBlackSuitsHints;
       }
     }
   }

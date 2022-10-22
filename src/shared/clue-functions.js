@@ -32,6 +32,7 @@ import {
   CLUE_RED_SUIT,
   CLUE_BLACK_SUIT,
   CLUE_RED_SUITS,
+  CLUE_BLACK_SUITS,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -185,6 +186,15 @@ export const createClueBlackSuit = (solutionHandsIndex, handOptionsIndex) => ({
 
 export const createClueRedSuits = (solutionHandsIndex) => ({
   clueType: CLUE_RED_SUITS,
+  solutionHandsIndex,
+});
+
+// ---------------- //
+// CLUE_BLACK_SUITS //
+// ---------------- //
+
+export const createClueBlackSuits = (solutionHandsIndex) => ({
+  clueType: CLUE_BLACK_SUITS,
   solutionHandsIndex,
 });
 

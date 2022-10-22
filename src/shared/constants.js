@@ -184,3 +184,4 @@ export const CLUE_CARDS_NOT_SAME_SUIT = 'CARDS NOT SAME SUIT';
 export const CLUE_RED_SUIT = 'RED SUIT';
 export const CLUE_BLACK_SUIT = 'BLACK SUIT';
 export const CLUE_RED_SUITS = 'RED SUITS';
+export const CLUE_BLACK_SUITS = 'BLACK SUITS';
