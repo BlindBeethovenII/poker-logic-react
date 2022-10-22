@@ -78,6 +78,7 @@ import {
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
   CLUE_BLACK_SUIT,
+  CLUE_RED_SUITS,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1880,6 +1881,21 @@ export const getClueRedSuitHints = (solutionHandsIndex, handOptionsIndex, soluti
   return hints;
 };
 
+// if any cards in this hand still allows a black suits then create a HINT_CLUE_RED_SUIT hint to remove one or both black suits from that card
+export const getClueRedSuitsHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_SPADES) || getSuitOptionsValueInCardOptions(cardOptions, INDEX_SUIT_CLUBS)) {
+      hints.push(createHintClueRedSuit(solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
+
+  return hints;
+};
+
 // -------------------- //
 // HINT_CLUE_BLACK_SUIT //
 // -------------------- //
@@ -2725,6 +2741,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueBlackSuitHints = getClueBlackSuitHints(solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
       if (clueBlackSuitHints.length) {
         return clueBlackSuitHints;
+      }
+    }
+
+    // clue red suits
+    if (clueType === CLUE_RED_SUITS) {
+      const { solutionHandsIndex } = clue;
+      const clueRedSuitsHints = getClueRedSuitsHints(solutionHandsIndex, solutionOptions, clue);
+      if (clueRedSuitsHints.length) {
+        return clueRedSuitsHints;
       }
     }
   }

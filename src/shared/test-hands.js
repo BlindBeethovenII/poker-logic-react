@@ -16,6 +16,7 @@ import {
   createClueCardsNotSameSuit,
   // createClueRedSuit,
   createClueBlackSuit,
+  createClueRedSuits,
 } from './clue-functions';
 
 import {
@@ -248,4 +249,91 @@ export const clues3 = [
   // createClueRedSuit(2, 3),
 
   createClueBlackSuit(3, 4),
+];
+
+// -------------------------- //
+// hard-coded solution hand 4 //
+// -------------------------- //
+
+export const solutionHands4 = [
+  [
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+    createCard(SUIT_DIAMONDS, NUMBER_2),
+    createCard(SUIT_DIAMONDS, NUMBER_A),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_A),
+    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_CLUBS, NUMBER_7),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_6),
+    createCard(SUIT_DIAMONDS, NUMBER_6),
+    createCard(SUIT_CLUBS, NUMBER_4),
+    createCard(SUIT_HEARTS, NUMBER_3),
+    createCard(SUIT_HEARTS, NUMBER_2),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_K),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_6),
+    createCard(SUIT_HEARTS, NUMBER_5),
+    createCard(SUIT_HEARTS, NUMBER_4),
+  ],
+];
+
+export const solution4 = {
+  solutionHands: solutionHands4,
+  missingNumber: NUMBER_Q,
+};
+
+export const clues4 = [
+  createClueHandOfType(calcHandType(solutionHands4[0]), 0),
+  createClueHandOfType(calcHandType(solutionHands4[1]), 1),
+  createClueHandOfType(calcHandType(solutionHands4[2]), 2),
+  createClueHandOfType(calcHandType(solutionHands4[3]), 3),
+
+  // createClueSuit(SUIT_HEARTS, 0, 4),
+  // createClueSuit(SUIT_SPADES, 2, 0),
+  // createClueSuit(SUIT_DIAMONDS, 2, 3),
+  // createClueSuit(SUIT_HEARTS, 3, 1),
+  // createClueSuit(SUIT_SPADES, 3, 4),
+  // createClueSuit(SUIT_DIAMONDS, 2, 0),
+
+  // createClueNumber(NUMBER_3, 0, 2),
+  // createClueNumber(NUMBER_9, 1, 2),
+  // createClueNumber(NUMBER_8, 1, 3),
+  // createClueNumber(NUMBER_3, 2, 4),
+  // createClueNumber(NUMBER_5, 3, 2),
+
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 1),
+  // createClueSuitAndNumber(SUIT_CLUBS, NUMBER_7, 1, 4),
+  // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
+  // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
+
+  // createClueNotSuit(SUIT_HEARTS, 2, 1),
+
+  // createClueNotNumber(NUMBER_8, 3, 1),
+  // createClueNotNumber(NUMBER_A, 2, 0),
+  // createClueNotNumber(NUMBER_J, 0, 0),
+
+  // createClueCardsSameNumber(0, 4, 1, 0),
+
+  // createClueCardsNotSameNumber(1, 4, 0, 1),
+
+  // createClueCardsSameSuit(3, 2, 2, 4),
+  // createClueCardsSameSuit(2, 3, 3, 3),
+
+  // createClueCardsNotSameSuit(3, 3, 1, 0),
+
+  // createClueRedSuit(2, 3),
+
+  // createClueBlackSuit(3, 4),
+
+  createClueRedSuits(0),
+  createClueRedSuits(3),
 ];
