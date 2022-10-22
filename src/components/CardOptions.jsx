@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -40,6 +40,8 @@ const CardOptions = (props) => {
     toggleNumberOption,
     resetNumberOptions,
   } = useContext(GameStateContext);
+
+  const [numberToggledOffOnMouseEnter, setNumberToggledOffOnMouseEnter] = useState(undefined);
 
   // form our id based on our hand option index
   const id = `card-options-${solutionOptionsIndex}-${handOptionsIndex}`;
@@ -282,7 +284,7 @@ const CardOptions = (props) => {
       };
 
       const numberToggleOption = (e) => {
-        logIfDevEnv(`numberToggleOption ${number}`);
+        logIfDevEnv(`numberToggleOption ${number} when numberToggledOffOnMouseEnter=${numberToggledOffOnMouseEnter}`);
 
         // stop the context menu appearing
         e.preventDefault();
@@ -290,8 +292,33 @@ const CardOptions = (props) => {
         // if this is the single number option, then toggle means make all options available again
         if (isSingleNumberOption) {
           resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
-        } else {
-          // toggle corresponding number
+        } else if (numberToggledOffOnMouseEnter !== number) {
+          // toggle corresponding number - if we haven't already just done it on mouse enter number
+          toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+        }
+
+        setNumberToggledOffOnMouseEnter(undefined);
+      };
+
+      // if we enter a number with right button and we are a non-single number option that is selected - then toggle off
+      const onMouseEnterNumber = (e) => {
+        if (e.buttons === 2) {
+          logIfDevEnv(`onMouseEnterNumber: right button on for number ${number}`);
+
+          if (!isSingleNumberOption && !faded) {
+            toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+          }
+
+          // need to remember this, so mouse up doesn't toggle
+          setNumberToggledOffOnMouseEnter(number);
+        }
+      };
+
+      // if we leave a number with right button and we are a non-single number option that is selected - then toggle off
+      const onMouseLeaveNumber = (e) => {
+        if (e.buttons === 2 && !isSingleNumberOption && !faded) {
+          logIfDevEnv(`onMouseLeaveNumber: right button while on still selected number ${number} - so toggle off`);
+          // TODO - this does not work for the first onMouseLeave - I think it is because of event listeners and useState - would need to change solutionOptions to a useRef
           toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
         }
       };
@@ -308,6 +335,8 @@ const CardOptions = (props) => {
           onClick={numberSelectThisOptionOnly}
           onKeyDown={numberSelectThisOptionOnly}
           onContextMenu={numberToggleOption}
+          onMouseEnter={onMouseEnterNumber}
+          onMouseLeave={onMouseLeaveNumber}
         >
           {cardnumber}
         </div>
