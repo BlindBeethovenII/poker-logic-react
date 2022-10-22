@@ -105,6 +105,9 @@ export const GameStateContextProvider = ({ children }) => {
   // which solution we are looking at
   const [currentSolutionLabel, setCurrentSolutionLabel] = useState('Hard-coded Solution 1');
 
+  // show the spinkit circle
+  const [showSpinKitCircle, setShowSpinKitCircle] = useState(false);
+
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
   // --------------------------------------------------------------------- //
@@ -454,6 +457,10 @@ export const GameStateContextProvider = ({ children }) => {
     // showClues stuff
     showClues,
     toggleShowClue,
+
+    // spinKitCircle stuff
+    showSpinKitCircle,
+    setShowSpinKitCircle,
   }), [
     showWin,
     solution,
@@ -480,6 +487,7 @@ export const GameStateContextProvider = ({ children }) => {
     toggleShowSolution,
     showClues,
     toggleShowClue,
+    showSpinKitCircle,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

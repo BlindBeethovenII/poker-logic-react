@@ -22,6 +22,7 @@ import HideShowSolutionButton from './HideShowSolutionButton';
 import ApplyBasicCluesButton from './ApplyBasicCluesButton';
 import Clues from './Clues';
 import CompleteIncorrectMark from './CompleteIncorrectMark';
+import SpinKitCircle from './SpinKitCircle';
 
 import {
   SUIT_SPADES,
@@ -145,6 +146,7 @@ const PlayArea = () => {
       <ApplyBasicCluesButton />
       <Clues />
       <CompleteIncorrectMark />
+      <SpinKitCircle />
     </div>
   );
 };
