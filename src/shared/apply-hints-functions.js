@@ -11,6 +11,7 @@ import {
   isSuitTrueInCardOptions,
   isNumberTrueInCardOptions,
   getSuitOptionsValueInCardOptions,
+  getNumberOptionsValueInCardOptions,
 } from './solution-functions';
 
 import { clueToString } from './to-text-functions';
@@ -48,6 +49,7 @@ import {
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
+  HINT_CLUE_CARD_EVEN,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -68,6 +70,13 @@ import {
   INDEX_SUIT_CLUBS,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_DIAMONDS,
+  NUMBER_A,
+  NUMBER_3,
+  NUMBER_5,
+  NUMBER_7,
+  NUMBER_9,
+  NUMBER_J,
+  NUMBER_K,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -677,6 +686,58 @@ export const applyClueBlackSuitHint = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
+export const applyClueCardEvenHint = (solutionOptions, hint) => {
+  const {
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARD_EVEN to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_5)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_5, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_7)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_7, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_9)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_9, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_J)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_J, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_K)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_K, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  return newSolutionOptions;
+};
+
 export const applyPairNumbersRestrictedBySuitHint = (solutionOptions, hint) => {
   const {
     numbers,
@@ -1012,6 +1073,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_BLACK_SUIT:
       return applyClueBlackSuitHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARD_EVEN:
+      return applyClueCardEvenHint(solutionOptions, hint);
 
     case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
       return applyPairNumbersRestrictedBySuitHint(solutionOptions, hint);

@@ -80,6 +80,7 @@ import {
   CLUE_BLACK_SUIT,
   CLUE_RED_SUITS,
   CLUE_BLACK_SUITS,
+  CLUE_CARD_EVEN,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -115,6 +116,7 @@ import {
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
+  HINT_CLUE_CARD_EVEN,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -134,6 +136,11 @@ import {
   NUMBER_A,
   HINT_NO_STRAIGHT_IN_NUMBER,
   HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
+  NUMBER_3,
+  NUMBER_5,
+  NUMBER_7,
+  NUMBER_9,
+  NUMBER_J,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -1938,6 +1945,38 @@ export const getClueBlackSuitsHints = (solutionHandsIndex, solutionOptions, clue
   return hints;
 };
 
+// ------------------- //
+// HINT_CLUE_CARD_EVEN //
+// ------------------- //
+
+// create HINT_CLUE_CARD_EVEN
+export const createHintClueCardEven = (solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARD_EVEN,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card still allows one or more odd numbers then create a HINT_CLUE_CARD_EVEN hint to remove those numbers
+export const getClueCardEvenHints = (solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_5)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_7)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_9)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_J)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_K)) {
+    hints.push(createHintClueCardEven(solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // ------------------------------------ //
 // HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
 // ------------------------------------ //
@@ -2775,6 +2814,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueBlackSuitsHints = getClueBlackSuitsHints(solutionHandsIndex, solutionOptions, clue);
       if (clueBlackSuitsHints.length) {
         return clueBlackSuitsHints;
+      }
+    }
+
+    // clue card even
+    if (clueType === CLUE_CARD_EVEN) {
+      const { solutionHandsIndex, handOptionsIndex } = clue;
+      const clueCardEvenHints = getClueCardEvenHints(solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueCardEvenHints.length) {
+        return clueCardEvenHints;
       }
     }
   }

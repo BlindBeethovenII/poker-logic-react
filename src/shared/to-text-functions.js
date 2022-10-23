@@ -17,6 +17,7 @@ import {
   CLUE_BLACK_SUIT,
   CLUE_RED_SUITS,
   CLUE_BLACK_SUITS,
+  CLUE_CARD_EVEN,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -178,6 +179,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_BLACK_SUITS) {
     const { solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} has all black suits`;
+  }
+
+  if (clueType === CLUE_CARD_EVEN) {
+    const { solutionHandsIndex, handOptionsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an even number`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
