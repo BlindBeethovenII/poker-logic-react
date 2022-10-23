@@ -309,7 +309,7 @@ export const createCluesForSolutionHands = (solution) => {
 
   // TODO change approach here later
   // not good to do a SUIT_AND_NUMBER for every card, otherwise it just removes the HAND_TYPE clues and leaves 19 SUIT_AND_NUMBER clues
-  // so for now rotate through SUIT_AND_NUMBER, SUIT, SUIT_RED and NUMBER clues for the cards
+  // so for now rotate through SUIT_AND_NUMBER, SUIT, SUIT_RED, SUIT_BLACK, CARD_EVEN, CARD_ODD and NUMBER clues for the cards
   let nextClueType = CLUE_SUIT_AND_NUMBER;
   solutionHands.forEach((solutionHand, solutionHandsIndex) => {
     solutionHand.forEach((card, solutionHandIndex) => {
@@ -326,6 +326,14 @@ export const createCluesForSolutionHands = (solution) => {
           clues.push(createClueRedSuit(solutionHandsIndex, solutionHandIndex));
         } else {
           clues.push(createClueBlackSuit(solutionHandsIndex, solutionHandIndex));
+        }
+        nextClueType = CLUE_CARD_EVEN;
+      } else if (nextClueType === CLUE_CARD_EVEN) {
+        // note: this covers both card even and card odd
+        if (number % 2 === 0) {
+          clues.push(createClueCardEven(solutionHandsIndex, solutionHandIndex));
+        } else {
+          clues.push(createClueCardOdd(solutionHandsIndex, solutionHandIndex));
         }
         nextClueType = CLUE_NUMBER;
       } else {
