@@ -19,6 +19,7 @@ import {
   createClueRedSuits,
   createClueBlackSuits,
   createClueCardEven,
+  createClueCardOdd,
 } from './clue-functions';
 
 import {
@@ -342,4 +343,6 @@ export const clues4 = [
   createClueBlackSuits(1),
 
   createClueCardEven(1, 1),
+
+  createClueCardOdd(1, 2),
 ];

@@ -81,6 +81,7 @@ import {
   CLUE_RED_SUITS,
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
+  CLUE_CARD_ODD,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -117,6 +118,7 @@ import {
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
   HINT_CLUE_CARD_EVEN,
+  HINT_CLUE_CARD_ODD,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -141,6 +143,12 @@ import {
   NUMBER_7,
   NUMBER_9,
   NUMBER_J,
+  NUMBER_2,
+  NUMBER_4,
+  NUMBER_6,
+  NUMBER_8,
+  NUMBER_10,
+  NUMBER_Q,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -1977,6 +1985,37 @@ export const getClueCardEvenHints = (solutionHandsIndex, handOptionsIndex, solut
   return hints;
 };
 
+// ------------------ //
+// HINT_CLUE_CARD_ODD //
+// ------------------ //
+
+// create HINT_CLUE_CARD_ODD
+export const createHintClueCardOdd = (solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARD_ODD,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// if the named card still allows one or more even numbers then create a HINT_CLUE_CARD_ODD hint to remove those numbers
+export const getClueCardOddHints = (solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // just one card to look at
+  const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
+    hints.push(createHintClueCardOdd(solutionHandsIndex, handOptionsIndex, clue));
+  }
+
+  return hints;
+};
+
 // ------------------------------------ //
 // HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
 // ------------------------------------ //
@@ -2823,6 +2862,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueCardEvenHints = getClueCardEvenHints(solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
       if (clueCardEvenHints.length) {
         return clueCardEvenHints;
+      }
+    }
+
+    // clue card odd
+    if (clueType === CLUE_CARD_ODD) {
+      const { solutionHandsIndex, handOptionsIndex } = clue;
+      const clueCardOddHints = getClueCardOddHints(solutionHandsIndex, handOptionsIndex, solutionOptions, clue);
+      if (clueCardOddHints.length) {
+        return clueCardOddHints;
       }
     }
   }

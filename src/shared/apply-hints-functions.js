@@ -50,6 +50,7 @@ import {
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
   HINT_CLUE_CARD_EVEN,
+  HINT_CLUE_CARD_ODD,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
@@ -77,6 +78,12 @@ import {
   NUMBER_9,
   NUMBER_J,
   NUMBER_K,
+  NUMBER_2,
+  NUMBER_4,
+  NUMBER_6,
+  NUMBER_8,
+  NUMBER_10,
+  NUMBER_Q,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -738,6 +745,53 @@ export const applyClueCardEvenHint = (solutionOptions, hint) => {
   return newSolutionOptions;
 };
 
+export const applyClueCardOddHint = (solutionOptions, hint) => {
+  const {
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARD_ODD to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  let newSolutionOptions = solutionOptions;
+
+  const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_2, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_4, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_6, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_8, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_10, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
+    // A is currently an option - so remove it
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  return newSolutionOptions;
+};
+
 export const applyPairNumbersRestrictedBySuitHint = (solutionOptions, hint) => {
   const {
     numbers,
@@ -1076,6 +1130,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_CARD_EVEN:
       return applyClueCardEvenHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARD_ODD:
+      return applyClueCardOddHint(solutionOptions, hint);
 
     case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
       return applyPairNumbersRestrictedBySuitHint(solutionOptions, hint);
