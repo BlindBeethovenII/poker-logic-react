@@ -21,6 +21,7 @@ import {
   createClueCardEven,
   createClueCardOdd,
   createClueAllCardsEven,
+  createClueAllCardsOdd,
 } from './clue-functions';
 
 import {
@@ -283,10 +284,10 @@ export const solutionHands4 = [
   ],
   [
     createCard(SUIT_HEARTS, NUMBER_K),
-    createCard(SUIT_DIAMONDS, NUMBER_10),
-    createCard(SUIT_HEARTS, NUMBER_6),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_SPADES, NUMBER_7),
     createCard(SUIT_HEARTS, NUMBER_5),
-    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_CLUBS, NUMBER_3),
   ],
 ];
 
@@ -339,7 +340,6 @@ export const clues4 = [
   // createClueBlackSuit(3, 4),
 
   createClueRedSuits(0),
-  createClueRedSuits(3),
 
   createClueBlackSuits(1),
 
@@ -348,4 +348,6 @@ export const clues4 = [
   createClueCardOdd(1, 2),
 
   createClueAllCardsEven(2),
+
+  createClueAllCardsOdd(3),
 ];

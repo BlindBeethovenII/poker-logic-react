@@ -83,6 +83,7 @@ import {
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
   CLUE_ALL_CARDS_EVEN,
+  CLUE_ALL_CARDS_ODD,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -2038,6 +2039,26 @@ export const getClueCardOddHints = (solutionHandsIndex, handOptionsIndex, soluti
   return hints;
 };
 
+// if any cards in this hand still allows one or more even numbers then create a HINT_CLUE_CARD_ODD hint to remove the even numbers from that card
+export const getClueAllCardsOddHints = (solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
+      hints.push(createHintClueCardOdd(solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
+
+  return hints;
+};
+
 // ------------------------------------ //
 // HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT //
 // ------------------------------------ //
@@ -2902,6 +2923,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueAllCardsEvenHints = getClueAllCardsEvenHints(solutionHandsIndex, solutionOptions, clue);
       if (clueAllCardsEvenHints.length) {
         return clueAllCardsEvenHints;
+      }
+    }
+
+    // clue all cards odd
+    if (clueType === CLUE_ALL_CARDS_ODD) {
+      const { solutionHandsIndex } = clue;
+      const clueAllCardsOddHints = getClueAllCardsOddHints(solutionHandsIndex, solutionOptions, clue);
+      if (clueAllCardsOddHints.length) {
+        return clueAllCardsOddHints;
       }
     }
   }

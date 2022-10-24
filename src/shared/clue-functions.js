@@ -36,6 +36,7 @@ import {
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
   CLUE_ALL_CARDS_EVEN,
+  CLUE_ALL_CARDS_ODD,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -229,6 +230,15 @@ export const createClueCardOdd = (solutionHandsIndex, handOptionsIndex) => ({
 
 export const createClueAllCardsEven = (solutionHandsIndex) => ({
   clueType: CLUE_ALL_CARDS_EVEN,
+  solutionHandsIndex,
+});
+
+// ------------------ //
+// CLUE_ALL_CARDS_ODD //
+// ------------------ //
+
+export const createClueAllCardsOdd = (solutionHandsIndex) => ({
+  clueType: CLUE_ALL_CARDS_ODD,
   solutionHandsIndex,
 });
 
