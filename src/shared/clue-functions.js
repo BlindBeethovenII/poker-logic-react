@@ -380,7 +380,7 @@ export const createCluesForSolutionHands = (solution) => {
 
   // TODO change approach here later
   // add in all red or all black clue if a hand is solely made of red or black cards
-  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length - 1; solutionHandsIndex += 1) {
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
     let soleColour;
     solutionHand.forEach((card) => {
@@ -404,7 +404,7 @@ export const createCluesForSolutionHands = (solution) => {
 
   // TODO change approach here later
   // add in all cards even or all cards odd clue if a hand is solely made of even or odd cards
-  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length - 1; solutionHandsIndex += 1) {
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
     let soleParity;
     solutionHand.forEach((card) => {
@@ -424,6 +424,20 @@ export const createCluesForSolutionHands = (solution) => {
     } else if (soleParity === false) {
       clues.push(createClueAllCardsOdd(solutionHandsIndex));
     }
+  }
+
+  // TODO change approach here later
+  // create an 'ALL CARDS NOT NUMBER' for each hand
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    const numbersNotUsed = new Set(NUMBERS);
+    solutionHand.forEach((card) => {
+      numbersNotUsed.delete(card.number);
+    });
+
+    // now pick a random number that is not used to create the clue
+    const number = shuffle(Array.from(numbersNotUsed))[0];
+    clues.push(createClueAllCardsNotNumber(number, solutionHandsIndex));
   }
 
   // TODO change approach here later
