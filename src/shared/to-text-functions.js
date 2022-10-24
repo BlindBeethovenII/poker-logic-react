@@ -19,6 +19,7 @@ import {
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
+  CLUE_ALL_CARDS_EVEN,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -190,6 +191,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_CARD_ODD) {
     const { solutionHandsIndex, handOptionsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an odd number`;
+  }
+
+  if (clueType === CLUE_ALL_CARDS_EVEN) {
+    const { solutionHandsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} has all even numbers`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

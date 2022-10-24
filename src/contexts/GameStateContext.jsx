@@ -61,6 +61,7 @@ import {
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
+  CLUE_ALL_CARDS_EVEN,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
@@ -470,6 +471,34 @@ export const GameStateContextProvider = ({ children }) => {
         }
         if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_ALL_CARDS_EVEN) {
+        const { solutionHandsIndex } = clue;
+        const handOptions = solutionOptions[solutionHandsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_5)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_5, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_7)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_7, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_9)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_9, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_J)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_J, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_K)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_K, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
         }
         newShowClues[i] = false;
         cluesApplied = true;

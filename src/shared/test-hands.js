@@ -20,6 +20,7 @@ import {
   createClueBlackSuits,
   createClueCardEven,
   createClueCardOdd,
+  createClueAllCardsEven,
 } from './clue-functions';
 
 import {
@@ -276,8 +277,8 @@ export const solutionHands4 = [
   [
     createCard(SUIT_SPADES, NUMBER_6),
     createCard(SUIT_DIAMONDS, NUMBER_6),
+    createCard(SUIT_SPADES, NUMBER_8),
     createCard(SUIT_CLUBS, NUMBER_4),
-    createCard(SUIT_HEARTS, NUMBER_3),
     createCard(SUIT_HEARTS, NUMBER_2),
   ],
   [
@@ -345,4 +346,6 @@ export const clues4 = [
   createClueCardEven(1, 1),
 
   createClueCardOdd(1, 2),
+
+  createClueAllCardsEven(2),
 ];
