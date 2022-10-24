@@ -2,7 +2,11 @@
 
 import shuffle from 'lodash.shuffle';
 
-import { calcHandType, cardSuitToFillColour } from './card-functions';
+import {
+  calcHandType,
+  cardSuitToFillColour,
+  isEven,
+} from './card-functions';
 
 import {
   createSolutionOptions,
@@ -350,7 +354,7 @@ export const createCluesForSolutionHands = (solution) => {
         nextClueType = CLUE_CARD_EVEN;
       } else if (nextClueType === CLUE_CARD_EVEN) {
         // note: this covers both card even and card odd
-        if (number % 2 === 0) {
+        if (isEven(number)) {
           clues.push(createClueCardEven(solutionHandsIndex, solutionHandIndex));
         } else {
           clues.push(createClueCardOdd(solutionHandsIndex, solutionHandIndex));
@@ -364,7 +368,7 @@ export const createCluesForSolutionHands = (solution) => {
   });
 
   // TODO change approach here later
-  // add in all red or all back clue if a hand is solely made of red or black cards
+  // add in all red or all black clue if a hand is solely made of red or black cards
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length - 1; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
     let soleColour;
@@ -374,7 +378,7 @@ export const createCluesForSolutionHands = (solution) => {
         // first card
         soleColour = nextColour;
       } else if (soleColour !== nextColour) {
-        // not the first card and colours and different, so remember
+        // not the first card: this is a different colour than those that went before, so remember
         soleColour = 'DIFFERENT';
       }
     });
@@ -384,6 +388,30 @@ export const createCluesForSolutionHands = (solution) => {
       clues.push(createClueRedSuits(solutionHandsIndex));
     } else if (soleColour === SUIT_BLACK) {
       clues.push(createClueBlackSuits(solutionHandsIndex));
+    }
+  }
+
+  // TODO change approach here later
+  // add in all cards even or all cards odd clue if a hand is solely made of even or odd cards
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length - 1; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    let soleParity;
+    solutionHand.forEach((card) => {
+      const nextParity = isEven(card.number);
+      if (soleParity === undefined) {
+        // first card
+        soleParity = nextParity;
+      } else if (soleParity !== nextParity) {
+        // not the first card: this is a different parity than those that went before, so remember
+        soleParity = 'DIFFERENT';
+      }
+    });
+
+    // if soleParity is true or false then create corresponding clue
+    if (soleParity === true) {
+      clues.push(createClueAllCardsEven(solutionHandsIndex));
+    } else if (soleParity === false) {
+      clues.push(createClueAllCardsOdd(solutionHandsIndex));
     }
   }
 

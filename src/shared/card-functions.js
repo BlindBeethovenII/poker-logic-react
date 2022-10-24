@@ -1263,3 +1263,6 @@ export const getStraights = (cards) => {
 
   return result;
 };
+
+// return true if the given number is even
+export const isEven = (number) => number % 2 === 0;
