@@ -84,6 +84,7 @@ import {
   CLUE_CARD_ODD,
   CLUE_ALL_CARDS_EVEN,
   CLUE_ALL_CARDS_ODD,
+  CLUE_ALL_CARDS_NOT_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1695,16 +1696,31 @@ export const createHintClueNotNumber = (number, solutionOptionsIndex, handOption
   clue,
 });
 
-// if the named card still allows the suit then create a HINT_CLUE_NOT_NUMBER hint to remove it
+// if the named card still allows the number then create a HINT_CLUE_NOT_NUMBER hint to remove it
 export const getClueNotNumberHints = (number, solutionHandsIndex, handOptionsIndex, solutionOptions, clue) => {
   const hints = [];
 
   // just one card to look at
   const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
 
-  if (getNumberOptionsValueInCardOptions(cardOptions, number) && countNumbersInCardOptions(cardOptions) > 1) {
+  if (getNumberOptionsValueInCardOptions(cardOptions, number)) {
     hints.push(createHintClueNotNumber(number, solutionHandsIndex, handOptionsIndex, clue));
   }
+
+  return hints;
+};
+
+// if any cards in this hand still allow this number then create a HINT_CLUE_NOT_NUMBER hint to remove that number from that card
+export const getClueAllCardsNotNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getNumberOptionsValueInCardOptions(cardOptions, number)) {
+      hints.push(createHintClueNotNumber(number, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
 
   return hints;
 };
@@ -2932,6 +2948,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueAllCardsOddHints = getClueAllCardsOddHints(solutionHandsIndex, solutionOptions, clue);
       if (clueAllCardsOddHints.length) {
         return clueAllCardsOddHints;
+      }
+    }
+
+    // clue all cards not number
+    if (clueType === CLUE_ALL_CARDS_NOT_NUMBER) {
+      const { number, solutionHandsIndex } = clue;
+      const clueAllCardsNotNumberHints = getClueAllCardsNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueAllCardsNotNumberHints.length) {
+        return clueAllCardsNotNumberHints;
       }
     }
   }

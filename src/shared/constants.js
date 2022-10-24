@@ -196,3 +196,4 @@ export const CLUE_CARD_EVEN = 'CARD EVEN';
 export const CLUE_CARD_ODD = 'CARD ODD';
 export const CLUE_ALL_CARDS_EVEN = 'ALL CARDS EVEN';
 export const CLUE_ALL_CARDS_ODD = 'ALL CARDS ODD';
+export const CLUE_ALL_CARDS_NOT_NUMBER = 'ALL CARDS NOT NUMBER';

@@ -21,6 +21,7 @@ import {
   CLUE_CARD_ODD,
   CLUE_ALL_CARDS_EVEN,
   CLUE_ALL_CARDS_ODD,
+  CLUE_ALL_CARDS_NOT_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -202,6 +203,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_ALL_CARDS_ODD) {
     const { solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} has all odd numbers`;
+  }
+
+  if (clueType === CLUE_ALL_CARDS_NOT_NUMBER) {
+    const { number, solutionHandsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} does not have a ${cardNumberToString(number)}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
