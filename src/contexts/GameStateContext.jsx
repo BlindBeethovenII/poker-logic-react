@@ -31,7 +31,8 @@ import {
   createCluesForSolutionHands,
   addInDeducedClues,
   createInitialShowClues,
-  sortClues,
+  sortCluesShowing,
+  sortCluesReducing,
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
@@ -286,9 +287,8 @@ export const GameStateContextProvider = ({ children }) => {
     // need to remember if we remove any clues
     let removedAnyClues = false;
 
-    // TODO: order the clues, bringing the those to the front that we prefer to lose if possible??
-    // sort the clues - which for now is a hard-coded sort order by clueType
-    let finalClues = sortClues(clues);
+    // sort the clues into the defined order for reducing
+    let finalClues = sortCluesReducing(clues);
 
     // keep removing while possible
     let lookForMore = true;
@@ -321,8 +321,8 @@ export const GameStateContextProvider = ({ children }) => {
     }
 
     if (removedAnyClues) {
-      // save the new clues
-      setCluesAndShowClues(finalClues);
+      // save the new clues, first sorting for showing
+      setCluesAndShowClues(sortCluesShowing(finalClues));
     } else {
       logIfDevEnv('reduceClues: could not find a clue to remove');
     }

@@ -1,5 +1,5 @@
 import {
-  sortClues,
+  sortCluesShowing,
   createClueHandOfType,
   createClueSuitAndNumber,
   createClueSuit,
@@ -33,7 +33,7 @@ import {
   NUMBER_6,
 } from './constants';
 
-describe('sortClues', () => {
+describe('sortCluesShowing', () => {
   // export const CLUE_HAND_OF_TYPE = 'HAND OF TYPE';
   const clueHandType1 = createClueHandOfType(HAND_TYPE_FULL_HOUSE, 0);
   const clueHandType2 = createClueHandOfType(HAND_TYPE_FLUSH, 1);
@@ -142,6 +142,6 @@ describe('sortClues', () => {
       clueCardsNotSameNumber,
     ];
 
-    expect(sortClues(unsorted)).toEqual(sorted);
+    expect(sortCluesShowing(unsorted)).toEqual(sorted);
   });
 });

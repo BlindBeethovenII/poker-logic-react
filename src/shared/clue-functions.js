@@ -57,6 +57,7 @@ import {
   SUIT_RED,
   SUIT_BLACK,
   CLUE_ORDERING,
+  CLUE_ORDERING_REDUCING,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -779,12 +780,48 @@ const clueCompare = (clue1, clue2) => {
   return clue2Ordering - clue1Ordering;
 };
 
-// helper function to sort clues - currently just puts 'HAND OF TYPE' clues at the front
-export const sortClues = (cluesParam) => {
+// sort clues according to CLUE_ORDERING for showing
+export const sortCluesShowing = (cluesParam) => {
   // copy of clues param as the array.sort() sorts in place
   const clues = [...cluesParam];
 
   clues.sort(clueCompare);
+
+  return clues;
+};
+
+// the sort compare function for clue sorting for reducing
+const clueCompareReducing = (clue1, clue2) => {
+  const { clueType: clueType1 } = clue1;
+  const { clueType: clueType2 } = clue2;
+
+  // special case if both CLUE_HAND_OF_TYPE - these we compare by their handType
+  if (clueType1 === CLUE_HAND_OF_TYPE && clueType2 === CLUE_HAND_OF_TYPE) {
+    return clue2.handType - clue1.handType;
+  }
+
+  // otherwise just compare their entry in the CLUE_ORDERING object
+  let clue1Ordering = CLUE_ORDERING_REDUCING[clueType1];
+  if (!clue1Ordering) {
+    // cope with it missing
+    clue1Ordering = 99;
+  }
+
+  let clue2Ordering = CLUE_ORDERING_REDUCING[clueType2];
+  if (!clue2Ordering) {
+    // cope with it missing
+    clue2Ordering = 999;
+  }
+
+  return clue2Ordering - clue1Ordering;
+};
+
+// sort clues according to CLUE_ORDERING_REDUCING for reducing
+export const sortCluesReducing = (cluesParam) => {
+  // copy of clues param as the array.sort() sorts in place
+  const clues = [...cluesParam];
+
+  clues.sort(clueCompareReducing);
 
   return clues;
 };
