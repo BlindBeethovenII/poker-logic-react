@@ -56,6 +56,7 @@ import {
   SUIT_HEARTS,
   SUIT_RED,
   SUIT_BLACK,
+  CLUE_ORDERING,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -752,37 +753,38 @@ export const createInitialShowClues = (clues) => {
   return result;
 };
 
+// the sort compare function for clue sorting
+const clueCompare = (clue1, clue2) => {
+  const { clueType: clueType1 } = clue1;
+  const { clueType: clueType2 } = clue2;
+
+  // special case if both CLUE_HAND_OF_TYPE - these we compare by their handType
+  if (clueType1 === CLUE_HAND_OF_TYPE && clueType2 === CLUE_HAND_OF_TYPE) {
+    return clue2.handType - clue1.handType;
+  }
+
+  // otherwise just compare their entry in the CLUE_ORDERING object
+  let clue1Ordering = CLUE_ORDERING[clueType1];
+  if (!clue1Ordering) {
+    // cope with it missing
+    clue1Ordering = 99;
+  }
+
+  let clue2Ordering = CLUE_ORDERING[clueType2];
+  if (!clue2Ordering) {
+    // cope with it missing
+    clue2Ordering = 999;
+  }
+
+  return clue2Ordering - clue1Ordering;
+};
+
 // helper function to sort clues - currently just puts 'HAND OF TYPE' clues at the front
 export const sortClues = (cluesParam) => {
-  // copy of clues param (just to get around eslint complaint about assigning to function params)
+  // copy of clues param as the array.sort() sorts in place
   const clues = [...cluesParam];
 
-  // do bubble sort to order the clues
-  for (let { length } = clues; length > 1; length -= 1) {
-    // move the smallest card from first entry to length
-    for (let i = 0; i < length - 1; i += 1) {
-      const thisClue = clues[i];
-      const thisClueType = thisClue.clueType;
-      const nextClue = clues[i + 1];
-      const nextClueType = nextClue.clueType;
-      let swap = false;
-      if (thisClueType !== CLUE_HAND_OF_TYPE && nextClueType === CLUE_HAND_OF_TYPE) {
-        // 'HAND OF TYPE' clues always bubble up
-        swap = true;
-      } else if (thisClueType === CLUE_HAND_OF_TYPE && nextClueType === CLUE_HAND_OF_TYPE) {
-        // lower handTypes move to the right
-        if (thisClue.handType < nextClue.handType) {
-          swap = true;
-        }
-      }
-      if (swap) {
-        // this is smaller, so move to the right
-        const clue = clues[i + 1];
-        clues[i + 1] = clues[i];
-        clues[i] = clue;
-      }
-    }
-  }
+  clues.sort(clueCompare);
 
   return clues;
 };

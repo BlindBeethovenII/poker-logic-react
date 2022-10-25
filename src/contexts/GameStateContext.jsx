@@ -2,8 +2,6 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import shuffle from 'lodash.shuffle';
-
 import { createSolution } from '../shared/card-functions';
 
 import {
@@ -289,8 +287,8 @@ export const GameStateContextProvider = ({ children }) => {
     let removedAnyClues = false;
 
     // TODO: order the clues, bringing the those to the front that we prefer to lose if possible??
-    // for now trying shuffling the clues, and put the 'HAND OF TYPE' clues back at the front, as easiest for human to understand
-    let finalClues = sortClues(shuffle(clues));
+    // sort the clues - which for now is a hard-coded sort order by clueType
+    let finalClues = sortClues(clues);
 
     // keep removing while possible
     let lookForMore = true;
