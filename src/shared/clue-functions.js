@@ -454,6 +454,21 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
+  // create all possible 'ALL CARDS NOT SUIT' clues for each hand
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+    const suitsNotUsed = new Set(SUITS);
+    solutionHand.forEach((card) => {
+      suitsNotUsed.delete(card.suit);
+    });
+
+    // create an 'ALL CARDS NOT SUIT' for all remaining suits
+    suitsNotUsed.forEach((suit) => {
+      clues.push(createClueAllCardsNotSuit(suit, solutionHandsIndex));
+    });
+  }
+
+  // TODO change approach here later
   // create some random 'CARDS SAME NUMBER' clues
   // iterate over all but the last hand
   for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
