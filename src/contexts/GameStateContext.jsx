@@ -290,33 +290,31 @@ export const GameStateContextProvider = ({ children }) => {
     // sort the clues into the defined order for reducing
     let finalClues = sortCluesReducing(clues);
 
-    // keep removing while possible
-    let lookForMore = true;
-    while (lookForMore) {
-      let indexToRemove = -1;
-      for (let i = 0; i < finalClues.length && indexToRemove === -1; i += 1) {
-        const clue = finalClues[i];
-        const { clueType } = clue;
+    // work through the clues, removing one at a time, to see if still can solve without that clue
+    let nextIndex = 0;
+    while (nextIndex < finalClues.length) {
+      const clue = finalClues[nextIndex];
+      const { clueType } = clue;
 
-        // only consider 'HAND OF TYPE' clues if not instructed to keep them
-        if (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes) {
-          // the new clues without that one
-          const newClues = [...finalClues.slice(0, i), ...finalClues.slice(i + 1)];
-          const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
-          if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
-            logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, i)}`);
-            indexToRemove = i;
-          }
+      // need to remember if we removed this clue
+      let thisClueRemoved = false;
+
+      // only consider 'HAND OF TYPE' clues if not instructed to keep them
+      if (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes) {
+        // the new clues without that one
+        const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
+        const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
+        if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
+          logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, nextIndex)}`);
+          finalClues = newClues;
+          thisClueRemoved = true;
+          removedAnyClues = true;
         }
       }
 
-      if (indexToRemove === -1) {
-        // didn't find any to remove, so give up here
-        lookForMore = false;
-      } else {
-        // found one to remove
-        finalClues = [...finalClues.slice(0, indexToRemove), ...finalClues.slice(indexToRemove + 1)];
-        removedAnyClues = true;
+      if (!thisClueRemoved) {
+        // current clue could not be removed, so move to the next one
+        nextIndex += 1;
       }
     }
 
