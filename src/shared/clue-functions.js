@@ -42,6 +42,7 @@ import {
   CLUE_ALL_CARDS_EVEN,
   CLUE_ALL_CARDS_ODD,
   CLUE_ALL_CARDS_NOT_NUMBER,
+  CLUE_ALL_CARDS_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -256,6 +257,16 @@ export const createClueAllCardsOdd = (solutionHandsIndex) => ({
 export const createClueAllCardsNotNumber = (number, solutionHandsIndex) => ({
   clueType: CLUE_ALL_CARDS_NOT_NUMBER,
   number,
+  solutionHandsIndex,
+});
+
+// ----------------------- //
+// CLUE_ALL_CARDS_NOT_SUIT //
+// ----------------------- //
+
+export const createClueAllCardsNotSuit = (suit, solutionHandsIndex) => ({
+  clueType: CLUE_ALL_CARDS_NOT_SUIT,
+  suit,
   solutionHandsIndex,
 });
 

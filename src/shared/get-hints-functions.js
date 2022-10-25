@@ -85,6 +85,7 @@ import {
   CLUE_ALL_CARDS_EVEN,
   CLUE_ALL_CARDS_ODD,
   CLUE_ALL_CARDS_NOT_NUMBER,
+  CLUE_ALL_CARDS_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1648,9 +1649,26 @@ export const getClueNotSuitHints = (suit, solutionHandsIndex, handOptionsIndex, 
 
   const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
 
-  if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && countSuitsInCardOptions(cardOptions) > 1) {
+  if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
     hints.push(createHintClueNotSuit(suit, solutionHandsIndex, handOptionsIndex, clue));
   }
+
+  return hints;
+};
+
+// if any cards in this hand still allow this suit then create a HINT_CLUE_NOT_SUIT hint to remove that suit from that card
+export const getClueAllCardsNotSuitHints = (suit, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      hints.push(createHintClueNotSuit(suit, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  });
 
   return hints;
 };
@@ -2957,6 +2975,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueAllCardsNotNumberHints = getClueAllCardsNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
       if (clueAllCardsNotNumberHints.length) {
         return clueAllCardsNotNumberHints;
+      }
+    }
+
+    // clue all cards not suit
+    if (clueType === CLUE_ALL_CARDS_NOT_SUIT) {
+      const { suit, solutionHandsIndex } = clue;
+      const clueAllCardsNotSuitHints = getClueAllCardsNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
+      if (clueAllCardsNotSuitHints.length) {
+        return clueAllCardsNotSuitHints;
       }
     }
   }

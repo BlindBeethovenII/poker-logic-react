@@ -65,6 +65,7 @@ import {
   CLUE_ALL_CARDS_EVEN,
   CLUE_ALL_CARDS_ODD,
   CLUE_ALL_CARDS_NOT_NUMBER,
+  CLUE_ALL_CARDS_NOT_SUIT,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
@@ -538,6 +539,17 @@ export const GameStateContextProvider = ({ children }) => {
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
           if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_ALL_CARDS_NOT_SUIT) {
+        const { suit, solutionHandsIndex } = clue;
+        const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+        const handOptions = solutionOptions[solutionHandsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
         newShowClues[i] = false;
