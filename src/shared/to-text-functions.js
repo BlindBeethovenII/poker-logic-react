@@ -23,6 +23,7 @@ import {
   CLUE_HAND_ODD,
   CLUE_HAND_HAS_NUMBER,
   CLUE_HAND_NOT_NUMBER,
+  CLUE_HAND_HAS_SUIT,
   CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
@@ -220,6 +221,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_HAND_NOT_SUIT) {
     const { suit, solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} does not have a ${suitToTextSingular(suit)}`;
+  }
+
+  if (clueType === CLUE_HAND_HAS_SUIT) {
+    const { suit, solutionHandsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} has a ${suitToTextSingular(suit)}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

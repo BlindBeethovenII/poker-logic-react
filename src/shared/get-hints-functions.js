@@ -86,6 +86,7 @@ import {
   CLUE_HAND_ODD,
   CLUE_HAND_HAS_NUMBER,
   CLUE_HAND_NOT_NUMBER,
+  CLUE_HAND_HAS_SUIT,
   CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
@@ -1628,6 +1629,33 @@ export const getClueSuitHints = (suit, solutionHandsIndex, handOptionsIndex, sol
   return hints;
 };
 
+// if a single card in this hand still allows this suit then create a HINT_CLUE_SUIT hint to set that suit for that card
+export const getClueHandHasSuitHints = (suit, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // find all the cards that still allow this number
+  const handOptionsIndexes = [];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
+      handOptionsIndexes.push(handOptionsIndex);
+    }
+  });
+
+  // we can only create a hint if there is only one possible place for this suit and the suit is not yet placed there
+  if (handOptionsIndexes.length === 1) {
+    const handOptionsIndex = handOptionsIndexes[0];
+    if (countSuitsInCardOptions(solutionOptions[solutionHandsIndex][handOptionsIndex]) > 1) {
+      // it is not set here, so create the hint to set this card to this suit
+      hints.push(createHintClueSuit(suit, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  }
+
+  return hints;
+};
+
 // ------------------ //
 // HINT_CLUE_NOT_SUIT //
 // ------------------ //
@@ -3011,6 +3039,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueHandNotNumberHints = getClueHandNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
       if (clueHandNotNumberHints.length) {
         return clueHandNotNumberHints;
+      }
+    }
+
+    // clue hand has suit
+    if (clueType === CLUE_HAND_HAS_SUIT) {
+      const { suit, solutionHandsIndex } = clue;
+      const clueHandHasSuitHints = getClueHandHasSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasSuitHints.length) {
+        return clueHandHasSuitHints;
       }
     }
 

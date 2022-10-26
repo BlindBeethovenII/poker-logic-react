@@ -20,10 +20,11 @@ import {
   createClueBlackSuits,
   createClueCardEven,
   createClueCardOdd,
-  createClueHandEven,
-  createClueHandOdd,
-  createClueHandHasNumber,
+  // createClueHandEven,
+  // createClueHandOdd,
+  // createClueHandHasNumber,
   createClueHandNotNumber,
+  createClueHandHasSuit,
   createClueHandNotSuit,
 } from './clue-functions';
 
@@ -306,7 +307,7 @@ export const clues4 = [
   createClueHandOfType(calcHandType(solutionHands4[3]), 3),
 
   // createClueSuit(SUIT_HEARTS, 0, 4),
-  // createClueSuit(SUIT_SPADES, 2, 0),
+  createClueSuit(SUIT_SPADES, 2, 2),
   // createClueSuit(SUIT_DIAMONDS, 2, 3),
   // createClueSuit(SUIT_HEARTS, 3, 1),
   // createClueSuit(SUIT_SPADES, 3, 4),
@@ -323,7 +324,8 @@ export const clues4 = [
   // createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, 3, 0),
   // createClueSuitAndNumber(SUIT_HEARTS, NUMBER_4, 3, 3),
 
-  // createClueNotSuit(SUIT_HEARTS, 2, 1),
+  createClueNotSuit(SUIT_HEARTS, 3, 1),
+  createClueNotSuit(SUIT_SPADES, 3, 3),
 
   // createClueNotNumber(NUMBER_8, 3, 1),
   // createClueNotNumber(NUMBER_A, 2, 0),
@@ -350,13 +352,15 @@ export const clues4 = [
 
   createClueCardOdd(1, 2),
 
-  createClueHandEven(2),
+  // createClueHandEven(2),
 
-  createClueHandOdd(3),
+  // createClueHandOdd(3),
 
-  createClueHandHasNumber(NUMBER_A, 1),
+  // createClueHandHasNumber(NUMBER_A, 1),
 
   createClueHandNotNumber(NUMBER_6, 0),
+
+  createClueHandHasSuit(SUIT_HEARTS, 2),
 
   createClueHandNotSuit(SUIT_CLUBS, 2),
 ];
