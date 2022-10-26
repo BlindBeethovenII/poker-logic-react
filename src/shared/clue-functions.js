@@ -39,10 +39,10 @@ import {
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
-  CLUE_ALL_CARDS_EVEN,
-  CLUE_ALL_CARDS_ODD,
-  CLUE_ALL_CARDS_NOT_NUMBER,
-  CLUE_ALL_CARDS_NOT_SUIT,
+  CLUE_HAND_EVEN,
+  CLUE_HAND_ODD,
+  CLUE_HAND_NOT_NUMBER,
+  CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -232,40 +232,40 @@ export const createClueCardOdd = (solutionHandsIndex, handOptionsIndex) => ({
   handOptionsIndex,
 });
 
-// ------------------- //
-// CLUE_ALL_CARDS_EVEN //
-// ------------------- //
+// -------------- //
+// CLUE_HAND_EVEN //
+// -------------- //
 
-export const createClueAllCardsEven = (solutionHandsIndex) => ({
-  clueType: CLUE_ALL_CARDS_EVEN,
+export const createClueHandEven = (solutionHandsIndex) => ({
+  clueType: CLUE_HAND_EVEN,
   solutionHandsIndex,
 });
 
-// ------------------ //
-// CLUE_ALL_CARDS_ODD //
-// ------------------ //
+// ------------- //
+// CLUE_HAND_ODD //
+// ------------- //
 
-export const createClueAllCardsOdd = (solutionHandsIndex) => ({
-  clueType: CLUE_ALL_CARDS_ODD,
+export const createClueHandOdd = (solutionHandsIndex) => ({
+  clueType: CLUE_HAND_ODD,
   solutionHandsIndex,
 });
 
-// ------------------------- //
-// CLUE_ALL_CARDS_NOT_NUMBER //
-// ------------------------- //
+// -------------------- //
+// CLUE_HAND_NOT_NUMBER //
+// -------------------- //
 
-export const createClueAllCardsNotNumber = (number, solutionHandsIndex) => ({
-  clueType: CLUE_ALL_CARDS_NOT_NUMBER,
+export const createClueHandNotNumber = (number, solutionHandsIndex) => ({
+  clueType: CLUE_HAND_NOT_NUMBER,
   number,
   solutionHandsIndex,
 });
 
-// ----------------------- //
-// CLUE_ALL_CARDS_NOT_SUIT //
-// ----------------------- //
+// ------------------ //
+// CLUE_HAND_NOT_SUIT //
+// ------------------ //
 
-export const createClueAllCardsNotSuit = (suit, solutionHandsIndex) => ({
-  clueType: CLUE_ALL_CARDS_NOT_SUIT,
+export const createClueHandNotSuit = (suit, solutionHandsIndex) => ({
+  clueType: CLUE_HAND_NOT_SUIT,
   suit,
   solutionHandsIndex,
 });
@@ -433,9 +433,9 @@ export const createCluesForSolutionHands = (solution) => {
 
     // if soleParity is true or false then create corresponding clue
     if (soleParity === true) {
-      clues.push(createClueAllCardsEven(solutionHandsIndex));
+      clues.push(createClueHandEven(solutionHandsIndex));
     } else if (soleParity === false) {
-      clues.push(createClueAllCardsOdd(solutionHandsIndex));
+      clues.push(createClueHandOdd(solutionHandsIndex));
     }
   }
 
@@ -450,7 +450,7 @@ export const createCluesForSolutionHands = (solution) => {
 
     // now pick a random number that is not used to create the clue
     const number = shuffle(Array.from(numbersNotUsed))[0];
-    clues.push(createClueAllCardsNotNumber(number, solutionHandsIndex));
+    clues.push(createClueHandNotNumber(number, solutionHandsIndex));
   }
 
   // TODO change approach here later
@@ -464,7 +464,7 @@ export const createCluesForSolutionHands = (solution) => {
 
     // create an 'ALL CARDS NOT SUIT' for all remaining suits
     suitsNotUsed.forEach((suit) => {
-      clues.push(createClueAllCardsNotSuit(suit, solutionHandsIndex));
+      clues.push(createClueHandNotSuit(suit, solutionHandsIndex));
     });
   }
 

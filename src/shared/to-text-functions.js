@@ -19,10 +19,10 @@ import {
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
-  CLUE_ALL_CARDS_EVEN,
-  CLUE_ALL_CARDS_ODD,
-  CLUE_ALL_CARDS_NOT_NUMBER,
-  CLUE_ALL_CARDS_NOT_SUIT,
+  CLUE_HAND_EVEN,
+  CLUE_HAND_ODD,
+  CLUE_HAND_NOT_NUMBER,
+  CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -196,22 +196,22 @@ export const clueToString = (clue, doNotShowDeduced) => {
     return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an odd number`;
   }
 
-  if (clueType === CLUE_ALL_CARDS_EVEN) {
+  if (clueType === CLUE_HAND_EVEN) {
     const { solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} has all even numbers`;
   }
 
-  if (clueType === CLUE_ALL_CARDS_ODD) {
+  if (clueType === CLUE_HAND_ODD) {
     const { solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} has all odd numbers`;
   }
 
-  if (clueType === CLUE_ALL_CARDS_NOT_NUMBER) {
+  if (clueType === CLUE_HAND_NOT_NUMBER) {
     const { number, solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} does not have a ${cardNumberToString(number)}`;
   }
 
-  if (clueType === CLUE_ALL_CARDS_NOT_SUIT) {
+  if (clueType === CLUE_HAND_NOT_SUIT) {
     const { suit, solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} does not have a ${suitToTextSingular(suit)}`;
   }

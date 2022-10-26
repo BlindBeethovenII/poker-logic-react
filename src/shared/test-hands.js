@@ -20,10 +20,10 @@ import {
   createClueBlackSuits,
   createClueCardEven,
   createClueCardOdd,
-  createClueAllCardsEven,
-  createClueAllCardsOdd,
-  createClueAllCardsNotNumber,
-  createClueAllCardsNotSuit,
+  createClueHandEven,
+  createClueHandOdd,
+  createClueHandNotNumber,
+  createClueHandNotSuit,
 } from './clue-functions';
 
 import {
@@ -349,13 +349,13 @@ export const clues4 = [
 
   createClueCardOdd(1, 2),
 
-  createClueAllCardsEven(2),
+  createClueHandEven(2),
 
-  createClueAllCardsOdd(3),
+  createClueHandOdd(3),
 
-  createClueAllCardsNotNumber(NUMBER_6, 0),
+  createClueHandNotNumber(NUMBER_6, 0),
 
-  createClueAllCardsNotSuit(SUIT_CLUBS, 2),
+  createClueHandNotSuit(SUIT_CLUBS, 2),
 ];
 
 // -------------------------- //
@@ -456,9 +456,9 @@ export const clues5 = [
 
   // createClueCardOdd(1, 2),
 
-  // createClueAllCardsEven(2),
+  // createClueHandEven(2),
 
-  // createClueAllCardsOdd(3),
+  // createClueHandOdd(3),
 
-  // createClueAllCardsNotNumber(NUMBER_6, 0),
+  // createClueHandNotNumber(NUMBER_6, 0),
 ];

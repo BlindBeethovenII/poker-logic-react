@@ -82,10 +82,10 @@ import {
   CLUE_BLACK_SUITS,
   CLUE_CARD_EVEN,
   CLUE_CARD_ODD,
-  CLUE_ALL_CARDS_EVEN,
-  CLUE_ALL_CARDS_ODD,
-  CLUE_ALL_CARDS_NOT_NUMBER,
-  CLUE_ALL_CARDS_NOT_SUIT,
+  CLUE_HAND_EVEN,
+  CLUE_HAND_ODD,
+  CLUE_HAND_NOT_NUMBER,
+  CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1657,7 +1657,7 @@ export const getClueNotSuitHints = (suit, solutionHandsIndex, handOptionsIndex, 
 };
 
 // if any cards in this hand still allow this suit then create a HINT_CLUE_NOT_SUIT hint to remove that suit from that card
-export const getClueAllCardsNotSuitHints = (suit, solutionHandsIndex, solutionOptions, clue) => {
+export const getClueHandNotSuitHints = (suit, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
@@ -1729,7 +1729,7 @@ export const getClueNotNumberHints = (number, solutionHandsIndex, handOptionsInd
 };
 
 // if any cards in this hand still allow this number then create a HINT_CLUE_NOT_NUMBER hint to remove that number from that card
-export const getClueAllCardsNotNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
+export const getClueHandNotNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   // look at each card
@@ -2022,7 +2022,7 @@ export const getClueCardEvenHints = (solutionHandsIndex, handOptionsIndex, solut
 };
 
 // if any cards in this hand still allows one or more odd numbers then create a HINT_CLUE_CARD_EVEN hint to remove the odd numbers from that card
-export const getClueAllCardsEvenHints = (solutionHandsIndex, solutionOptions, clue) => {
+export const getClueHandEvenHints = (solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   // look at each card
@@ -2074,7 +2074,7 @@ export const getClueCardOddHints = (solutionHandsIndex, handOptionsIndex, soluti
 };
 
 // if any cards in this hand still allows one or more even numbers then create a HINT_CLUE_CARD_ODD hint to remove the even numbers from that card
-export const getClueAllCardsOddHints = (solutionHandsIndex, solutionOptions, clue) => {
+export const getClueHandOddHints = (solutionHandsIndex, solutionOptions, clue) => {
   const hints = [];
 
   // look at each card
@@ -2951,39 +2951,39 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue all cards even
-    if (clueType === CLUE_ALL_CARDS_EVEN) {
+    // clue hand cards even
+    if (clueType === CLUE_HAND_EVEN) {
       const { solutionHandsIndex } = clue;
-      const clueAllCardsEvenHints = getClueAllCardsEvenHints(solutionHandsIndex, solutionOptions, clue);
-      if (clueAllCardsEvenHints.length) {
-        return clueAllCardsEvenHints;
+      const clueHandEvenHints = getClueHandEvenHints(solutionHandsIndex, solutionOptions, clue);
+      if (clueHandEvenHints.length) {
+        return clueHandEvenHints;
       }
     }
 
-    // clue all cards odd
-    if (clueType === CLUE_ALL_CARDS_ODD) {
+    // clue hand cards odd
+    if (clueType === CLUE_HAND_ODD) {
       const { solutionHandsIndex } = clue;
-      const clueAllCardsOddHints = getClueAllCardsOddHints(solutionHandsIndex, solutionOptions, clue);
-      if (clueAllCardsOddHints.length) {
-        return clueAllCardsOddHints;
+      const clueHandOddHints = getClueHandOddHints(solutionHandsIndex, solutionOptions, clue);
+      if (clueHandOddHints.length) {
+        return clueHandOddHints;
       }
     }
 
-    // clue all cards not number
-    if (clueType === CLUE_ALL_CARDS_NOT_NUMBER) {
+    // clue hand cards not number
+    if (clueType === CLUE_HAND_NOT_NUMBER) {
       const { number, solutionHandsIndex } = clue;
-      const clueAllCardsNotNumberHints = getClueAllCardsNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
-      if (clueAllCardsNotNumberHints.length) {
-        return clueAllCardsNotNumberHints;
+      const clueHandNotNumberHints = getClueHandNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandNotNumberHints.length) {
+        return clueHandNotNumberHints;
       }
     }
 
-    // clue all cards not suit
-    if (clueType === CLUE_ALL_CARDS_NOT_SUIT) {
+    // clue hand cards not suit
+    if (clueType === CLUE_HAND_NOT_SUIT) {
       const { suit, solutionHandsIndex } = clue;
-      const clueAllCardsNotSuitHints = getClueAllCardsNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
-      if (clueAllCardsNotSuitHints.length) {
-        return clueAllCardsNotSuitHints;
+      const clueHandNotSuitHints = getClueHandNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandNotSuitHints.length) {
+        return clueHandNotSuitHints;
       }
     }
   }

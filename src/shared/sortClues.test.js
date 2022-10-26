@@ -16,9 +16,9 @@ import {
   createClueBlackSuits,
   createClueCardEven,
   createClueCardOdd,
-  createClueAllCardsEven,
-  createClueAllCardsOdd,
-  createClueAllCardsNotNumber,
+  createClueHandEven,
+  createClueHandOdd,
+  createClueHandNotNumber,
 } from './clue-functions';
 
 import {
@@ -84,21 +84,21 @@ describe('sortCluesShowing', () => {
   // export const CLUE_CARD_ODD = 'CARD ODD';
   const clueCardOdd = createClueCardOdd(1, 2);
 
-  // export const CLUE_ALL_CARDS_EVEN = 'ALL CARDS EVEN';
-  const clueAllCardsEven = createClueAllCardsEven(2);
+  // export const CLUE_HAND_EVEN = 'HAND EVEN';
+  const clueHandEven = createClueHandEven(2);
 
-  // export const CLUE_ALL_CARDS_ODD = 'ALL CARDS ODD';
-  const clueAllCardsOdd = createClueAllCardsOdd(3);
+  // export const CLUE_HAND_ODD = 'HAND ODD';
+  const clueHandOdd = createClueHandOdd(3);
 
-  // export const CLUE_ALL_CARDS_NOT_NUMBER = 'ALL CARDS NOT NUMBER';
-  const clueAllCardsNotNumber = createClueAllCardsNotNumber(NUMBER_6, 0);
+  // export const CLUE_HAND_NOT_NUMBER = 'HAND NOT NUMBER';
+  const clueHandNotNumber = createClueHandNotNumber(NUMBER_6, 0);
 
   it('will return 4 for the fourth boolean set', () => {
     const unsorted = [
       clueBlackSuits,
       clueCardsNotSameNumber,
-      clueAllCardsEven,
-      clueAllCardsNotNumber,
+      clueHandEven,
+      clueHandNotNumber,
       clueHandType2,
       clueCardsNotSameSuit,
       clueNotSuit,
@@ -111,7 +111,7 @@ describe('sortCluesShowing', () => {
       clueCardsSameNumber,
       clueNumber,
       clueCardEven,
-      clueAllCardsOdd,
+      clueHandOdd,
       clueRedSuits,
       clueHandType1,
       clueHandType3,
@@ -131,11 +131,11 @@ describe('sortCluesShowing', () => {
       clueBlackSuits,
       clueNumber,
       clueNotNumber,
-      clueAllCardsNotNumber,
+      clueHandNotNumber,
       clueCardEven,
-      clueAllCardsEven,
+      clueHandEven,
       clueCardOdd,
-      clueAllCardsOdd,
+      clueHandOdd,
       clueCardsSameSuit,
       clueCardsNotSameSuit,
       clueCardsSameNumber,
