@@ -84,6 +84,7 @@ import {
   CLUE_CARD_ODD,
   CLUE_HAND_EVEN,
   CLUE_HAND_ODD,
+  CLUE_HAND_HAS_NUMBER,
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
@@ -1701,6 +1702,32 @@ export const getClueNumberHints = (number, solutionHandsIndex, handOptionsIndex,
   return hints;
 };
 
+// if a single card in this hand still allows this number then create a HINT_CLUE_NUMBER hint to set that number for that card
+export const getClueHandHasNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // find all the cards that still allow this number
+  const handOptionsIndexes = [];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getNumberOptionsValueInCardOptions(cardOptions, number)) {
+      handOptionsIndexes.push(handOptionsIndex);
+    }
+  });
+
+  // we can only create a hint if there is only one possible place for this number and the number is not yet placed there
+  if (handOptionsIndexes.length === 1) {
+    const handOptionsIndex = handOptionsIndexes[0];
+    if (countNumbersInCardOptions(solutionOptions[solutionHandsIndex][handOptionsIndex]) > 1) {
+      // it is not set here, so create the hint to set this card to this number
+      hints.push(createHintClueNumber(number, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  }
+
+  return hints;
+};
+
 // -------------------- //
 // HINT_CLUE_NOT_NUMBER //
 // -------------------- //
@@ -2951,7 +2978,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand cards even
+    // clue hand even
     if (clueType === CLUE_HAND_EVEN) {
       const { solutionHandsIndex } = clue;
       const clueHandEvenHints = getClueHandEvenHints(solutionHandsIndex, solutionOptions, clue);
@@ -2960,7 +2987,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand cards odd
+    // clue hand odd
     if (clueType === CLUE_HAND_ODD) {
       const { solutionHandsIndex } = clue;
       const clueHandOddHints = getClueHandOddHints(solutionHandsIndex, solutionOptions, clue);
@@ -2969,7 +2996,16 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand cards not number
+    // clue hand has number
+    if (clueType === CLUE_HAND_HAS_NUMBER) {
+      const { number, solutionHandsIndex } = clue;
+      const clueHandHasNumberHints = getClueHandHasNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasNumberHints.length) {
+        return clueHandHasNumberHints;
+      }
+    }
+
+    // clue hand not number
     if (clueType === CLUE_HAND_NOT_NUMBER) {
       const { number, solutionHandsIndex } = clue;
       const clueHandNotNumberHints = getClueHandNotNumberHints(number, solutionHandsIndex, solutionOptions, clue);
@@ -2978,7 +3014,7 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand cards not suit
+    // clue hand not suit
     if (clueType === CLUE_HAND_NOT_SUIT) {
       const { suit, solutionHandsIndex } = clue;
       const clueHandNotSuitHints = getClueHandNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);

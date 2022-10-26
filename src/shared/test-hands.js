@@ -22,6 +22,7 @@ import {
   createClueCardOdd,
   createClueHandEven,
   createClueHandOdd,
+  createClueHandHasNumber,
   createClueHandNotNumber,
   createClueHandNotSuit,
 } from './clue-functions';
@@ -352,6 +353,8 @@ export const clues4 = [
   createClueHandEven(2),
 
   createClueHandOdd(3),
+
+  createClueHandHasNumber(NUMBER_A, 1),
 
   createClueHandNotNumber(NUMBER_6, 0),
 

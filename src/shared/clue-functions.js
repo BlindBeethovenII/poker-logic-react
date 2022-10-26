@@ -41,6 +41,7 @@ import {
   CLUE_CARD_ODD,
   CLUE_HAND_EVEN,
   CLUE_HAND_ODD,
+  CLUE_HAND_HAS_NUMBER,
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_NOT_SUIT,
   HAND_TYPE_STRAIGHT_FLUSH,
@@ -247,6 +248,16 @@ export const createClueHandEven = (solutionHandsIndex) => ({
 
 export const createClueHandOdd = (solutionHandsIndex) => ({
   clueType: CLUE_HAND_ODD,
+  solutionHandsIndex,
+});
+
+// -------------------- //
+// CLUE_HAND_HAS_NUMBER //
+// -------------------- //
+
+export const createClueHandHasNumber = (number, solutionHandsIndex) => ({
+  clueType: CLUE_HAND_HAS_NUMBER,
+  number,
   solutionHandsIndex,
 });
 
