@@ -466,7 +466,7 @@ export const createCluesForSolutionHands = (solution) => {
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
 
-    // for this hand, select a random card, and create the has number for its number
+    // for this hand, select a random card, and create the has number clue for its number
     const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
     const card = solutionHand[solutionHandIndex];
     clues.push(createClueHandHasNumber(card.number, solutionHandsIndex));
@@ -484,6 +484,17 @@ export const createCluesForSolutionHands = (solution) => {
     // now pick a random number that is not used to create the clue
     const number = shuffle(Array.from(numbersNotUsed))[0];
     clues.push(createClueHandNotNumber(number, solutionHandsIndex));
+  }
+
+  // TODO change approach here later
+  // create an 'HAND HAS SUIT' for each hand
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+
+    // for this hand, select a random card, and create the has suit clue for its clue
+    const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
+    const card = solutionHand[solutionHandIndex];
+    clues.push(createClueHandHasSuit(card.suit, solutionHandsIndex));
   }
 
   // TODO change approach here later
