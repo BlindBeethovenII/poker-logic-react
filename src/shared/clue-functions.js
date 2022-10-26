@@ -451,7 +451,18 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
-  // create an 'ALL CARDS NOT NUMBER' for each hand
+  // create an 'HAND HAS NUMBER' for each hand
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+
+    // for this hand, select a random card, and create the has number for its number
+    const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
+    const card = solutionHand[solutionHandIndex];
+    clues.push(createClueHandHasNumber(card.number, solutionHandsIndex));
+  }
+
+  // TODO change approach here later
+  // create an 'HAND NOT NUMBER' for each hand
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
     const numbersNotUsed = new Set(NUMBERS);
@@ -465,7 +476,7 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
-  // create all possible 'ALL CARDS NOT SUIT' clues for each hand
+  // create all possible 'HAND NOT SUIT' clues for each hand
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
     const suitsNotUsed = new Set(SUITS);
@@ -473,7 +484,7 @@ export const createCluesForSolutionHands = (solution) => {
       suitsNotUsed.delete(card.suit);
     });
 
-    // create an 'ALL CARDS NOT SUIT' for all remaining suits
+    // create an 'HAND NOT SUIT' for all remaining suits
     suitsNotUsed.forEach((suit) => {
       clues.push(createClueHandNotSuit(suit, solutionHandsIndex));
     });
