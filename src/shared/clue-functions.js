@@ -478,7 +478,7 @@ export const createCluesForSolutionHands = (solution) => {
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
 
-    // for this hand, select a random card, and create the has number clue for its number
+    // for this hand, select a random card, and create the hand has number clue for its number
     const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
     const card = solutionHand[solutionHandIndex];
     clues.push(createClueHandHasNumber(card.number, solutionHandsIndex));
@@ -503,7 +503,7 @@ export const createCluesForSolutionHands = (solution) => {
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
 
-    // for this hand, select a random card, and create the has suit clue for its clue
+    // for this hand, select a random card, and create the hand has suit clue for its suit
     const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
     const card = solutionHand[solutionHandIndex];
     clues.push(createClueHandHasSuit(card.suit, solutionHandsIndex));
@@ -522,6 +522,21 @@ export const createCluesForSolutionHands = (solution) => {
     suitsNotUsed.forEach((suit) => {
       clues.push(createClueHandNotSuit(suit, solutionHandsIndex));
     });
+  }
+
+  // TODO change approach here later
+  // create a couple of 'HAND HAS SUIT AND NUMBER' for each hand
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+
+    // for this hand, select two random cards, and create the hand has suit/number clue for it
+    const randomisedIndexes = shuffle([0, 1, 2, 3, 4]);
+    const solutionHandIndex1 = randomisedIndexes[0];
+    const card1 = solutionHand[solutionHandIndex1];
+    clues.push(createClueHandHasSuitAndNumber(card1.suit, card1.number, solutionHandsIndex));
+    const solutionHandIndex2 = randomisedIndexes[1];
+    const card2 = solutionHand[solutionHandIndex2];
+    clues.push(createClueHandHasSuitAndNumber(card2.suit, card2.number, solutionHandsIndex));
   }
 
   // TODO change approach here later
