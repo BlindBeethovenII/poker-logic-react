@@ -88,6 +88,7 @@ import {
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_HAS_SUIT,
   CLUE_HAND_NOT_SUIT,
+  CLUE_HAND_HAS_SUIT_AND_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1601,6 +1602,34 @@ export const getClueSuitAndNumberHints = (suit, number, solutionHandsIndex, hand
   return hints;
 };
 
+// if a single card in this hand still allows this suit/number then create a HINT_CLUE_SUIT_AND_NUMBER hint to set that suit/number for that card
+export const getClueHandHasSuitAndNumberHints = (suit, number, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
+  const handOptions = solutionOptions[solutionHandsIndex];
+
+  // find all the cards that still allow this suit/number
+  const handOptionsIndexes = [];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex) && getNumberOptionsValueInCardOptions(cardOptions, number)) {
+      handOptionsIndexes.push(handOptionsIndex);
+    }
+  });
+
+  // we can only create a hint if there is only one possible place for this suit/number and the suit/number is not yet placed there
+  if (handOptionsIndexes.length === 1) {
+    const handOptionsIndex = handOptionsIndexes[0];
+    if (countSuitsInCardOptions(solutionOptions[solutionHandsIndex][handOptionsIndex]) > 1
+        || countNumbersInCardOptions(solutionOptions[solutionHandsIndex][handOptionsIndex]) > 1) {
+      // it is not set here, so create the hint to set this card to this suit/number
+      hints.push(createHintClueSuitAndNumber(suit, number, solutionHandsIndex, handOptionsIndex, clue));
+    }
+  }
+
+  return hints;
+};
+
 // -------------- //
 // HINT_CLUE_SUIT //
 // -------------- //
@@ -1636,7 +1665,7 @@ export const getClueHandHasSuitHints = (suit, solutionHandsIndex, solutionOption
   const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
   const handOptions = solutionOptions[solutionHandsIndex];
 
-  // find all the cards that still allow this number
+  // find all the cards that still allow this suit
   const handOptionsIndexes = [];
   handOptions.forEach((cardOptions, handOptionsIndex) => {
     if (getSuitOptionsValueInCardOptions(cardOptions, suitOptionsIndex)) {
@@ -3057,6 +3086,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueHandNotSuitHints = getClueHandNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
       if (clueHandNotSuitHints.length) {
         return clueHandNotSuitHints;
+      }
+    }
+
+    // clue had has suit and number
+    if (clueType === CLUE_HAND_HAS_SUIT_AND_NUMBER) {
+      const { suit, number, solutionHandsIndex } = clue;
+      const clueHandHasSuitAndNumberHints = getClueHandHasSuitAndNumberHints(suit, number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasSuitAndNumberHints.length) {
+        return clueHandHasSuitAndNumberHints;
       }
     }
   }

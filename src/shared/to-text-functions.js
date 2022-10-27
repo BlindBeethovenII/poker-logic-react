@@ -25,6 +25,7 @@ import {
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_HAS_SUIT,
   CLUE_HAND_NOT_SUIT,
+  CLUE_HAND_HAS_SUIT_AND_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -105,7 +106,7 @@ export const clueToString = (clue, doNotShowDeduced) => {
       solutionHandsIndex,
       handOptionsIndex,
     } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is ${cardNumberToString(number)} ${suitToTextSingular(suit)}`;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)} ${suitToTextSingular(suit)}`;
   }
 
   if (clueType === CLUE_SUIT) {
@@ -226,6 +227,15 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_HAND_HAS_SUIT) {
     const { suit, solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} has a ${suitToTextSingular(suit)}`;
+  }
+
+  if (clueType === CLUE_HAND_HAS_SUIT_AND_NUMBER) {
+    const {
+      suit,
+      number,
+      solutionHandsIndex,
+    } = clue;
+    return `Hand ${solutionHandsIndex + 1} has the ${cardNumberToString(number)} ${suitToTextSingular(suit)}`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;
