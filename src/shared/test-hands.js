@@ -28,6 +28,7 @@ import {
   // createClueHandNotSuit,
   createClueHandHasSuitAndNumber,
   createClueHandNotSuitAndNumber,
+  createClueHandLowestNumber,
 } from './clue-functions';
 
 import {
@@ -370,6 +371,8 @@ export const clues4 = [
 
   createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
   createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 2),
+
+  createClueHandLowestNumber(NUMBER_7, 1),
 ];
 
 // -------------------------- //

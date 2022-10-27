@@ -90,6 +90,7 @@ import {
   CLUE_HAND_NOT_SUIT,
   CLUE_HAND_HAS_SUIT_AND_NUMBER,
   CLUE_HAND_NOT_SUIT_AND_NUMBER,
+  CLUE_HAND_LOWEST_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1862,6 +1863,24 @@ export const getClueHandNotSuitAndNumberHintsRemoveNumber = (suit, number, solut
   return hints;
 };
 
+// if any cards in this hand still allow a lower number then create a HINT_CLUE_NOT_NUMBER hint to remove that number from that card
+export const getClueHandLowestNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // look at each card
+  const handOptions = solutionOptions[solutionHandsIndex];
+  handOptions.forEach((cardOptions, handOptionsIndex) => {
+    NUMBERS.forEach((numberToCheck) => {
+      // Note: A is never involved in this - as it can be above the K or below the 2
+      if (numberToCheck !== NUMBER_A && numberToCheck < number && getNumberOptionsValueInCardOptions(cardOptions, numberToCheck)) {
+        hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex, handOptionsIndex, clue));
+      }
+    });
+  });
+
+  return hints;
+};
+
 // --------------------------- //
 // HINT_CLUE_CARDS_SAME_NUMBER //
 // --------------------------- //
@@ -3146,6 +3165,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueHandNotSuitAndNumberHintsRemoveSuit = getClueHandNotSuitAndNumberHintsRemoveSuit(suit, number, solutionHandsIndex, solutionOptions, clue);
       if (clueHandNotSuitAndNumberHintsRemoveSuit.length) {
         return clueHandNotSuitAndNumberHintsRemoveSuit;
+      }
+    }
+
+    // clue hand lowest number
+    if (clueType === CLUE_HAND_LOWEST_NUMBER) {
+      const { number, solutionHandsIndex } = clue;
+      const clueHandLowestNumberHints = getClueHandLowestNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandLowestNumberHints.length) {
+        return clueHandLowestNumberHints;
       }
     }
   }

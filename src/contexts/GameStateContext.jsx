@@ -66,6 +66,7 @@ import {
   CLUE_HAND_ODD,
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_NOT_SUIT,
+  CLUE_HAND_LOWEST_NUMBER,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
@@ -375,46 +376,46 @@ export const GameStateContextProvider = ({ children }) => {
       } else if (clueType === CLUE_NOT_SUIT) {
         const { suit, solutionHandsIndex, handOptionsIndex } = clue;
         const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
+        if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_NOT_NUMBER) {
         const { number, solutionHandsIndex, handOptionsIndex } = clue;
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_RED_SUIT) {
         const { solutionHandsIndex, handOptionsIndex } = clue;
-        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
+        if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_SPADES, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
+        if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_CLUBS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_BLACK_SUIT) {
         const { solutionHandsIndex, handOptionsIndex } = clue;
-        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_HEARTS)) {
+        if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_HEARTS)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_HEARTS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
+        if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
           newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_DIAMONDS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_RED_SUITS) {
         const { solutionHandsIndex } = clue;
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
+          if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_SPADES)) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_SPADES, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
+          if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_CLUBS)) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_CLUBS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
@@ -422,12 +423,12 @@ export const GameStateContextProvider = ({ children }) => {
         cluesApplied = true;
       } else if (clueType === CLUE_BLACK_SUITS) {
         const { solutionHandsIndex } = clue;
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_HEARTS)) {
+          if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_HEARTS)) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_HEARTS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
+          if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, INDEX_SUIT_DIAMONDS)) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(INDEX_SUIT_DIAMONDS, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
@@ -435,74 +436,74 @@ export const GameStateContextProvider = ({ children }) => {
         cluesApplied = true;
       } else if (clueType === CLUE_CARD_EVEN) {
         const { solutionHandsIndex, handOptionsIndex } = clue;
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_5)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_5)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_5, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_7)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_7)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_7, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_9)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_9)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_9, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_J)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_J)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_J, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_K)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_K)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_K, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_CARD_ODD) {
         const { solutionHandsIndex, handOptionsIndex } = clue;
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_2)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_2)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_2, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_4)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_4)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_4, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_6)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_6)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_6, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_8)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_8)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_8, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_10)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_10)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_10, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
-        if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_HAND_EVEN) {
         const { solutionHandsIndex } = clue;
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_5)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_5)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_5, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_7)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_7)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_7, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_9)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_9)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_9, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_J)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_J)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_J, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_K)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_K)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_K, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
@@ -510,24 +511,24 @@ export const GameStateContextProvider = ({ children }) => {
         cluesApplied = true;
       } else if (clueType === CLUE_HAND_ODD) {
         const { solutionHandsIndex } = clue;
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_2)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_2)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_2, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_4)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_4)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_4, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_6)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_6)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_6, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_8)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_8)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_8, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_10)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_10)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_10, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
@@ -535,9 +536,9 @@ export const GameStateContextProvider = ({ children }) => {
         cluesApplied = true;
       } else if (clueType === CLUE_HAND_NOT_NUMBER) {
         const { number, solutionHandsIndex } = clue;
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getNumberOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, number)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
@@ -546,10 +547,23 @@ export const GameStateContextProvider = ({ children }) => {
       } else if (clueType === CLUE_HAND_NOT_SUIT) {
         const { suit, solutionHandsIndex } = clue;
         const suitOptionsIndex = convertSuitToSuitOptionsIndex(suit);
-        const handOptions = solutionOptions[solutionHandsIndex];
+        const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getSuitOptionsValue(solutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
+          if (getSuitOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, suitOptionsIndex)) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_HAND_LOWEST_NUMBER) {
+        const { number, solutionHandsIndex } = clue;
+        const handOptions = newSolutionOptions[solutionHandsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          for (let numberToCheck = number - 1; numberToCheck > NUMBER_A; numberToCheck -= 1) {
+            // Note: A is never involved in this - as it can be above the K or below the 2
+            if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, numberToCheck)) {
+              newSolutionOptions = toggleNumberOptionInSolutionOptions(numberToCheck, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+            }
           }
         }
         newShowClues[i] = false;
