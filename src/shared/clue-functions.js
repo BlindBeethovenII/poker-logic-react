@@ -64,6 +64,7 @@ import {
   SUIT_BLACK,
   CLUE_ORDERING,
   CLUE_ORDERING_REDUCING,
+  NUMBER_A,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -584,6 +585,30 @@ export const createCluesForSolutionHands = (solution) => {
     }
     const otherSolutionHandsIndex = shuffle(otherSolutionHandsIndexes)[0];
     clues.push(createClueHandNotSuitAndNumber(card.suit, card.number, otherSolutionHandsIndex));
+  }
+
+  // TODO change approach here later
+  // create a 'HAND LOWEST NUMBER' for each hand where A is not the lowest number
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+
+    // we don't generate a clue is an A is involved
+    if (solutionHand[0].number !== NUMBER_A
+        && solutionHand[1].number !== NUMBER_A
+        && solutionHand[2].number !== NUMBER_A
+        && solutionHand[3].number !== NUMBER_A
+        && solutionHand[4].number !== NUMBER_A) {
+      // find the lowest number
+      let lowestNumber = solutionHand[0].number;
+      for (let solutionHandIndex = 1; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
+        const nextNumber = solutionHand[solutionHandIndex].number;
+        if (nextNumber < lowestNumber) {
+          lowestNumber = nextNumber;
+        }
+      }
+
+      clues.push(createClueHandLowestNumber(lowestNumber, solutionHandsIndex));
+    }
   }
 
   // TODO change approach here later
