@@ -46,6 +46,7 @@ import {
   CLUE_HAND_HAS_SUIT,
   CLUE_HAND_NOT_SUIT,
   CLUE_HAND_HAS_SUIT_AND_NUMBER,
+  CLUE_HAND_NOT_SUIT_AND_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -299,6 +300,17 @@ export const createClueHandNotSuit = (suit, solutionHandsIndex) => ({
 
 export const createClueHandHasSuitAndNumber = (suit, number, solutionHandsIndex) => ({
   clueType: CLUE_HAND_HAS_SUIT_AND_NUMBER,
+  suit,
+  number,
+  solutionHandsIndex,
+});
+
+// ----------------------------- //
+// CLUE_HAND_NOT_SUIT_AND_NUMBER //
+// ----------------------------- //
+
+export const createClueHandNotSuitAndNumber = (suit, number, solutionHandsIndex) => ({
+  clueType: CLUE_HAND_NOT_SUIT_AND_NUMBER,
   suit,
   number,
   solutionHandsIndex,

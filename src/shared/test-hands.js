@@ -25,8 +25,9 @@ import {
   // createClueHandHasNumber,
   createClueHandNotNumber,
   createClueHandHasSuit,
-  createClueHandNotSuit,
+  // createClueHandNotSuit,
   createClueHandHasSuitAndNumber,
+  createClueHandNotSuitAndNumber,
 } from './clue-functions';
 
 import {
@@ -284,7 +285,7 @@ export const solutionHands4 = [
     createCard(SUIT_SPADES, NUMBER_6),
     createCard(SUIT_DIAMONDS, NUMBER_6),
     createCard(SUIT_SPADES, NUMBER_8),
-    createCard(SUIT_SPADES, NUMBER_4),
+    createCard(SUIT_SPADES, NUMBER_5),
     createCard(SUIT_HEARTS, NUMBER_2),
   ],
   [
@@ -363,9 +364,12 @@ export const clues4 = [
 
   createClueHandHasSuit(SUIT_HEARTS, 2),
 
-  createClueHandNotSuit(SUIT_CLUBS, 2),
+  // createClueHandNotSuit(SUIT_CLUBS, 2),
 
   createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_9, 1),
+
+  createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
+  createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 2),
 ];
 
 // -------------------------- //
