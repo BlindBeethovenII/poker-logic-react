@@ -552,6 +552,30 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
+  // create a few 'HAND NOT SUIT AND NUMBER' for each hand
+  // these must be based on actual cards in the solution
+  for (let nHints = 0; nHints < 5; nHints += 1) {
+    // creating 5 hints
+
+    // select a random solutionHand
+    const solutionHandsIndex = shuffle([0, 1, 2, 3])[0];
+
+    // select a random card from that soluiton hand
+    const solutionHandIndex = shuffle([0, 1, 2, 3, 4])[0];
+    const card = solutionHands[solutionHandsIndex][solutionHandIndex];
+
+    // select a random other hand - as this card cannot be in that hand
+    const otherSolutionHandsIndexes = [];
+    for (let i = 0; i < 4; i += 1) {
+      if (i !== solutionHandsIndex) {
+        otherSolutionHandsIndexes.push(i);
+      }
+    }
+    const otherSolutionHandsIndex = shuffle(otherSolutionHandsIndexes)[0];
+    clues.push(createClueHandNotSuitAndNumber(card.suit, card.number, otherSolutionHandsIndex));
+  }
+
+  // TODO change approach here later
   // create some random 'CARDS SAME NUMBER' clues
   // iterate over all but the last hand
   for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
