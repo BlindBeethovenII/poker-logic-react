@@ -243,7 +243,7 @@ export const clueToString = (clue, doNotShowDeduced) => {
 
   if (clueType === CLUE_HAND_LOWEST_NUMBER) {
     const { number, solutionHandsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} lowest number is ${cardNumberToString(number)} (A excluded)`;
+    return `Hand ${solutionHandsIndex + 1} lowest number is ${cardNumberToString(number)} (A is higher than K)`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

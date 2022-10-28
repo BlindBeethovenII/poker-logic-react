@@ -588,27 +588,24 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
-  // create a 'HAND LOWEST NUMBER' for each hand where A is not the lowest number
+  // create a 'HAND LOWEST NUMBER' - where A is considered higher than a K
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
 
-    // we don't generate a clue is an A is involved
-    if (solutionHand[0].number !== NUMBER_A
-        && solutionHand[1].number !== NUMBER_A
-        && solutionHand[2].number !== NUMBER_A
-        && solutionHand[3].number !== NUMBER_A
-        && solutionHand[4].number !== NUMBER_A) {
-      // find the lowest number
-      let lowestNumber = solutionHand[0].number;
-      for (let solutionHandIndex = 1; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
-        const nextNumber = solutionHand[solutionHandIndex].number;
-        if (nextNumber < lowestNumber) {
-          lowestNumber = nextNumber;
-        }
-      }
-
-      clues.push(createClueHandLowestNumber(lowestNumber, solutionHandsIndex));
+    // find the lowest number
+    let lowestNumber = solutionHand[0].number;
+    // this could be an A, if so, set lowestNumber to 14 so we always get a lower number than this from the remaining 4 cards
+    if (lowestNumber === NUMBER_A) {
+      lowestNumber = 14;
     }
+    for (let solutionHandIndex = 1; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
+      const nextNumber = solutionHand[solutionHandIndex].number;
+      if (nextNumber < lowestNumber) {
+        lowestNumber = nextNumber;
+      }
+    }
+
+    clues.push(createClueHandLowestNumber(lowestNumber, solutionHandsIndex));
   }
 
   // TODO change approach here later

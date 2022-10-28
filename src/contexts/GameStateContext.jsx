@@ -560,7 +560,7 @@ export const GameStateContextProvider = ({ children }) => {
         const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
           for (let numberToCheck = number - 1; numberToCheck > NUMBER_A; numberToCheck -= 1) {
-            // Note: A is never involved in this - as it can be above the K or below the 2
+            // Note: A is considered as higher than a K for this, we stop the number check at 2
             if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, numberToCheck)) {
               newSolutionOptions = toggleNumberOptionInSolutionOptions(numberToCheck, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
             }

@@ -1871,7 +1871,7 @@ export const getClueHandLowestNumberHints = (number, solutionHandsIndex, solutio
   const handOptions = solutionOptions[solutionHandsIndex];
   handOptions.forEach((cardOptions, handOptionsIndex) => {
     NUMBERS.forEach((numberToCheck) => {
-      // Note: A is never involved in this - as it can be above the K or below the 2
+      // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A can never be number lower than the given number
       if (numberToCheck !== NUMBER_A && numberToCheck < number && getNumberOptionsValueInCardOptions(cardOptions, numberToCheck)) {
         hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex, handOptionsIndex, clue));
       }
