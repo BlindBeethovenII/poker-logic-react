@@ -599,7 +599,7 @@ export const createCluesForSolutionHands = (solution) => {
   }
 
   // TODO change approach here later
-  // create a 'HAND LOWEST NUMBER' - where A is considered higher than a K
+  // create a 'HAND LOWEST NUMBER' for each hand - where A is considered higher than a K
   for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
     const solutionHand = solutionHands[solutionHandsIndex];
 
@@ -617,6 +617,30 @@ export const createCluesForSolutionHands = (solution) => {
     }
 
     clues.push(createClueHandLowestNumber(lowestNumber, solutionHandsIndex));
+  }
+
+  // TODO change approach here later
+  // create a 'HAND HIGHEST NUMBER' for each hand - where A is considered higher than a K
+  for (let solutionHandsIndex = 0; solutionHandsIndex < solutionHands.length; solutionHandsIndex += 1) {
+    const solutionHand = solutionHands[solutionHandsIndex];
+
+    if (solutionHand[0].number === NUMBER_A
+        || solutionHand[1].number === NUMBER_A
+        || solutionHand[2].number === NUMBER_A
+        || solutionHand[3].number === NUMBER_A
+        || solutionHand[4].number === NUMBER_A) {
+      clues.push(createClueHandHighestNumber(NUMBER_A, solutionHandsIndex));
+    } else {
+      // find the highest number (A already dealt with)
+      let highestNumber = solutionHand[0].number;
+      for (let solutionHandIndex = 1; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
+        const nextNumber = solutionHand[solutionHandIndex].number;
+        if (nextNumber > highestNumber) {
+          highestNumber = nextNumber;
+        }
+      }
+      clues.push(createClueHandHighestNumber(highestNumber, solutionHandsIndex));
+    }
   }
 
   // TODO change approach here later
