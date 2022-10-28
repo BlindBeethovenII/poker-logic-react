@@ -600,7 +600,7 @@ export const createCluesForSolutionHands = (solution) => {
     }
     for (let solutionHandIndex = 1; solutionHandIndex < solutionHand.length; solutionHandIndex += 1) {
       const nextNumber = solutionHand[solutionHandIndex].number;
-      if (nextNumber < lowestNumber) {
+      if (nextNumber !== NUMBER_A && nextNumber < lowestNumber) {
         lowestNumber = nextNumber;
       }
     }
