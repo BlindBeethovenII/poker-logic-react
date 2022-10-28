@@ -193,22 +193,22 @@ export const clueToString = (clue, doNotShowDeduced) => {
 
   if (clueType === CLUE_CARD_EVEN) {
     const { solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an even number`;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an even number (A is even)`;
   }
 
   if (clueType === CLUE_CARD_ODD) {
     const { solutionHandsIndex, handOptionsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an odd number`;
+    return `Hand ${solutionHandsIndex + 1} Card ${handOptionsIndex + 1} is an odd number (A is even)`;
   }
 
   if (clueType === CLUE_HAND_EVEN) {
     const { solutionHandsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} has all even numbers`;
+    return `Hand ${solutionHandsIndex + 1} has all even numbers (A is even)`;
   }
 
   if (clueType === CLUE_HAND_ODD) {
     const { solutionHandsIndex } = clue;
-    return `Hand ${solutionHandsIndex + 1} has all odd numbers`;
+    return `Hand ${solutionHandsIndex + 1} has all odd numbers (A is even)`;
   }
 
   if (clueType === CLUE_HAND_HAS_NUMBER) {

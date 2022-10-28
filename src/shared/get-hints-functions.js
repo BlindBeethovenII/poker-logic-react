@@ -2146,8 +2146,8 @@ export const getClueCardEvenHints = (solutionHandsIndex, handOptionsIndex, solut
   // just one card to look at
   const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
 
-  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)
-   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)
+  // A is considered even
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_5)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_7)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_9)
@@ -2166,8 +2166,8 @@ export const getClueHandEvenHints = (solutionHandsIndex, solutionOptions, clue) 
   // look at each card
   const handOptions = solutionOptions[solutionHandsIndex];
   handOptions.forEach((cardOptions, handOptionsIndex) => {
-    if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)
-    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)
+    // A is considered even
+    if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_5)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_7)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_9)
@@ -2199,12 +2199,14 @@ export const getClueCardOddHints = (solutionHandsIndex, handOptionsIndex, soluti
   // just one card to look at
   const cardOptions = solutionOptions[solutionHandsIndex][handOptionsIndex];
 
+  // A is considered even
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)
    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)
-   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)
+   || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)) {
     hints.push(createHintClueCardOdd(solutionHandsIndex, handOptionsIndex, clue));
   }
 
@@ -2218,12 +2220,14 @@ export const getClueHandOddHints = (solutionHandsIndex, solutionOptions, clue) =
   // look at each card
   const handOptions = solutionOptions[solutionHandsIndex];
   handOptions.forEach((cardOptions, handOptionsIndex) => {
+    // A is considered even
     if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)
     || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)
-    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)
+    || getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)) {
       hints.push(createHintClueCardOdd(solutionHandsIndex, handOptionsIndex, clue));
     }
   });

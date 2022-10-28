@@ -5,7 +5,7 @@ import shuffle from 'lodash.shuffle';
 import {
   calcHandType,
   cardSuitToFillColour,
-  isEven,
+  isCardEven,
 } from './card-functions';
 
 import {
@@ -436,7 +436,7 @@ export const createCluesForSolutionHands = (solution) => {
         nextClueType = CLUE_CARD_EVEN;
       } else if (nextClueType === CLUE_CARD_EVEN) {
         // note: this covers both card even and card odd
-        if (isEven(number)) {
+        if (isCardEven(number)) {
           clues.push(createClueCardEven(solutionHandsIndex, solutionHandIndex));
         } else {
           clues.push(createClueCardOdd(solutionHandsIndex, solutionHandIndex));
@@ -479,7 +479,7 @@ export const createCluesForSolutionHands = (solution) => {
     const solutionHand = solutionHands[solutionHandsIndex];
     let soleParity;
     solutionHand.forEach((card) => {
-      const nextParity = isEven(card.number);
+      const nextParity = isCardEven(card.number);
       if (soleParity === undefined) {
         // first card
         soleParity = nextParity;

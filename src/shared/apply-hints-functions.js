@@ -707,38 +707,29 @@ export const applyClueCardEvenHint = (solutionOptions, hint) => {
 
   const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
 
-  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)) {
-    // A is currently an option - so remove it
-    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
-  }
+  // remove 3 5 7 9 J K if they are currently set
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_3)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_5)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_5, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_7)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_7, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_9)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_9, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_J)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_J, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_K)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_K, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
@@ -759,34 +750,34 @@ export const applyClueCardOddHint = (solutionOptions, hint) => {
 
   const cardOptions = solutionOptions[solutionOptionsIndex][handOptionsIndex];
 
+  // remove 2 4 6 8 10 Q A if they are currently set
+
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_2)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_2, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_4)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_4, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_6)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_6, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_8)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_8, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_10)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_10, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_Q)) {
-    // A is currently an option - so remove it
     newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+  }
+
+  if (getNumberOptionsValueInCardOptions(cardOptions, NUMBER_A)) {
+    newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
   }
 
   return newSolutionOptions;

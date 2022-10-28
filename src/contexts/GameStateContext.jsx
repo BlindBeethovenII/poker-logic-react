@@ -436,9 +436,6 @@ export const GameStateContextProvider = ({ children }) => {
         cluesApplied = true;
       } else if (clueType === CLUE_CARD_EVEN) {
         const { solutionHandsIndex, handOptionsIndex } = clue;
-        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
-          newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
-        }
         if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
@@ -479,15 +476,15 @@ export const GameStateContextProvider = ({ children }) => {
         if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
           newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
         }
+        if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+          newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+        }
         newShowClues[i] = false;
         cluesApplied = true;
       } else if (clueType === CLUE_HAND_EVEN) {
         const { solutionHandsIndex } = clue;
         const handOptions = newSolutionOptions[solutionHandsIndex];
         for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
-          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
-            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
-          }
           if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_3)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_3, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
@@ -530,6 +527,9 @@ export const GameStateContextProvider = ({ children }) => {
           }
           if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_Q)) {
             newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_Q, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+          }
+          if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
           }
         }
         newShowClues[i] = false;

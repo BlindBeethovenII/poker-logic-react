@@ -1264,5 +1264,12 @@ export const getStraights = (cards) => {
   return result;
 };
 
-// return true if the given number is even
-export const isEven = (number) => number % 2 === 0;
+// return true if the given card number is even - A is consider to be even here
+export const isCardEven = (number) => {
+  if (number === NUMBER_A) {
+    // A is considered 14 for this - whereas NUMBER_A is 1
+    return true;
+  }
+
+  return number % 2 === 0;
+};
