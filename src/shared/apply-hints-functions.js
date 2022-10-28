@@ -1172,8 +1172,8 @@ export const applyHint = (solutionOptions, hint) => {
 // -------------------------------- //
 
 // find and apply next hints to the given solutionOptions - returning the new solutionOptions if any applied and null otherwise
-export const applyNextHintsToSolutionOptions = (solutionOptions, solution, clues, cardsAvailable) => {
-  const hints = getHints(solutionOptions, solution, clues, cardsAvailable);
+export const applyNextHintsToSolutionOptions = (solutionOptions, solution, clues, cardsAvailable, basicCluesOnly) => {
+  const hints = getHints(solutionOptions, solution, clues, cardsAvailable, basicCluesOnly);
   logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
 
   // if we can't find another hint, then return null
@@ -1204,7 +1204,7 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
   const hintsUsed = new Set();
 
   while (lookForMore) {
-    const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable);
+    const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable, false);
     console.log(`getHints returns ${JSON.stringify(hints)}`);
 
     if (hints?.length) {

@@ -2990,7 +2990,7 @@ export const getAllSuitPlacedOnlyPlaceForNumberHints = (cardsAvailable, solution
 // --------- //
 
 // get the next possible hints (being an array of hints of the same type)
-export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
+export const getHints = (solutionOptions, solution, clues, cardsAvailable, basicCluesOnly) => {
   const { solutionHands, missingNumber } = solution;
 
   // first check that solution options are valid
@@ -2998,12 +2998,6 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
     // TODO - provide a way for the user to go back to the last good solutionOptions
     // for now just return no more hints
     return [];
-  }
-
-  // see if number not used
-  const numberNotUsedHints = getNumberNotUsedHints(solutionOptions, solutionHands, missingNumber);
-  if (numberNotUsedHints.length) {
-    return numberNotUsedHints;
   }
 
   // first look through clues to process the basic clues, vis CLUE_NOT_SUIT CLUE_NOT_NUMBER
@@ -3133,15 +3127,6 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand has number
-    if (clueType === CLUE_HAND_HAS_NUMBER) {
-      const { number, solutionHandsIndex } = clue;
-      const clueHandHasNumberHints = getClueHandHasNumberHints(number, solutionHandsIndex, solutionOptions, clue);
-      if (clueHandHasNumberHints.length) {
-        return clueHandHasNumberHints;
-      }
-    }
-
     // clue hand not number
     if (clueType === CLUE_HAND_NOT_NUMBER) {
       const { number, solutionHandsIndex } = clue;
@@ -3151,46 +3136,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       }
     }
 
-    // clue hand has suit
-    if (clueType === CLUE_HAND_HAS_SUIT) {
-      const { suit, solutionHandsIndex } = clue;
-      const clueHandHasSuitHints = getClueHandHasSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
-      if (clueHandHasSuitHints.length) {
-        return clueHandHasSuitHints;
-      }
-    }
-
     // clue hand not suit
     if (clueType === CLUE_HAND_NOT_SUIT) {
       const { suit, solutionHandsIndex } = clue;
       const clueHandNotSuitHints = getClueHandNotSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
       if (clueHandNotSuitHints.length) {
         return clueHandNotSuitHints;
-      }
-    }
-
-    // clue hand has suit and number
-    if (clueType === CLUE_HAND_HAS_SUIT_AND_NUMBER) {
-      const { suit, number, solutionHandsIndex } = clue;
-      const clueHandHasSuitAndNumberHints = getClueHandHasSuitAndNumberHints(suit, number, solutionHandsIndex, solutionOptions, clue);
-      if (clueHandHasSuitAndNumberHints.length) {
-        return clueHandHasSuitAndNumberHints;
-      }
-    }
-
-    // clue hand not suit and number
-    if (clueType === CLUE_HAND_NOT_SUIT_AND_NUMBER) {
-      const { suit, number, solutionHandsIndex } = clue;
-      // first look for cards from which we can remove the number if this suit is placed in that card
-      const clueHandNotSuitAndNumberHintsRemoveNumber = getClueHandNotSuitAndNumberHintsRemoveNumber(suit, number, solutionHandsIndex, solutionOptions, clue);
-      if (clueHandNotSuitAndNumberHintsRemoveNumber.length) {
-        return clueHandNotSuitAndNumberHintsRemoveNumber;
-      }
-
-      // and next look for cards from which we can remove the suit if this number is placed in that card
-      const clueHandNotSuitAndNumberHintsRemoveSuit = getClueHandNotSuitAndNumberHintsRemoveSuit(suit, number, solutionHandsIndex, solutionOptions, clue);
-      if (clueHandNotSuitAndNumberHintsRemoveSuit.length) {
-        return clueHandNotSuitAndNumberHintsRemoveSuit;
       }
     }
 
@@ -3211,6 +3162,17 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
         return clueHandHighestNumberHints;
       }
     }
+  }
+
+  // don't continue if we are only processing basic clues
+  if (basicCluesOnly) {
+    return [];
+  }
+
+  // see if number not used
+  const numberNotUsedHints = getNumberNotUsedHints(solutionOptions, solutionHands, missingNumber);
+  if (numberNotUsedHints.length) {
+    return numberNotUsedHints;
   }
 
   // see if all n cards available for a number are placed for that number
@@ -3292,6 +3254,49 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
   for (let i = 0; i < clues.length; i += 1) {
     const clue = clues[i];
     const { clueType, handType, solutionHandsIndex } = clue;
+
+    // clue hand has suit and number
+    if (clueType === CLUE_HAND_HAS_SUIT_AND_NUMBER) {
+      const { suit, number } = clue;
+      const clueHandHasSuitAndNumberHints = getClueHandHasSuitAndNumberHints(suit, number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasSuitAndNumberHints.length) {
+        return clueHandHasSuitAndNumberHints;
+      }
+    }
+
+    // clue hand has number
+    if (clueType === CLUE_HAND_HAS_NUMBER) {
+      const { number } = clue;
+      const clueHandHasNumberHints = getClueHandHasNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasNumberHints.length) {
+        return clueHandHasNumberHints;
+      }
+    }
+
+    // clue hand has suit
+    if (clueType === CLUE_HAND_HAS_SUIT) {
+      const { suit } = clue;
+      const clueHandHasSuitHints = getClueHandHasSuitHints(suit, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHasSuitHints.length) {
+        return clueHandHasSuitHints;
+      }
+    }
+
+    // clue hand not suit and number
+    if (clueType === CLUE_HAND_NOT_SUIT_AND_NUMBER) {
+      const { suit, number } = clue;
+      // first look for cards from which we can remove the number if this suit is placed in that card
+      const clueHandNotSuitAndNumberHintsRemoveNumber = getClueHandNotSuitAndNumberHintsRemoveNumber(suit, number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandNotSuitAndNumberHintsRemoveNumber.length) {
+        return clueHandNotSuitAndNumberHintsRemoveNumber;
+      }
+
+      // and next look for cards from which we can remove the suit if this number is placed in that card
+      const clueHandNotSuitAndNumberHintsRemoveSuit = getClueHandNotSuitAndNumberHintsRemoveSuit(suit, number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandNotSuitAndNumberHintsRemoveSuit.length) {
+        return clueHandNotSuitAndNumberHintsRemoveSuit;
+      }
+    }
 
     // clue: CLUE_CARDS_SAME_NUMBER
     if (clueType === CLUE_CARDS_SAME_NUMBER) {
