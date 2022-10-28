@@ -91,6 +91,7 @@ import {
   CLUE_HAND_HAS_SUIT_AND_NUMBER,
   CLUE_HAND_NOT_SUIT_AND_NUMBER,
   CLUE_HAND_LOWEST_NUMBER,
+  CLUE_HAND_HIGHEST_NUMBER,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -1871,12 +1872,33 @@ export const getClueHandLowestNumberHints = (number, solutionHandsIndex, solutio
   const handOptions = solutionOptions[solutionHandsIndex];
   handOptions.forEach((cardOptions, handOptionsIndex) => {
     NUMBERS.forEach((numberToCheck) => {
-      // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A can never be number lower than the given number
+      // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A can never be a number lower than the given number
       if (numberToCheck !== NUMBER_A && numberToCheck < number && getNumberOptionsValueInCardOptions(cardOptions, numberToCheck)) {
         hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex, handOptionsIndex, clue));
       }
     });
   });
+
+  return hints;
+};
+
+// if any cards in this hand still allow a higher number then create a HINT_CLUE_NOT_NUMBER hint to remove that number from that card
+export const getClueHandHighestNumberHints = (number, solutionHandsIndex, solutionOptions, clue) => {
+  const hints = [];
+
+  // if number is NUMBER_A then nothing is higher than that, so we will never be able to create a HINT_CLUE_NOT_NUMBER for this hand
+  if (number !== NUMBER_A) {
+    // look at each card
+    const handOptions = solutionOptions[solutionHandsIndex];
+    handOptions.forEach((cardOptions, handOptionsIndex) => {
+      NUMBERS.forEach((numberToCheck) => {
+        // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so if we get here A will always be higher than the given number
+        if ((numberToCheck === NUMBER_A || numberToCheck > number) && getNumberOptionsValueInCardOptions(cardOptions, numberToCheck)) {
+          hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex, handOptionsIndex, clue));
+        }
+      });
+    });
+  }
 
   return hints;
 };
@@ -3178,6 +3200,15 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable) => {
       const clueHandLowestNumberHints = getClueHandLowestNumberHints(number, solutionHandsIndex, solutionOptions, clue);
       if (clueHandLowestNumberHints.length) {
         return clueHandLowestNumberHints;
+      }
+    }
+
+    // clue hand highest number
+    if (clueType === CLUE_HAND_HIGHEST_NUMBER) {
+      const { number, solutionHandsIndex } = clue;
+      const clueHandHighestNumberHints = getClueHandHighestNumberHints(number, solutionHandsIndex, solutionOptions, clue);
+      if (clueHandHighestNumberHints.length) {
+        return clueHandHighestNumberHints;
       }
     }
   }

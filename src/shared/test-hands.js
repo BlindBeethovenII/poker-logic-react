@@ -29,6 +29,7 @@ import {
   createClueHandHasSuitAndNumber,
   createClueHandNotSuitAndNumber,
   createClueHandLowestNumber,
+  createClueHandHighestNumber,
 } from './clue-functions';
 
 import {
@@ -418,7 +419,7 @@ export const solution5 = {
 export const clues5 = [
   // createClueHandOfType(calcHandType(solutionHands5[0]), 0),
   createClueHandOfType(calcHandType(solutionHands5[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands5[2]), 2),
+  // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
   // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
 
   // createClueSuit(SUIT_HEARTS, 0, 4),
@@ -478,4 +479,7 @@ export const clues5 = [
   // createClueHandOdd(3),
 
   // createClueHandNotNumber(NUMBER_6, 0),
+
+  createClueHandHighestNumber(NUMBER_Q, 2),
+  createClueHandHighestNumber(NUMBER_A, 3),
 ];

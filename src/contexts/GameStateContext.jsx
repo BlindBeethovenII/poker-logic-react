@@ -67,6 +67,7 @@ import {
   CLUE_HAND_NOT_NUMBER,
   CLUE_HAND_NOT_SUIT,
   CLUE_HAND_LOWEST_NUMBER,
+  CLUE_HAND_HIGHEST_NUMBER,
   SOLUTION_OPTIONS_STATE_OK,
   SOLUTION_OPTIONS_STATE_INVALID,
   SOLUTION_OPTIONS_STATE_DONE,
@@ -563,6 +564,26 @@ export const GameStateContextProvider = ({ children }) => {
             // Note: A is considered as higher than a K for this, we stop the number check at 2
             if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, numberToCheck)) {
               newSolutionOptions = toggleNumberOptionInSolutionOptions(numberToCheck, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+            }
+          }
+        }
+        newShowClues[i] = false;
+        cluesApplied = true;
+      } else if (clueType === CLUE_HAND_HIGHEST_NUMBER) {
+        const { number, solutionHandsIndex } = clue;
+        const handOptions = newSolutionOptions[solutionHandsIndex];
+        for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length; handOptionsIndex += 1) {
+          // if number is NUMBER_A then then we can never remove anything
+          if (number !== NUMBER_A) {
+            for (let numberToCheck = number + 1; numberToCheck <= NUMBER_K; numberToCheck += 1) {
+              if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, numberToCheck)) {
+                newSolutionOptions = toggleNumberOptionInSolutionOptions(numberToCheck, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
+              }
+            }
+
+            // we also need to deal with A, as NUMBER_A is actuall the value 1 - but for the highest number is considered to be 14
+            if (getNumberOptionsValue(newSolutionOptions, solutionHandsIndex, handOptionsIndex, NUMBER_A)) {
+              newSolutionOptions = toggleNumberOptionInSolutionOptions(NUMBER_A, solutionHandsIndex, handOptionsIndex, newSolutionOptions);
             }
           }
         }
