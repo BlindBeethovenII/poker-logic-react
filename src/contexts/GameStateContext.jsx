@@ -2,7 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import shuffle from 'lodash.shuffle';
+// TODO PUT BACK
+// import shuffle from 'lodash.shuffle';
 
 import { createSolution } from '../shared/card-functions';
 
@@ -252,9 +253,12 @@ export const GameStateContextProvider = ({ children }) => {
 
   // see if any clues can be removed and the puzzle can still be solved
   const reduceClues = useCallback((keepHandTypes) => {
+    // creating my own objects here
+    const theCardsAvailable = getCardsAvailable(solution.solutionHands);
+
     // first check that the puzzle can be solved with the current clues
-    const newSolutionOptions = applyAllHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable);
-    if (!isSolutionOptionsComplete(cardsAvailable, newSolutionOptions)) {
+    const firstCheckSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solution.missingNumber), solution, clues, theCardsAvailable);
+    if (!isSolutionOptionsComplete(theCardsAvailable, firstCheckSolutionOptions)) {
       console.error('reduceClues: initial clues do not solve the puzzle');
       return;
     }
@@ -265,7 +269,10 @@ export const GameStateContextProvider = ({ children }) => {
     // sort the clues into the defined order for reducing
     // Note: no longer using this approach, as it always removes the same sorts of clues - will make this a user option eventually
     // let finalClues = sortCluesReducing(clues);
-    let finalClues = shuffle(clues);
+
+    // TODO PUT BACK
+    // let finalClues = shuffle(clues);
+    let finalClues = [...clues];
 
     // work through the clues, removing one at a time, to see if still can solve without that clue
     let nextIndex = 0;
@@ -280,8 +287,9 @@ export const GameStateContextProvider = ({ children }) => {
       if (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes) {
         // the new clues without that one
         const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
-        const newSolutionOptions1 = applyAllHintsToSolutionOptions(solutionOptions, solution, newClues, cardsAvailable);
-        if (isSolutionOptionsComplete(cardsAvailable, newSolutionOptions1)) {
+        // remember to add in the deduced clues (which applies if we've removed a HAND_TYPE clue that can now be deduced)
+        const newSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solution.missingNumber), solution, addInDeducedClues(newClues), theCardsAvailable);
+        if (isSolutionOptionsComplete(theCardsAvailable, newSolutionOptions)) {
           logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, nextIndex)}`);
           finalClues = newClues;
           thisClueRemoved = true;
@@ -297,11 +305,12 @@ export const GameStateContextProvider = ({ children }) => {
 
     if (removedAnyClues) {
       // save the new clues, first sorting for showing
-      setCluesAndShowClues(sortCluesShowing(finalClues));
+      // remember to add in the deduced clues
+      setCluesAndShowClues(sortCluesShowing(addInDeducedClues(finalClues)));
     } else {
       logIfDevEnv('reduceClues: could not find a clue to remove');
     }
-  }, [cardsAvailable, clues, solution, solutionOptions]);
+  }, [clues, solution]);
 
   // --------------------- //
   // apply the basic clues //
