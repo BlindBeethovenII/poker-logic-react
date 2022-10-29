@@ -1018,6 +1018,7 @@ const clueCompareReducing = (clue1, clue2) => {
 };
 
 // sort clues according to CLUE_ORDERING_REDUCING for reducing
+// Note: no longer used - will make this a user option eventually
 export const sortCluesReducing = (cluesParam) => {
   // copy of clues param as the array.sort() sorts in place
   const clues = [...cluesParam];

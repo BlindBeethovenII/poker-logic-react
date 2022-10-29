@@ -2,6 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
+import shuffle from 'lodash.shuffle';
+
 import { createSolution } from '../shared/card-functions';
 
 import {
@@ -29,7 +31,6 @@ import {
   addInDeducedClues,
   createInitialShowClues,
   sortCluesShowing,
-  sortCluesReducing,
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
@@ -262,7 +263,9 @@ export const GameStateContextProvider = ({ children }) => {
     let removedAnyClues = false;
 
     // sort the clues into the defined order for reducing
-    let finalClues = sortCluesReducing(clues);
+    // Note: no longer using this approach, as it always removes the same sorts of clues - will make this a user option eventually
+    // let finalClues = sortCluesReducing(clues);
+    let finalClues = shuffle(clues);
 
     // work through the clues, removing one at a time, to see if still can solve without that clue
     let nextIndex = 0;

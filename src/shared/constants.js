@@ -241,6 +241,7 @@ export const CLUE_ORDERING = {
 };
 
 // order of clues for reducing the clues
+// Note: no longer used - will make this a user option eventually
 export const CLUE_ORDERING_REDUCING = {
   [CLUE_SUIT_AND_NUMBER]: 100,
 
