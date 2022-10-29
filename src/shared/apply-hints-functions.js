@@ -44,6 +44,7 @@ import {
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER,
+  HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
@@ -583,6 +584,20 @@ export const applyClueCardsSameNumberHint = (solutionOptions, hint) => {
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyClueCardsSameNumberTwoNotAvailableHint = (solutionOptions, hint) => {
+  const {
+    number,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 export const applyClueCardsNotSameNumberHint = (solutionOptions, hint) => {
   const {
     number,
@@ -1103,6 +1118,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_CARDS_SAME_NUMBER:
       return applyClueCardsSameNumberHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE:
+      return applyClueCardsSameNumberTwoNotAvailableHint(solutionOptions, hint);
 
     case HINT_CLUE_CARDS_NOT_SAME_NUMBER:
       return applyClueCardsNotSameNumberHint(solutionOptions, hint);

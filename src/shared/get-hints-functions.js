@@ -122,6 +122,7 @@ import {
   HINT_CLUE_NUMBER,
   HINT_CLUE_NOT_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER,
+  HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
@@ -492,7 +493,7 @@ export const getNoStraightInNumberHints = (cardsAvailable, solutionHandsIndex, s
     // how many cards in solutionOptions have this number placed
     const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
 
-    // so we need at least 1 available after numberPlacedClunt has been removed, for this number to be available for a straight
+    // so we need at least 1 available after numberPlacedCount has been removed, for this number to be available for a straight
     if (numberAvailableCount - numberPlacedCount >= 1) {
       cardsOfNumbersAvailableForStraight.push(createCard(SUIT_SPADES, number));
     }
@@ -1943,6 +1944,53 @@ export const getClueCardsSameNumberHints = (solutionHandsIndex1, handOptionsInde
   return hints;
 };
 
+// --------------------------------------------- //
+// HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE //
+// --------------------------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_NUMBER
+export const createHintClueCardsSameNumberTwoNotAvailable = (number, solutionOptionsIndex, handOptionsIndex, clue) => ({
+  hintType: HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue,
+});
+
+// create HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE hint to remove any numbers which don't have enough available to fill these two slots
+export const getClueCardsSameNumberTwoNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+
+  // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so both sets of numbers are the same
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+
+  // we have to check that the number hasn't been placed - if it has, then both have, and so nothing for us to do
+  if (numbers1.length === 1) {
+    return [];
+  }
+
+  // for through all possible numbers from the first, and if it is not possible in the second then create a hint to remove it from the first
+  numbers1.forEach((number) => {
+    // how many of this number are in cards available
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // how many cards in solutionOptions have this number placed
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // so we need at least 2 available after numberPlacedCount has been removed, for this number to be available for both of these cards
+    if (numberAvailableCount - numberPlacedCount < 2) {
+      // at least 2 not available - so remove this number in both places
+      hints.push(createHintClueCardsSameNumberTwoNotAvailable(number, solutionHandsIndex1, handOptionsIndex1, clue));
+      hints.push(createHintClueCardsSameNumberTwoNotAvailable(number, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  });
+
+  return hints;
+};
+
 // ------------------------------- //
 // HINT_CLUE_CARDS_NOT_SAME_NUMBER //
 // ------------------------------- //
@@ -3309,6 +3357,12 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable, basic
       const clueCardsSameNumberHints = getClueCardsSameNumberHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
       if (clueCardsSameNumberHints.length) {
         return clueCardsSameNumberHints;
+      }
+
+      // eslint-disable-next-line max-len
+      const clueCardsSameNumberTwoNotAvailableHints = getClueCardsSameNumberTwoNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue);
+      if (clueCardsSameNumberTwoNotAvailableHints.length) {
+        return clueCardsSameNumberTwoNotAvailableHints;
       }
     }
 
