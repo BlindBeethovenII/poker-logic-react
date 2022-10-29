@@ -2,8 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-// TODO PUT BACK
-// import shuffle from 'lodash.shuffle';
+import shuffle from 'lodash.shuffle';
 
 import { createSolution } from '../shared/card-functions';
 
@@ -270,9 +269,7 @@ export const GameStateContextProvider = ({ children }) => {
     // Note: no longer using this approach, as it always removes the same sorts of clues - will make this a user option eventually
     // let finalClues = sortCluesReducing(clues);
 
-    // TODO PUT BACK
-    // let finalClues = shuffle(clues);
-    let finalClues = [...clues];
+    let finalClues = shuffle(clues);
 
     // work through the clues, removing one at a time, to see if still can solve without that clue
     let nextIndex = 0;
