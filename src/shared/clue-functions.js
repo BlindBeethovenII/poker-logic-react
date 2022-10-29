@@ -957,8 +957,14 @@ export const createInitialShowClues = (clues) => {
 
 // the sort compare function for clue sorting
 const clueCompare = (clue1, clue2) => {
-  const { clueType: clueType1 } = clue1;
-  const { clueType: clueType2 } = clue2;
+  const { clueType: clueType1, deduced: deduced1 } = clue1;
+  const { clueType: clueType2, deduced: deduced2 } = clue2;
+
+  // special case for deduced clue - they always go to the end, as sometimes they are not shown - and if we sort to front, then there is a gap
+  if (deduced1 && !deduced2) {
+    // move a deduced clue after a non-deduced clue
+    return 1;
+  }
 
   // special case if both CLUE_HAND_OF_TYPE - these we compare by their handType
   if (clueType1 === CLUE_HAND_OF_TYPE && clueType2 === CLUE_HAND_OF_TYPE) {
