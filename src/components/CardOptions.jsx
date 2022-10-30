@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -43,8 +43,6 @@ const CardOptions = (props) => {
     toggleNumberOptionToCardsInHand,
     resetNumberOptions,
   } = useContext(GameStateContext);
-
-  const [numberToggledOffOnMouseEnter, setNumberToggledOffOnMouseEnter] = useState(undefined);
 
   // form our id based on our hand option index
   const id = `card-options-${solutionOptionsIndex}-${handOptionsIndex}`;
@@ -296,28 +294,26 @@ const CardOptions = (props) => {
         setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
       };
 
-      // toggle the number option
-      const numberToggleOption = (e) => {
-        logIfDevEnv(`numberToggleOption ${number} when numberToggledOffOnMouseEnter=${numberToggledOffOnMouseEnter}`);
+      // toggle the number option if the right button is selected
+      const onMouseDownNumber = (e) => {
+        if (e.buttons === 2) {
+          logIfDevEnv(`onMouseDownNumber: right button on for number ${number}`);
 
-        // stop the context menu appearing
-        e.preventDefault();
+          // stop the context menu appearing
+          e.preventDefault();
 
-        // if this is the single number option, then toggle means make all options available again
-        if (isSingleNumberOption) {
-          resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
-        } else if (numberToggledOffOnMouseEnter !== number) {
-          // toggle corresponding number - if we haven't already just done it on mouse enter number
-          if (e.shiftKey) {
+          // if this is the single number option, then toggle means make all options available again
+          if (isSingleNumberOption) {
+            resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
+          } else if (e.shiftKey) {
             // the shift key is down to toggle number for all cards in this hand
             toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
           } else {
             // toggle just this card's number
+            logIfDevEnv(`onMouseDownNumber ${number} calling toggleNumberOption`);
             toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
           }
         }
-
-        setNumberToggledOffOnMouseEnter(undefined);
       };
 
       // if we enter a number with right button and we are a non-single number option that is selected - then toggle off
@@ -331,22 +327,16 @@ const CardOptions = (props) => {
               toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
             } else {
               // toggle just this card's number
+              logIfDevEnv(`onMouseEnterNumber ${number} calling toggleNumberOption`);
               toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
             }
           }
-
-          // need to remember this, so mouse up doesn't toggle
-          setNumberToggledOffOnMouseEnter(number);
         }
       };
 
-      // if we leave a number with right button and we are a non-single number option that is selected - then toggle off
-      const onMouseLeaveNumber = (e) => {
-        if (e.buttons === 2 && !isSingleNumberOption && !faded) {
-          logIfDevEnv(`onMouseLeaveNumber: right button while on still selected number ${number} - so toggle off`);
-          // TODO - this does not work for the first onMouseLeave - I think it is because of event listeners and useState - would need to change solutionOptions to a useRef
-          toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
-        }
+      // need this to stop the context menu appearing
+      const stopContextMenuAppearing = (e) => {
+        e.preventDefault();
       };
 
       const numberDivId = `${id}-num-${number}`;
@@ -360,9 +350,9 @@ const CardOptions = (props) => {
           role="button"
           onClick={numberSelectThisOptionOnly}
           onKeyDown={numberSelectThisOptionOnly}
-          onContextMenu={numberToggleOption}
+          onMouseDown={onMouseDownNumber}
           onMouseEnter={onMouseEnterNumber}
-          onMouseLeave={onMouseLeaveNumber}
+          onContextMenu={stopContextMenuAppearing}
         >
           {cardnumber}
         </div>
