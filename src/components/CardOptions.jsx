@@ -34,6 +34,7 @@ const CardOptions = (props) => {
     missingNumber,
     solutionOptions,
     setSuitOptionOnly,
+    setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
     resetSuitOptions,
     setNumberOptionOnly,
@@ -155,9 +156,15 @@ const CardOptions = (props) => {
     };
 
     // set this suit as the only selected suit
-    const suitSelectThisOptionOnly = () => {
+    const suitSelectThisOptionOnly = (e) => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
-      setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+      // if the shift key is down, then set for all cards in this hand
+      if (e.shiftKey) {
+        setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
+      } else {
+        // just set for this card
+        setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+      }
     };
 
     // toggle the selected value of the suit
