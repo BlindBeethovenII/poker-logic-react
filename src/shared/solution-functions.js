@@ -514,6 +514,26 @@ export const getNumbersOfSuitInAvailable = (suit, cardsAvailable) => {
   return [];
 };
 
+// return the number of cards in the name suit in the given cardsAvailable
+export const countSuitAvailable = (suit, cardsAvailable) => {
+  if (suit === SUIT_SPADES) {
+    return cardsAvailable[0].length;
+  }
+  if (suit === SUIT_HEARTS) {
+    return cardsAvailable[1].length;
+  }
+  if (suit === SUIT_DIAMONDS) {
+    return cardsAvailable[2].length;
+  }
+  if (suit === SUIT_CLUBS) {
+    return cardsAvailable[3].length;
+  }
+
+  // should not get here
+  console.error(`countSuitAvailable cannot cope with suit ${suit}`);
+  return 0;
+};
+
 // get the value of a specific suit options boolean in the given solution options
 export const getSuitOptionsValue = (solutionOptions, solutionOptionsIndex, handOptionsIndex, suitOptionsIndex) =>
   solutionOptions[solutionOptionsIndex][handOptionsIndex].suitOptions[suitOptionsIndex];

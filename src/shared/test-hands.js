@@ -375,7 +375,7 @@ export const solutionHands5 = [
     createCard(SUIT_HEARTS, NUMBER_A),
     createCard(SUIT_DIAMONDS, NUMBER_A),
     createCard(SUIT_CLUBS, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
     createCard(SUIT_HEARTS, NUMBER_4),
   ],
 ];
@@ -392,7 +392,7 @@ export const clues5 = [
   // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
 
   createClueNumber(NUMBER_8, 0, 4),
-  createClueNumber(NUMBER_7, 2, 2),
+  // createClueNumber(NUMBER_7, 2, 2),
 
   createClueHandEven(3),
 
@@ -402,11 +402,13 @@ export const clues5 = [
 
   createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
 
-  createClueCardsSameNumber(2, 4, 3, 4),
+  // createClueCardsSameNumber(2, 4, 3, 4),
   createClueCardsSameNumber(3, 0, 3, 1),
   createClueCardsSameNumber(3, 1, 3, 2),
 
   createClueCardsNotSameNumber(1, 4, 0, 1),
+
+  createClueCardsSameSuit(3, 1, 3, 3),
 
   createClueRedSuit(1, 1),
 
