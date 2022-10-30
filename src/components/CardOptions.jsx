@@ -289,12 +289,14 @@ const CardOptions = (props) => {
       };
 
       // set this number as the only selected number
+      // note: no use for selecting this number of all cards in this hand - there is no such poker hand
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
         setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
       };
 
+      // toggle the number option
       const numberToggleOption = (e) => {
         logIfDevEnv(`numberToggleOption ${number} when numberToggledOffOnMouseEnter=${numberToggledOffOnMouseEnter}`);
 
@@ -310,7 +312,7 @@ const CardOptions = (props) => {
             // the shift key is down to toggle number for all cards in this hand
             toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
           } else {
-            // just this one
+            // toggle just this card's number
             toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
           }
         }
@@ -324,7 +326,13 @@ const CardOptions = (props) => {
           logIfDevEnv(`onMouseEnterNumber: right button on for number ${number}`);
 
           if (!isSingleNumberOption && !faded) {
-            toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+            if (e.shiftKey) {
+              // the shift key is down to toggle number for all cards in this hand
+              toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
+            } else {
+              // toggle just this card's number
+              toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+            }
           }
 
           // need to remember this, so mouse up doesn't toggle
