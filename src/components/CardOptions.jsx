@@ -36,6 +36,7 @@ const CardOptions = (props) => {
     setSuitOptionOnly,
     setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
+    toggleSuitOptionToCardsInHand,
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
@@ -177,6 +178,9 @@ const CardOptions = (props) => {
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
+      } else if (e.shiftKey) {
+        // the shift key is down to toggle suit for all cards in this hand
+        toggleSuitOptionToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
       } else {
         // toggle corresponding suit index
         toggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);

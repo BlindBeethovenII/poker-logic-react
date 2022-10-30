@@ -140,6 +140,16 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
+  // toggle the given suit option index to all cards in this hand
+  const toggleSuitOptionToCardsInHand = useCallback((suitOptionsIndex, solutionOptionsIndex) => {
+    const newSolutionOptions0 = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, solutionOptions);
+    const newSolutionOptions1 = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions0);
+    const newSolutionOptions2 = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions1);
+    const newSolutionOptions3 = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions2);
+    const newSolutionOptions4 = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions3);
+    setSolutionOptions(newSolutionOptions4, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
+
   // reset all the suit options
   const resetSuitOptions = useCallback((solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, solutionOptions);
@@ -390,6 +400,7 @@ export const GameStateContextProvider = ({ children }) => {
     setSuitOptionOnly,
     setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
+    toggleSuitOptionToCardsInHand,
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
@@ -433,6 +444,7 @@ export const GameStateContextProvider = ({ children }) => {
     setSuitOptionOnly,
     setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
+    toggleSuitOptionToCardsInHand,
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
