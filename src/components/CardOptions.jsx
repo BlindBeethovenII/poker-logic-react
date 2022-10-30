@@ -40,6 +40,7 @@ const CardOptions = (props) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
+    toggleNumberOptionToCardsInHand,
     resetNumberOptions,
   } = useContext(GameStateContext);
 
@@ -305,7 +306,13 @@ const CardOptions = (props) => {
           resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
         } else if (numberToggledOffOnMouseEnter !== number) {
           // toggle corresponding number - if we haven't already just done it on mouse enter number
-          toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+          if (e.shiftKey) {
+            // the shift key is down to toggle number for all cards in this hand
+            toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
+          } else {
+            // just this one
+            toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+          }
         }
 
         setNumberToggledOffOnMouseEnter(undefined);

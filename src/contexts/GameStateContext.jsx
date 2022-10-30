@@ -156,16 +156,26 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
-  // set the given number options index as the only selected number option
+  // set the given number as the only selected number option
   const setNumberOptionOnly = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
-  // toggle the given number option index
+  // toggle the given number
   const toggleNumberOption = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
+
+  // toggle the given number to all cards in this hand
+  const toggleNumberOptionToCardsInHand = useCallback((number, solutionOptionsIndex) => {
+    const newSolutionOptions0 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 0, solutionOptions);
+    const newSolutionOptions1 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions0);
+    const newSolutionOptions2 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions1);
+    const newSolutionOptions3 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions2);
+    const newSolutionOptions4 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions3);
+    setSolutionOptions(newSolutionOptions4, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
   // reset all the number options
@@ -404,6 +414,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
+    toggleNumberOptionToCardsInHand,
     resetNumberOptions,
     resetSolutionOptions,
 
@@ -448,6 +459,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
+    toggleNumberOptionToCardsInHand,
     resetNumberOptions,
     resetSolutionOptions,
     cardsAvailable,
