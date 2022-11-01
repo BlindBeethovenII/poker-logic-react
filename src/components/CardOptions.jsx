@@ -40,7 +40,7 @@ const CardOptions = (props) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
-    toggleNumberOptionToCardsInHand,
+    turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
   } = useContext(GameStateContext);
 
@@ -306,8 +306,8 @@ const CardOptions = (props) => {
           if (isSingleNumberOption) {
             resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
           } else if (e.shiftKey) {
-            // the shift key is down to toggle number for all cards in this hand
-            toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
+            // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
+            turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
           } else {
             // toggle just this card's number
             logIfDevEnv(`onMouseDownNumber ${number} calling toggleNumberOption`);
@@ -323,8 +323,8 @@ const CardOptions = (props) => {
 
           if (!isSingleNumberOption && !faded) {
             if (e.shiftKey) {
-              // the shift key is down to toggle number for all cards in this hand
-              toggleNumberOptionToCardsInHand(number, solutionOptionsIndex);
+              // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
+              turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
             } else {
               // toggle just this card's number
               logIfDevEnv(`onMouseEnterNumber ${number} calling toggleNumberOption`);

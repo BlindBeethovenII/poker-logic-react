@@ -17,6 +17,8 @@ import {
   getCardsAvailable,
   isSolutionOptionsComplete,
   solutionOptionsValid,
+  countNumbersInCardOptions,
+  getNumberOptionsValueInCardOptions,
 } from '../shared/solution-functions';
 
 import { getHints } from '../shared/get-hints-functions';
@@ -168,14 +170,49 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
-  // toggle the given number to all cards in this hand
-  const toggleNumberOptionToCardsInHand = useCallback((number, solutionOptionsIndex) => {
-    const newSolutionOptions0 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 0, solutionOptions);
-    const newSolutionOptions1 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions0);
-    const newSolutionOptions2 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions1);
-    const newSolutionOptions3 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions2);
-    const newSolutionOptions4 = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions3);
-    setSolutionOptions(newSolutionOptions4, solution.solutionHands, cardsAvailable);
+  // toggle the given number to all cards in this hand for any cards for which their number is not placed yet
+  const turnOffNumberInHandIfOnAndNotPlaced = useCallback((number, solutionOptionsIndex) => {
+    let newSolutionOptions = solutionOptions;
+    let changeMade = false;
+
+    // card 1
+    const cardOptions1 = solutionOptions[solutionOptionsIndex][0];
+    if (getNumberOptionsValueInCardOptions(cardOptions1, number) && countNumbersInCardOptions(cardOptions1) > 1) {
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 0, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 2
+    const cardOptions2 = solutionOptions[solutionOptionsIndex][1];
+    if (getNumberOptionsValueInCardOptions(cardOptions2, number) && countNumbersInCardOptions(cardOptions2) > 1) {
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 3
+    const cardOptions3 = solutionOptions[solutionOptionsIndex][2];
+    if (getNumberOptionsValueInCardOptions(cardOptions3, number) && countNumbersInCardOptions(cardOptions3) > 1) {
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 4
+    const cardOptions4 = solutionOptions[solutionOptionsIndex][3];
+    if (getNumberOptionsValueInCardOptions(cardOptions4, number) && countNumbersInCardOptions(cardOptions4) > 1) {
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 5
+    const cardOptions5 = solutionOptions[solutionOptionsIndex][4];
+    if (getNumberOptionsValueInCardOptions(cardOptions5, number) && countNumbersInCardOptions(cardOptions5) > 1) {
+      newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions);
+      changeMade = true;
+    }
+
+    if (changeMade) {
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+    }
   }, [solutionOptions, solution, cardsAvailable]);
 
   // reset all the number options
@@ -414,7 +451,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
-    toggleNumberOptionToCardsInHand,
+    turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,
 
@@ -459,7 +496,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
-    toggleNumberOptionToCardsInHand,
+    turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,
     cardsAvailable,
