@@ -128,6 +128,7 @@ import {
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
@@ -2173,6 +2174,56 @@ export const getClueCardsSameSuitTwoNotAvailableHints = (solutionHandsIndex1, ha
   return hints;
 };
 
+// --------------------------------------------- //
+// HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE //
+// --------------------------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE
+export const createHintClueCardsSameSuitThreeNotAvailable = (suit, solutionOptionsIndex, handOptionsIndex, clue1, clue2) => ({
+  hintType: HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue1,
+  clue2,
+});
+
+// create HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE hint to remove any suits which don't have enough available to fill these three slots
+// eslint-disable-next-line max-len
+export const getClueCardsSameSuitThreeNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, cardsAvailable, solutionOptions, clue1, clue2) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+
+  // we can assume here that HINT_CLUE_CARDS_SAME_SUIT has already been applied, so all three sets of suits are the same
+  const suits = getSuitsFromCardOptions(cardOptions1);
+
+  // we have to check that the suit hasn't been placed - if it has, then all three cards have their suit set, and so nothing for us to do
+  if (suits.length === 1) {
+    return [];
+  }
+
+  // for all possible suits still available at these three positions
+  suits.forEach((suit) => {
+    // how many of this suit are in cards available
+    const suitAvailableCount = countSuitAvailable(suit, cardsAvailable);
+
+    // how many cards in solutionOptions have this suit placed
+    const suitPlacedCount = countSuitPlacedInSolutionOptions(suit, solutionOptions);
+
+    // so we need at least 3 available after suitPlacedCount has been removed, for this suit to be available for all three cards
+    if (suitAvailableCount - suitPlacedCount < 3) {
+      // at least 3 not available - so remove this suit from all three cards
+      hints.push(createHintClueCardsSameSuitThreeNotAvailable(suit, solutionHandsIndex1, handOptionsIndex1, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitThreeNotAvailable(suit, solutionHandsIndex2, handOptionsIndex2, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitThreeNotAvailable(suit, solutionHandsIndex3, handOptionsIndex3, clue1, clue2));
+    }
+  });
+
+  return hints;
+};
+
 // ----------------------------- //
 // HINT_CLUE_CARDS_NOT_SAME_SUIT //
 // ----------------------------- //
@@ -3539,6 +3590,48 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable, basic
       const clueCardsSameSuitTwoNotAvailableHints = getClueCardsSameSuitTwoNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue);
       if (clueCardsSameSuitTwoNotAvailableHints.length) {
         return clueCardsSameSuitTwoNotAvailableHints;
+      }
+
+      // if there is another CLUE_CARDS_SAME_SUIT which involves either of these cards then we can do HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE
+      // look forward from where we are
+      for (let j = i + 1; j < clues.length; j += 1) {
+        const clue2 = clues[j];
+        const { clueType: clueType2 } = clue2;
+        if (clueType2 === CLUE_CARDS_SAME_SUIT) {
+          const {
+            solutionHandsIndex1: solutionHandsIndexClue21,
+            handOptionsIndex1: handOptionsIndexClue21,
+            solutionHandsIndex2: solutionHandsIndexClue22,
+            handOptionsIndex2: handOptionsIndexClue22,
+          } = clue2;
+
+          if (solutionHandsIndex1 === solutionHandsIndexClue21 && handOptionsIndex1 === handOptionsIndexClue21) {
+            // first card of both clues match
+            // eslint-disable-next-line max-len
+            const clueCardsSameSuitThreeNotAvailableHints = getClueCardsSameSuitThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue22, handOptionsIndexClue22, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameSuitThreeNotAvailableHints.length) {
+              return clueCardsSameSuitThreeNotAvailableHints;
+            }
+          }
+
+          if (solutionHandsIndex2 === solutionHandsIndexClue21 && handOptionsIndex2 === handOptionsIndexClue21) {
+            // second card of first clue matches first card of second clue
+            // eslint-disable-next-line max-len
+            const clueCardsSameSuitThreeNotAvailableHints = getClueCardsSameSuitThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue22, handOptionsIndexClue22, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameSuitThreeNotAvailableHints.length) {
+              return clueCardsSameSuitThreeNotAvailableHints;
+            }
+          }
+
+          if (solutionHandsIndex1 === solutionHandsIndexClue22 && handOptionsIndex1 === handOptionsIndexClue22) {
+            // first card of first clue matches second card of second clue
+            // eslint-disable-next-line max-len
+            const clueCardsSameSuitThreeNotAvailableHints = getClueCardsSameSuitThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue21, handOptionsIndexClue21, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameSuitThreeNotAvailableHints.length) {
+              return clueCardsSameSuitThreeNotAvailableHints;
+            }
+          }
+        }
       }
     }
 

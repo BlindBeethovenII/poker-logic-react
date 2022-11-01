@@ -49,6 +49,7 @@ import {
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
@@ -610,7 +611,7 @@ export const applyClueCardsSameNumberThreeNotAvailableHint = (solutionOptions, h
   } = hint;
 
   // eslint-disable-next-line max-len
-  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue1: ${clueToString(clue1)}] [Clue2: ${clueToString(clue2)}]`);
+  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE for number ${number} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue 1: ${clueToString(clue1)}] [Clue 2: ${clueToString(clue2)}]`);
 
   return toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
@@ -653,6 +654,21 @@ export const applyClueCardsSameSuitTwoNotAvailableHint = (solutionOptions, hint)
 
   // eslint-disable-next-line max-len
   logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue: ${clueToString(clue)}]`);
+
+  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
+export const applyClueCardsSameSuitThreeNotAvailableHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue1,
+    clue2,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue 1: ${clueToString(clue1)}] [Clue 2: ${clueToString(clue2)}]`);
 
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
@@ -1164,6 +1180,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE:
       return applyClueCardsSameSuitTwoNotAvailableHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE:
+      return applyClueCardsSameSuitThreeNotAvailableHint(solutionOptions, hint);
 
     case HINT_CLUE_CARDS_NOT_SAME_SUIT:
       return applyClueCardsNotSameSuitHint(solutionOptions, hint);
