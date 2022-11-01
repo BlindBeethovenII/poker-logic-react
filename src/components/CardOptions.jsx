@@ -36,7 +36,7 @@ const CardOptions = (props) => {
     setSuitOptionOnly,
     setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
-    toggleSuitOptionToCardsInHand,
+    turnOffSuitInHandIfOnAndNotPlaced,
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
@@ -179,7 +179,7 @@ const CardOptions = (props) => {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
       } else if (e.shiftKey) {
         // the shift key is down to toggle suit for all cards in this hand
-        toggleSuitOptionToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
+        turnOffSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex);
       } else {
         // toggle corresponding suit index
         toggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);

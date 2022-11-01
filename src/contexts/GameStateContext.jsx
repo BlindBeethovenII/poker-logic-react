@@ -17,7 +17,9 @@ import {
   getCardsAvailable,
   isSolutionOptionsComplete,
   solutionOptionsValid,
+  countSuitsInCardOptions,
   countNumbersInCardOptions,
+  getSuitOptionsValueInCardOptions,
   getNumberOptionsValueInCardOptions,
 } from '../shared/solution-functions';
 
@@ -50,6 +52,8 @@ import {
   clues5,
   solution6,
   clues6,
+  solution7,
+  clues7,
 } from '../shared/test-hands';
 
 import {
@@ -172,7 +176,52 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
-  // toggle the given number to all cards in this hand for any cards for which their number is not placed yet
+  // turn off the given suit to all cards in this hand for any cards for which their suit is on and not placed yet
+  const turnOffSuitInHandIfOnAndNotPlaced = useCallback((suitOptionsIndex, solutionOptionsIndex) => {
+    let newSolutionOptions = solutionOptions;
+    let changeMade = false;
+
+    // card 1
+    const cardOptions1 = solutionOptions[solutionOptionsIndex][0];
+    if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex) && countSuitsInCardOptions(cardOptions1) > 1) {
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 2
+    const cardOptions2 = solutionOptions[solutionOptionsIndex][1];
+    if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex) && countSuitsInCardOptions(cardOptions2) > 1) {
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 3
+    const cardOptions3 = solutionOptions[solutionOptionsIndex][2];
+    if (getSuitOptionsValueInCardOptions(cardOptions3, suitOptionsIndex) && countSuitsInCardOptions(cardOptions3) > 1) {
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 4
+    const cardOptions4 = solutionOptions[solutionOptionsIndex][3];
+    if (getSuitOptionsValueInCardOptions(cardOptions4, suitOptionsIndex) && countSuitsInCardOptions(cardOptions4) > 1) {
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 5
+    const cardOptions5 = solutionOptions[solutionOptionsIndex][4];
+    if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
+      newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+      changeMade = true;
+    }
+
+    if (changeMade) {
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+    }
+  }, [solutionOptions, solution, cardsAvailable]);
+
+  // turn off the given number to all cards in this hand for any cards for which their number is on and not placed yet
   const turnOffNumberInHandIfOnAndNotPlaced = useCallback((number, solutionOptionsIndex) => {
     let newSolutionOptions = solutionOptions;
     let changeMade = false;
@@ -276,6 +325,11 @@ export const GameStateContextProvider = ({ children }) => {
       nextNewSolution = solution6;
       nextClues = clues6;
       setCurrentSolutionLabel('Hard-coded Solution 6');
+      setNextHardCodedSolution(7);
+    } else if (newSolutionIndex === 7) {
+      nextNewSolution = solution7;
+      nextClues = clues7;
+      setCurrentSolutionLabel('Hard-coded Solution 7');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();
@@ -458,6 +512,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
+    turnOffSuitInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,
@@ -503,6 +558,7 @@ export const GameStateContextProvider = ({ children }) => {
     resetSuitOptions,
     setNumberOptionOnly,
     toggleNumberOption,
+    turnOffSuitInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,
