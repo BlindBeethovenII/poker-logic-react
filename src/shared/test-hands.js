@@ -403,7 +403,7 @@ export const clues5 = [
   createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
 
   // createClueCardsSameNumber(2, 4, 3, 4),
-  createClueCardsSameNumber(3, 0, 3, 1),
+  createClueCardsSameNumber(3, 1, 3, 0),
   createClueCardsSameNumber(3, 1, 3, 2),
 
   createClueCardsNotSameNumber(1, 4, 0, 1),

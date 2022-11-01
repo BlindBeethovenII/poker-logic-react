@@ -124,6 +124,7 @@ import {
   HINT_CLUE_NOT_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
@@ -1993,6 +1994,56 @@ export const getClueCardsSameNumberTwoNotAvailableHints = (solutionHandsIndex1, 
   return hints;
 };
 
+// ----------------------------------------------- //
+// HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE //
+// ----------------------------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE
+export const createHintClueCardsSameNumberThreeNotAvailable = (number, solutionOptionsIndex, handOptionsIndex, clue1, clue2) => ({
+  hintType: HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue1,
+  clue2,
+});
+
+// create HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE hint to remove any numbers which don't have enough available to fill these three slots
+// eslint-disable-next-line max-len
+export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, cardsAvailable, solutionOptions, clue1, clue2) => {
+  const hints = [];
+
+  // need to compare the card options for these two cards
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+
+  // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so all three sets of numbers are the same
+  const numbers = getNumbersFromCardOptions(cardOptions1);
+
+  // we have to check that the number hasn't been placed - if it has, then all three cards have their number set, and so nothing for us to do
+  if (numbers.length === 1) {
+    return [];
+  }
+
+  // for all possible numbers still available at these three positions
+  numbers.forEach((number) => {
+    // how many of this number are in cards available
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // how many cards in solutionOptions have this number placed
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // we need at least 3 available after numberPlacedCount has been removed, for this number to be available for all three cards
+    if (numberAvailableCount - numberPlacedCount < 3) {
+      // at least 3 not available - so remove this number from all three cards
+      hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex1, handOptionsIndex1, clue1, clue2));
+      hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex2, handOptionsIndex2, clue1, clue2));
+      hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex3, handOptionsIndex3, clue1, clue2));
+    }
+  });
+
+  return hints;
+};
+
 // ------------------------------- //
 // HINT_CLUE_CARDS_NOT_SAME_NUMBER //
 // ------------------------------- //
@@ -3412,6 +3463,48 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable, basic
       const clueCardsSameNumberTwoNotAvailableHints = getClueCardsSameNumberTwoNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue);
       if (clueCardsSameNumberTwoNotAvailableHints.length) {
         return clueCardsSameNumberTwoNotAvailableHints;
+      }
+
+      // if there is another CLUE_CARDS_SAME_NUMBER which involves either of these cards then we can do HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE
+      // look forward from where we are
+      for (let j = i + 1; j < clues.length; j += 1) {
+        const clue2 = clues[j];
+        const { clueType: clueType2 } = clue2;
+        if (clueType2 === CLUE_CARDS_SAME_NUMBER) {
+          const {
+            solutionHandsIndex1: solutionHandsIndexClue21,
+            handOptionsIndex1: handOptionsIndexClue21,
+            solutionHandsIndex2: solutionHandsIndexClue22,
+            handOptionsIndex2: handOptionsIndexClue22,
+          } = clue2;
+
+          if (solutionHandsIndex1 === solutionHandsIndexClue21 && handOptionsIndex1 === handOptionsIndexClue21) {
+            // first card of both clues match
+            // eslint-disable-next-line max-len
+            const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue22, handOptionsIndexClue22, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameNumberThreeNotAvailableHints.length) {
+              return clueCardsSameNumberThreeNotAvailableHints;
+            }
+          }
+
+          if (solutionHandsIndex2 === solutionHandsIndexClue21 && handOptionsIndex2 === handOptionsIndexClue21) {
+            // second card of first clue matches first card of second clue
+            // eslint-disable-next-line max-len
+            const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue22, handOptionsIndexClue22, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameNumberThreeNotAvailableHints.length) {
+              return clueCardsSameNumberThreeNotAvailableHints;
+            }
+          }
+
+          if (solutionHandsIndex1 === solutionHandsIndexClue22 && handOptionsIndex1 === handOptionsIndexClue22) {
+            // first card of first clue matches second card of second clue
+            // eslint-disable-next-line max-len
+            const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue21, handOptionsIndexClue21, cardsAvailable, solutionOptions, clue, clue2);
+            if (clueCardsSameNumberThreeNotAvailableHints.length) {
+              return clueCardsSameNumberThreeNotAvailableHints;
+            }
+          }
+        }
       }
     }
 
