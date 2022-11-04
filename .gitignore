@@ -21,6 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.yarn
 
 # git log info generated file
 /src/_generated_git_log.js
