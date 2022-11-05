@@ -66,6 +66,7 @@ import {
   CLUE_ORDERING,
   CLUE_ORDERING_REDUCING,
   NUMBER_A,
+  HAND_TYPES_SORTED,
 } from './constants';
 
 import logIfDevEnv from './logIfDevEnv';
@@ -902,7 +903,7 @@ const getDeducedClues = (clues) => {
           const indexDiff = Math.abs(solutionHandsIndex1 - solutionHandsIndex2);
           const handTypeDiff = Math.abs(handType1 - handType2);
           if (indexDiff === handTypeDiff) {
-            logIfDevEnv(`getDeducedClues found two hand type clues with the same solutionHandsIndex diff as clueType diff ${indexDiff}`);
+            // logIfDevEnv(`getDeducedClues found two hand type clues with the same solutionHandsIndex diff as clueType diff ${indexDiff}`);
             const lowerHandType = handType1 < handType2 ? handType1 : handType2;
             const lowerSolutionHandsIndex = solutionHandsIndex1 < solutionHandsIndex2 ? solutionHandsIndex1 : solutionHandsIndex2;
             if (indexDiff === 2) {
@@ -1054,4 +1055,106 @@ export const showClue = (clue, clues) => {
 
   // otherwise the deduced clue is not show
   return false;
+};
+
+// helper function to return possible hand types based on solutionHandsIndex and other hand types
+export const getPossibleHandTypesBasedOnOthers = (solutionHandsIndex, knownHandTypes) => {
+  const possibleHandTypes = new Set(HAND_TYPES_SORTED);
+
+  // first look down from where we are, and remove the first we meet and below
+  let foundHandType = false;
+  for (let i = solutionHandsIndex + 1; i < knownHandTypes.length && !foundHandType; i += 1) {
+    const handType = knownHandTypes[i];
+    if (handType !== undefined) {
+      // we've found a hand type
+      foundHandType = true;
+
+      // calculate how far we can 'back up' through the undefines we have gone through
+      const firstHandTypeToRemove = handType + (i - solutionHandsIndex - 1);
+
+      // note: this relies on hand types being integers and ordered and the lowest being 1
+      for (let handTypeToRemove = firstHandTypeToRemove; handTypeToRemove > 0; handTypeToRemove -= 1) {
+        possibleHandTypes.delete(handTypeToRemove);
+      }
+    }
+  }
+
+  // if a hand type wasn't found then that is the same as one less than the both hand type being at one index below
+  if (!foundHandType) {
+    // calculate how far we can 'back up' through the undefines we have gone through
+    const handType = HAND_TYPE_HIGH_CARD - 1;
+    const i = knownHandTypes.length;
+    const firstHandTypeToRemove = handType + (i - solutionHandsIndex - 1);
+    for (let handTypeToRemove = firstHandTypeToRemove; handTypeToRemove > 0; handTypeToRemove -= 1) {
+      possibleHandTypes.delete(handTypeToRemove);
+    }
+  }
+
+  // first look up from where we are, and remove the first we meet and above
+  foundHandType = false;
+  for (let i = solutionHandsIndex - 1; i >= 0 && !foundHandType; i -= 1) {
+    const handType = knownHandTypes[i];
+    if (handType !== undefined) {
+      // we've found a hand type
+      foundHandType = true;
+
+      // calculate how far we can 'back down' through the undefines we have gone through
+      const firstHandTypeToRemove = handType - (solutionHandsIndex - i - 1);
+
+      // remove this hand type and above
+      for (let handTypeToRemove = firstHandTypeToRemove; handTypeToRemove <= HAND_TYPE_STRAIGHT_FLUSH; handTypeToRemove += 1) {
+        possibleHandTypes.delete(handTypeToRemove);
+      }
+    }
+  }
+
+  // always remove all the hand types that exactly fit into our hand type upwards, as if this one were one of them, there would be none left to fit in above/
+  // that is solutionHandsIndex 1 cannot be the first hand type (HAND_TYPE_STRAIGHT_FLUSH) because that can never be anywhere else but 0
+  for (let i = 0; i < solutionHandsIndex; i += 1) {
+    possibleHandTypes.delete(HAND_TYPE_STRAIGHT_FLUSH - i);
+  }
+
+  return Array.from(possibleHandTypes);
+};
+
+// return array of deduced clues from the given solutionOptions and clues, returning the empty array if none
+const getDeducedCluesFromSolutionOptions = (solutionOptions, clues) => {
+  // first work out what hand types we know
+  const knownHandTypes = [undefined, undefined, undefined, undefined];
+  for (let i = 0; i < clues.length; i += 1) {
+    const clue = clues[i];
+    const { clueType, handType, solutionHandsIndex } = clue;
+    if (clueType === CLUE_HAND_OF_TYPE) {
+      // this is a known hand type
+      knownHandTypes[solutionHandsIndex] = handType;
+    }
+  }
+
+  // consider any hand type we don't know yet
+  for (let solutionHandsIndex = 0; solutionHandsIndex < knownHandTypes.length; solutionHandsIndex += 1) {
+    if (knownHandTypes[solutionHandsIndex] === undefined) {
+      // we don't know this hand type yet - can it be deduced by the remaining possible card options?
+      // const handOptions = solutionOptions[solutionHandsIndex];
+      // const cardOptions1 = handOptions[0];
+      // const cardOptions2 = handOptions[1];
+      // const cardOptions3 = handOptions[2];
+      // const cardOptions4 = handOptions[3];
+      // const cardOptions5 = handOptions[4];
+
+      // first, restrict the possible hand types based on the hand types of the hands above and/or below this one
+      const possibleHandTypes = getPossibleHandTypesBasedOnOthers(solutionHandsIndex, knownHandTypes);
+      logIfDevEnv(`getDeducedCluesFromSolutionOptions DELETE THIS LOG ${possibleHandTypes}`);
+    }
+  }
+};
+
+// uses solutionOptions to add in deduced hand type clues; as well as calling addInDeducedClues() again if a new hand type clue is added, to create the hand type clues for the gaps
+export const addInDeducedCluesFromSolutionOptions = (solutionOptions, clues) => {
+  const deducedClues = getDeducedCluesFromSolutionOptions(solutionOptions, clues);
+  if (deducedClues.length) {
+    return [...clues, ...deducedClues];
+  }
+
+  // just return the original clues
+  return clues;
 };
