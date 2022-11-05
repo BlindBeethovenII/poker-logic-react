@@ -165,8 +165,6 @@ describe('getPossibleHandTypesBasedOnOthers', () => {
     expect(getPossibleHandTypesBasedOnOthers(1, [HAND_TYPE_FLUSH, undefined, undefined, HAND_TYPE_HIGH_CARD])).toEqual([HAND_TYPE_STRAIGHT, HAND_TYPE_THREE_OF_A_KIND, HAND_TYPE_TWO_PAIR]);
   });
 
-  // TODO BELOW
-
   // eslint-disable-next-line max-len
   it('will return array with just HAND_TYPE_PAIR for solutionHandsIndex 2 when solutionHandsIndex 1 hand type is HAND_TYPE_TWO_PAIR and solutionHandsIndex 3 hand type is HAND_TYPE_HIGH_CARD', () => {
     expect(getPossibleHandTypesBasedOnOthers(2, [undefined, HAND_TYPE_TWO_PAIR, undefined, HAND_TYPE_HIGH_CARD])).toEqual([HAND_TYPE_PAIR]);
