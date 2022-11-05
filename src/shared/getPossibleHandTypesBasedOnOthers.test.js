@@ -1,4 +1,4 @@
-import { getPossibleHandTypesBasedOnOthers } from './clue-functions';
+import { getPossibleHandTypesBasedOnOthers } from './get-deduced-clues-functions';
 
 import {
   HAND_TYPE_STRAIGHT_FLUSH,

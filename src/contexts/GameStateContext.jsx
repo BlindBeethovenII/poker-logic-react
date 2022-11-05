@@ -32,11 +32,12 @@ import {
 
 import {
   createCluesForSolutionHands,
-  addInDeducedClues,
   createInitialShowClues,
   sortCluesShowing,
   showClue,
 } from '../shared/clue-functions';
+
+import { addInDeducedClues } from '../shared/get-deduced-clues-functions';
 
 import { clueToText } from '../shared/to-text-functions';
 

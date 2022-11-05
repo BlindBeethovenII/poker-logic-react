@@ -1,5 +1,4 @@
 import {
-  sortCluesShowing,
   createClueHandOfType,
   createClueSuitAndNumber,
   createClueSuit,
@@ -19,7 +18,9 @@ import {
   createClueHandEven,
   createClueHandOdd,
   createClueHandNotNumber,
-} from './clue-functions';
+} from './create-clue-functions';
+
+import { sortCluesShowing } from './clue-functions';
 
 import {
   HAND_TYPE_FLUSH,

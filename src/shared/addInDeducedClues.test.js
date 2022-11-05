@@ -1,4 +1,6 @@
-import { addInDeducedClues, createClueHandOfType } from './clue-functions';
+import { addInDeducedClues } from './get-deduced-clues-functions';
+
+import { createClueHandOfType } from './create-clue-functions';
 
 import {
   HAND_TYPE_STRAIGHT_FLUSH,

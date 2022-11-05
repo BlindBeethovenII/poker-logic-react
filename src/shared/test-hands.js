@@ -29,7 +29,7 @@ import {
   createClueHandNotSuitAndNumber,
   createClueHandLowestNumber,
   createClueHandHighestNumber,
-} from './clue-functions';
+} from './create-clue-functions';
 
 import {
   NUMBER_A,

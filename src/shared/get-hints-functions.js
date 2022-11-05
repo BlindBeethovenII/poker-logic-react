@@ -55,6 +55,8 @@ import {
   getStraights,
 } from './card-functions';
 
+import { addInDeducedCluesFromSolutionOptions } from './get-deduced-clues-functions';
+
 import {
   NUMBERS,
   NUMBERS_SORTED,
@@ -3189,7 +3191,7 @@ export const getAllSuitPlacedOnlyPlaceForNumberHints = (cardsAvailable, solution
 // --------- //
 
 // get the next possible hints (being an array of hints of the same type)
-export const getHints = (solutionOptions, solution, clues, cardsAvailable, basicCluesOnly) => {
+export const getHints = (solutionOptions, solution, theClues, cardsAvailable, basicCluesOnly) => {
   const { solutionHands, missingNumber } = solution;
 
   // first check that solution options are valid
@@ -3198,6 +3200,9 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable, basic
     // for now just return no more hints
     return [];
   }
+
+  // create our own copy of the clues, as we might add to the clues array later
+  let clues = [...theClues];
 
   // first look through clues to process the basic clues, vis CLUE_NOT_SUIT CLUE_NOT_NUMBER
   for (let i = 0; i < clues.length; i += 1) {
@@ -3448,6 +3453,9 @@ export const getHints = (solutionOptions, solution, clues, cardsAvailable, basic
   if (placedCardRemoveNumberHints.length) {
     return placedCardRemoveNumberHints;
   }
+
+  // add in any hand type clues we can deduce
+  clues = addInDeducedCluesFromSolutionOptions(solutionOptions, clues);
 
   // look through all the other clue individually
   for (let i = 0; i < clues.length; i += 1) {
