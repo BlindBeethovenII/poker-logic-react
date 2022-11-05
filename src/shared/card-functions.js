@@ -38,6 +38,7 @@ import {
   HAND_TYPE_TWO_PAIR,
   HAND_TYPE_PAIR,
   HAND_TYPE_HIGH_CARD,
+  HAND_TYPES_SORTED,
   SUIT_BLACK,
   SUIT_RED,
 } from './constants';
@@ -1102,21 +1103,8 @@ export const createSolution = () => {
 
   let cards = createNewDeck(missingNumber);
 
-  // the hand types
-  let handTypes = [
-    HAND_TYPE_STRAIGHT_FLUSH,
-    HAND_TYPE_FOUR_OF_A_KIND,
-    HAND_TYPE_FULL_HOUSE,
-    HAND_TYPE_FLUSH,
-    HAND_TYPE_STRAIGHT,
-    HAND_TYPE_THREE_OF_A_KIND,
-    HAND_TYPE_TWO_PAIR,
-    HAND_TYPE_PAIR,
-    HAND_TYPE_HIGH_CARD,
-  ];
-
-  // and shuffle them
-  handTypes = shuffle(handTypes);
+  // the hand types shuffled
+  const handTypes = shuffle(HAND_TYPES_SORTED);
 
   // logIfDevEnv(`handTypes = ${handTypes}`);
 
