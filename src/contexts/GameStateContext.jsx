@@ -35,6 +35,7 @@ import {
   addInDeducedClues,
   createInitialShowClues,
   sortCluesShowing,
+  showClue,
 } from '../shared/clue-functions';
 
 import { clueToText } from '../shared/to-text-functions';
@@ -408,8 +409,9 @@ export const GameStateContextProvider = ({ children }) => {
       // need to remember if we removed this clue
       let thisClueRemoved = false;
 
+      // only consider clues that are shown to the user
       // only consider 'HAND OF TYPE' clues if not instructed to keep them
-      if (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes) {
+      if (showClue(clue, finalClues) && (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes)) {
         // the new clues without that one
         const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
         // remember to add in the deduced clues (which applies if we've removed a HAND_TYPE clue that can now be deduced)

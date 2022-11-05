@@ -1033,3 +1033,25 @@ export const sortCluesReducing = (cluesParam) => {
 
   return clues;
 };
+
+// support function to decide if a clue is to be shown
+// a clue is always shown if it is not deduced from another/other clues
+// a clue with deduced defined is shown to the user if any of its deduced clues is no longer still in clues
+//   - that it, either of those clues was removed by reduceClues() and now they are not available to the user to deduce the deduced clue
+// otherwise the deduced clue is not shown
+export const showClue = (clue, clues) => {
+  const { deduced } = clue;
+  if (deduced === undefined) {
+    return true;
+  }
+
+  // the clue is deduced, we need to show it it any of its deduces clues is no longer still in clues
+  for (let i = 0; i < deduced.length; i += 1) {
+    if (!clueExists(deduced[i], clues)) {
+      return true;
+    }
+  }
+
+  // otherwise the deduced clue is not show
+  return false;
+};
