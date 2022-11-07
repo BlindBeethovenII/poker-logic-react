@@ -456,7 +456,7 @@ export const clues6 = [
   createClueCardsSameSuit(1, 1, 3, 1),
 
   createClueCardsNotSameSuit(0, 4, 2, 0),
-  createClueCardsNotSameSuit(0, 4, 3, 1),
+  // createClueCardsNotSameSuit(0, 4, 3, 1),
   createClueCardsNotSameSuit(1, 0, 3, 4),
   // createClueCardsNotSameSuit(2, 1, 3, 4),
 
