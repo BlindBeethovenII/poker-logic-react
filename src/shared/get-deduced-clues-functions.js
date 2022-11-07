@@ -1,6 +1,6 @@
 // get deduced clues functions
 
-import { createClueHandOfType } from './create-clue-functions';
+import { createClueHandOfType, createClueHandTypeDeducedFromSolutionOptions } from './create-clue-functions';
 
 import { clueExists } from './clueExists';
 
@@ -232,6 +232,8 @@ export const getPossibleHandTypesBasedOnOthers = (solutionHandsIndex, knownHandT
 
 // return array of deduced clues from the given solutionOptions and clues, returning the empty array if none
 const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable, solutionOptions, clues) => {
+  const deducedClues = [];
+
   // first work out what hand types we know
   const knownHandTypes = [undefined, undefined, undefined, undefined];
   for (let i = 0; i < clues.length; i += 1) {
@@ -248,23 +250,30 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
     if (knownHandTypes[solutionHandsIndex] === undefined) {
       // first, restrict the possible hand types based on the hand types of the hands above and/or below this one
       const possibleHandTypes = getPossibleHandTypesBasedOnOthers(solutionHandsIndex, knownHandTypes);
-      logIfDevEnv(`getDeducedCluesFromSolutionOptions possibleHands for solutionHandsIndex ${solutionHandsIndex}: ${possibleHandTypes}`);
+      logIfDevEnv(`getDeducedCluesFromSolutionOptions possibleHandTypes for solutionHandsIndex ${solutionHandsIndex}: ${possibleHandTypes}`);
 
       // check each possible hand type and reject those that are no longer possible given the current solutionOptions, cardsAvailable and cardsStillAvailable
-      const stillPossibleHandTypes = new Set(possibleHandTypes);
+      const stillPossibleHandTypesSet = new Set(possibleHandTypes);
       const handOptions = solutionOptions[solutionHandsIndex];
       for (let possibleHandTypeIndex = 0; possibleHandTypeIndex < possibleHandTypes.length; possibleHandTypeIndex += 1) {
         const possibleHandType = possibleHandTypes[possibleHandTypeIndex];
         if (!canHandOptionsBeHandType(handOptions, possibleHandType, cardsStillAvailable, cardsAvailable)) {
-          stillPossibleHandTypes.delete(possibleHandType);
+          stillPossibleHandTypesSet.delete(possibleHandType);
         }
       }
 
-      logIfDevEnv(`getDeducedCluesFromSolutionOptions stillPossibleHands for solutionHandsIndex ${solutionHandsIndex}: ${Array.from(stillPossibleHandTypes)}`);
+      const stillPossibleHandTypes = Array.from(stillPossibleHandTypesSet);
+      logIfDevEnv(`getDeducedCluesFromSolutionOptions stillPossibleHandTypes for solutionHandsIndex ${solutionHandsIndex}: ${stillPossibleHandTypes}`);
+
+      // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
+      // note: this new clue can't already be in clues or deducedClues, so we don't need to check
+      if (stillPossibleHandTypes.length === 1) {
+        deducedClues.push(createClueHandOfType(stillPossibleHandTypes[0], solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
+      }
     }
   }
 
-  return [];
+  return deducedClues;
 };
 
 // uses solutionOptions to add in deduced hand type clues; as well as calling addInDeducedClues() again if a new hand type clue is added, to create the hand type clues for the gaps

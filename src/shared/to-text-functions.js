@@ -29,6 +29,7 @@ import {
   CLUE_HAND_NOT_SUIT_AND_NUMBER,
   CLUE_HAND_LOWEST_NUMBER,
   CLUE_HAND_HIGHEST_NUMBER,
+  CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS,
   HAND_TYPE_STRAIGHT_FLUSH,
   HAND_TYPE_FOUR_OF_A_KIND,
   HAND_TYPE_FULL_HOUSE,
@@ -250,6 +251,11 @@ export const clueToString = (clue, doNotShowDeduced) => {
   if (clueType === CLUE_HAND_HIGHEST_NUMBER) {
     const { number, solutionHandsIndex } = clue;
     return `Hand ${solutionHandsIndex + 1} highest number is ${cardNumberToString(number)} (A is higher than K)`;
+  }
+
+  if (clueType === CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS) {
+    const { solutionHandsIndex } = clue;
+    return `Hand ${solutionHandsIndex + 1} type deduced from solution options`;
   }
 
   return `clueToString cannot cope with clueType ${clueType}`;

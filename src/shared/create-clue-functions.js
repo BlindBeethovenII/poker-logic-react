@@ -27,6 +27,7 @@ import {
   CLUE_HAND_NOT_SUIT_AND_NUMBER,
   CLUE_HAND_LOWEST_NUMBER,
   CLUE_HAND_HIGHEST_NUMBER,
+  CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -297,5 +298,14 @@ export const createClueHandLowestNumber = (number, solutionHandsIndex) => ({
 export const createClueHandHighestNumber = (number, solutionHandsIndex) => ({
   clueType: CLUE_HAND_HIGHEST_NUMBER,
   number,
+  solutionHandsIndex,
+});
+
+// -------------------------------------------- //
+// CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS //
+// -------------------------------------------- //
+
+export const createClueHandTypeDeducedFromSolutionOptions = (solutionHandsIndex) => ({
+  clueType: CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS,
   solutionHandsIndex,
 });
