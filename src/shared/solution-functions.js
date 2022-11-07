@@ -1045,6 +1045,16 @@ const anotherNumberIsPossible = (possibleNumbers, n) => {
   return possibleNumbersSet.size > 0;
 };
 
+// helper function return true if given possible suits are all placed and the same suit
+const allPossibleSuitsPlacedAndSameSuit = (possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
+  if (possibleSuits1.length !== 1 || possibleSuits2.length !== 1 || possibleSuits3.length !== 1 || possibleSuits4.length !== 1 || possibleSuits5.length !== 1) {
+    return false;
+  }
+
+  const possibleSuit1 = possibleSuits1[0];
+  return (possibleSuit1 === possibleSuits2[0] && possibleSuit1 === possibleSuits3[0] && possibleSuit1 === possibleSuits4[0] && possibleSuit1 === possibleSuits5[0]);
+};
+
 // helper function to return true if a flush can be made from the possible suits
 const possibleSuitsCanBeFlush = (possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
   // go through all of the first possible suits
@@ -1065,7 +1075,12 @@ const possibleSuitsCanBeFlush = (possibleSuits1, possibleSuits2, possibleSuits3,
 };
 
 // helper function to return true if a straight can be made from the possible numbers
-const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5) => {
+const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
+  // first check - if all suits are placed and the same, then we are not a straight - we are either a flush or straight flush
+  if (allPossibleSuitsPlacedAndSameSuit(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5)) {
+    return false;
+  }
+
   // go through all of the first possible numbers
   for (let i = 0; i < possibleNumbers1.length; i += 1) {
     const possibleNumber1 = possibleNumbers1[i];
@@ -1103,7 +1118,34 @@ const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possib
 };
 
 // helper function to return true if a three of a kind can be made from the possible numbers
-const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4) => {
+const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3) => {
+  // first check - if the suits of two of the first three cards are placed and the same suit, then we are not a three of a kind - as these numbers must be different
+
+  // if first suit placed
+  if (possibleSuits1.length === 1) {
+    const possibleSuit1 = possibleSuits1[0];
+
+    // if second suit placed and the same, we are not three of a kind
+    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
+      return false;
+    }
+
+    // if third suit placed and the same, we are not three of a kind
+    if (possibleSuits3.length === 1 && possibleSuit1 === possibleSuits3[0]) {
+      return false;
+    }
+  }
+
+  // if second suit placed
+  if (possibleSuits2.length === 1) {
+    const possibleSuit2 = possibleSuits2[0];
+
+    // if third suit placed and the same, we are not three of a kind
+    if (possibleSuits3.length === 1 && possibleSuit2 === possibleSuits3[0]) {
+      return false;
+    }
+  }
+
   // go through all of the first possible numbers
   for (let i = 0; i < possibleNumbers1.length; i += 1) {
     const possibleNumber1 = possibleNumbers1[i];
@@ -1222,11 +1264,11 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_STRAIGHT) {
-    return possibleNumbersCanBeStraight(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5);
+    return possibleNumbersCanBeStraight(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5);
   }
 
   if (handType === HAND_TYPE_THREE_OF_A_KIND) {
-    return possibleNumbersCanBeThreeOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4);
+    return possibleNumbersCanBeThreeOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3);
   }
 
   if (handType === HAND_TYPE_TWO_PAIR) {

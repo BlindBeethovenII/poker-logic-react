@@ -267,9 +267,17 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
 
       // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
       // note: this new clue can't already be in clues or deducedClues, so we don't need to check
+      // let deducedClueCreate = false;
       if (stillPossibleHandTypes.length === 1) {
         deducedClues.push(createClueHandOfType(stillPossibleHandTypes[0], solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
+        // deducedClueCreate = true;
       }
+
+      // TODO - is this needed???
+      // if (deducedClueCreate) {
+      //   // look for some additional things that might infer a hand of type
+
+      // }
     }
   }
 

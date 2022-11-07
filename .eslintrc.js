@@ -23,7 +23,7 @@ module.exports = {
   rules: {
     'no-console': 0,
     'react/function-component-definition': 0,
-    'max-len': ['error', { ignoreComments: true, code: 190 }],
+    'max-len': ['error', { ignoreComments: true, code: 220 }],
     'implicit-arrow-linebreak': 0,
     // 'react-hooks/rules-of-hooks': 'error',
     // 'react-hooks/exhaustive-deps': 'warn', // <--- THIS IS THE NEW RULE
