@@ -1128,6 +1128,33 @@ const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibl
   return false;
 };
 
+// helper function to return true if a pair can be made from the possible numbers
+const possibleNumbersCanBePair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4) => {
+  // go through all of the first possible numbers
+  for (let i = 0; i < possibleNumbers1.length; i += 1) {
+    const possibleNumber1 = possibleNumbers1[i];
+
+    // to be two pair, this number must be possible the second
+    if (possibleNumbers2.includes(possibleNumber1)) {
+      // now go through all the third possible numbers
+      for (let j = 0; j < possibleNumbers3.length; j += 1) {
+        const possibleNumber3 = possibleNumbers3[j];
+
+        // needs to be a different number (otherwise that is three or four of a kind)
+        if (possibleNumber3 !== possibleNumber1) {
+          // we just care if card 4 allows this third number - no reason to consider possibleNumbers5
+          if (possibleNumbers4.includes(possibleNumber3)) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  // couldn't find a straight
+  return false;
+};
+
 // can the given handOptions be the given hand type based on the given cardsAvailable and cardsStillAvailable
 export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAvailable, cardsAvailable */) => {
   const cardOptions1 = handOptions[0];
@@ -1176,8 +1203,7 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_PAIR) {
-    console.error('canHandOptionsBeHandType TODO HAND_TYPE_PAIR');
-    return true;
+    return possibleNumbersCanBePair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4);
   }
 
   if (handType === HAND_TYPE_HIGH_CARD) {
