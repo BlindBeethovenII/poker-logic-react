@@ -3,12 +3,30 @@
 import { createCard, sortSuit } from './card-functions';
 
 import {
+  HAND_TYPE_FLUSH,
+  HAND_TYPE_FOUR_OF_A_KIND,
+  HAND_TYPE_FULL_HOUSE,
+  HAND_TYPE_HIGH_CARD,
+  HAND_TYPE_PAIR,
+  HAND_TYPE_STRAIGHT,
+  HAND_TYPE_STRAIGHT_FLUSH,
+  HAND_TYPE_THREE_OF_A_KIND,
+  HAND_TYPE_TWO_PAIR,
   INDEX_SUIT_CLUBS,
   INDEX_SUIT_DIAMONDS,
   INDEX_SUIT_HEARTS,
   INDEX_SUIT_SPADES,
   NUMBERS,
   NUMBERS_SORTED,
+  NUMBER_10,
+  NUMBER_2,
+  NUMBER_3,
+  NUMBER_4,
+  NUMBER_5,
+  NUMBER_A,
+  NUMBER_J,
+  NUMBER_K,
+  NUMBER_Q,
   SUITS,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
@@ -1017,4 +1035,156 @@ export const filterOutImpossibleByNumberStraightsInHandOptions = (allPossibleStr
     }
   }
   return allPossibleStraights;
+};
+
+// helper function return true if possibleNumbers includes another number besides n
+const anotherNumberIsPossible = (possibleNumbers, n) => {
+  // simple approach - convert into a set, remove n, and check set is not empty
+  const possibleNumbersSet = new Set(possibleNumbers);
+  possibleNumbersSet.delete(n);
+  return possibleNumbersSet.size > 0;
+};
+
+// helper function to return true if a straight can be made from the possible numbers
+const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5) => {
+  // go through all of the first possible numbers
+  for (let i = 0; i < possibleNumbers1.length; i += 1) {
+    const possibleNumber1 = possibleNumbers1[i];
+    // first check for normal straights, where each number is 1 apart
+    if (possibleNumbers2.includes(possibleNumber1 + 1)
+      && possibleNumbers3.includes(possibleNumber1 + 2)
+      && possibleNumbers4.includes(possibleNumber1 + 3)
+      && possibleNumbers5.includes(possibleNumber1 + 4)) {
+      return true;
+    }
+
+    // check for A K Q J 10
+    if (possibleNumber1 === NUMBER_A) {
+      if (possibleNumbers2.includes(NUMBER_K)
+        && possibleNumbers3.includes(NUMBER_Q)
+        && possibleNumbers4.includes(NUMBER_J)
+        && possibleNumbers5.includes(NUMBER_10)) {
+        return true;
+      }
+    }
+
+    // check for 5 4 3 2 A
+    if (possibleNumber1 === NUMBER_5) {
+      if (possibleNumbers2.includes(NUMBER_4)
+        && possibleNumbers3.includes(NUMBER_3)
+        && possibleNumbers4.includes(NUMBER_2)
+        && possibleNumbers5.includes(NUMBER_A)) {
+        return true;
+      }
+    }
+  }
+
+  // couldn't find a straight
+  return false;
+};
+
+// helper function to return true if a three of a kind can be made from the possible numbers
+const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4) => {
+  // go through all of the first possible numbers
+  for (let i = 0; i < possibleNumbers1.length; i += 1) {
+    const possibleNumber1 = possibleNumbers1[i];
+
+    // to be three of a kind, we need this number is be possible in 2 and 3, and a different number possible in 4
+    if (possibleNumbers2.includes(possibleNumber1)
+      && possibleNumbers3.includes(possibleNumber1)
+      && anotherNumberIsPossible(possibleNumbers4, possibleNumber1)) {
+      return true;
+    }
+  }
+
+  // couldn't find a straight
+  return false;
+};
+
+// helper function to return true if two pair can be made from the possible numbers
+const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4) => {
+  // go through all of the first possible numbers
+  for (let i = 0; i < possibleNumbers1.length; i += 1) {
+    const possibleNumber1 = possibleNumbers1[i];
+
+    // to be two pair, this number must be possible the second
+    if (possibleNumbers2.includes(possibleNumber1)) {
+      // now go through all the third possible numbers
+      for (let j = 0; j < possibleNumbers3.length; j += 1) {
+        const possibleNumber3 = possibleNumbers3[j];
+
+        // needs to be a different number (otherwise that is three or four of a kind)
+        if (possibleNumber3 !== possibleNumber1) {
+          // we just care if card 4 allows this third number - no reason to consider possibleNumbers5
+          if (possibleNumbers4.includes(possibleNumber3)) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  // couldn't find a straight
+  return false;
+};
+
+// can the given handOptions be the given hand type based on the given cardsAvailable and cardsStillAvailable
+export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAvailable, cardsAvailable */) => {
+  const cardOptions1 = handOptions[0];
+  const cardOptions2 = handOptions[1];
+  const cardOptions3 = handOptions[2];
+  const cardOptions4 = handOptions[3];
+  const cardOptions5 = handOptions[4];
+
+  // we will be interested in the possible numbers left for each card
+  const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+  const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+  const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+  const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
+  const possibleNumbers5 = getNumbersFromCardOptions(cardOptions5);
+
+  if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_STRAIGHT_FLUSH');
+    return true;
+  }
+
+  if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_FOUR_OF_A_KIND');
+    return true;
+  }
+
+  if (handType === HAND_TYPE_FULL_HOUSE) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_FULL_HOUSE');
+    return true;
+  }
+
+  if (handType === HAND_TYPE_FLUSH) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_FLUSH');
+    return true;
+  }
+
+  if (handType === HAND_TYPE_STRAIGHT) {
+    return possibleNumbersCanBeStraight(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5);
+  }
+
+  if (handType === HAND_TYPE_THREE_OF_A_KIND) {
+    return possibleNumbersCanBeThreeOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4);
+  }
+
+  if (handType === HAND_TYPE_TWO_PAIR) {
+    return possibleNumbersCanBeTwoPair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4);
+  }
+
+  if (handType === HAND_TYPE_PAIR) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_PAIR');
+    return true;
+  }
+
+  if (handType === HAND_TYPE_HIGH_CARD) {
+    console.error('canHandOptionsBeHandType TODO HAND_TYPE_HIGH_CARD');
+    return true;
+  }
+
+  // if we get to here then the handOptions can be the given hand type
+  return true;
 };

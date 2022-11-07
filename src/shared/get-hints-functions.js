@@ -3455,7 +3455,7 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
   }
 
   // add in any hand type clues we can deduce
-  clues = addInDeducedCluesFromSolutionOptions(solutionOptions, clues);
+  clues = addInDeducedCluesFromSolutionOptions(cardsStillAvailable, cardsAvailable, solutionOptions, clues);
 
   // look through all the other clue individually
   for (let i = 0; i < clues.length; i += 1) {
