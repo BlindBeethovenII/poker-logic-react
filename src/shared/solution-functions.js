@@ -1076,7 +1076,7 @@ const possibleSuitsCanBeFlush = (possibleSuits1, possibleSuits2, possibleSuits3,
 
 // helper function to return true if a straight can be made from the possible numbers
 const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
-  // first check - if all suits are placed and the same, then we are not a straight - we are either a flush or straight flush
+  // first check if all suits are placed and the same, then we are not a straight - we are either a flush or straight flush
   if (allPossibleSuitsPlacedAndSameSuit(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5)) {
     return false;
   }
@@ -1119,7 +1119,7 @@ const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possib
 
 // helper function to return true if a three of a kind can be made from the possible numbers
 const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3) => {
-  // first check - if the suits of two of the first three cards are placed and the same suit, then we are not a three of a kind - as these numbers must be different
+  // first check if the suits of two of the first three cards are placed and the same suit, then we are not a three of a kind - as these numbers must be different
 
   // if first suit placed
   if (possibleSuits1.length === 1) {
@@ -1163,7 +1163,27 @@ const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, po
 };
 
 // helper function to return true if two pair can be made from the possible numbers
-const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4) => {
+const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4) => {
+  // first check if the suits of the first two cards are placed and the same suit, then we are not a two pair - as these numbers must be different
+  if (possibleSuits1.length === 1) {
+    const possibleSuit1 = possibleSuits1[0];
+
+    // if second suit placed and the same, we are not three of a kind
+    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
+      return false;
+    }
+  }
+
+  // then check if the suits of cards three and four are placed and the same suit, then we are not a two pair - as these numbers must be different
+  if (possibleSuits3.length === 1) {
+    const possibleSuit3 = possibleSuits3[0];
+
+    // if fourth suit placed and the same, we are not three of a kind
+    if (possibleSuits4.length === 1 && possibleSuit3 === possibleSuits4[0]) {
+      return false;
+    }
+  }
+
   // go through all of the first possible numbers
   for (let i = 0; i < possibleNumbers1.length; i += 1) {
     const possibleNumber1 = possibleNumbers1[i];
@@ -1272,7 +1292,7 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_TWO_PAIR) {
-    return possibleNumbersCanBeTwoPair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4);
+    return possibleNumbersCanBeTwoPair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4);
   }
 
   if (handType === HAND_TYPE_PAIR) {
