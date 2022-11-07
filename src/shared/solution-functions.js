@@ -1237,7 +1237,12 @@ const possibleNumbersCanBePair = (possibleNumbers1, possibleNumbers2, possibleNu
 };
 
 // helper function to return true if a high card can be made from the possible numbers
-const possibleNumbersCanBeHighCard = (possibleNumbers1, possibleNumbers2) => {
+const possibleNumbersCanBeHighCard = (possibleNumbers1, possibleNumbers2, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
+  // first check if all suits are placed and the same, then we are not a high card - we are either a flush or straight flush
+  if (allPossibleSuitsPlacedAndSameSuit(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5)) {
+    return false;
+  }
+
   // go through all of the first possible numbers
   for (let i = 0; i < possibleNumbers1.length; i += 1) {
     const possibleNumber1 = possibleNumbers1[i];
@@ -1310,7 +1315,7 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_HIGH_CARD) {
-    return possibleNumbersCanBeHighCard(possibleNumbers1, possibleNumbers2);
+    return possibleNumbersCanBeHighCard(possibleNumbers1, possibleNumbers2, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5);
   }
 
   // if we get to here then the handOptions can be the given hand type
