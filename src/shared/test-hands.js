@@ -448,16 +448,16 @@ export const clues6 = [
   createClueHandOfType(calcHandType(solutionHands5[2]), 2),
   // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
 
-  createClueBlackSuit(3, 2),
+  // createClueBlackSuit(3, 2),
 
-  createClueNumber(NUMBER_8, 0, 4),
+  // createClueNumber(NUMBER_8, 0, 4),
   createClueNumber(NUMBER_5, 1, 4),
 
-  createClueCardsSameSuit(1, 1, 3, 1),
+  // createClueCardsSameSuit(1, 1, 3, 1),
 
-  createClueCardsNotSameSuit(0, 4, 2, 0),
+  // createClueCardsNotSameSuit(0, 4, 2, 0),
   // createClueCardsNotSameSuit(0, 4, 3, 1),
-  createClueCardsNotSameSuit(1, 0, 3, 4),
+  // createClueCardsNotSameSuit(1, 0, 3, 4),
   // createClueCardsNotSameSuit(2, 1, 3, 4),
 
   createClueCardsSameNumber(0, 0, 2, 0),
@@ -466,7 +466,7 @@ export const clues6 = [
   createClueCardsSameNumber(2, 2, 3, 3),
   createClueCardsSameNumber(2, 4, 3, 4),
 
-  createClueCardsNotSameNumber(0, 3, 3, 2),
+  // createClueCardsNotSameNumber(0, 3, 3, 2),
 ];
 
 // -------------------------- //

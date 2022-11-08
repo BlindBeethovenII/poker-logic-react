@@ -1055,6 +1055,29 @@ const allPossibleSuitsPlacedAndSameSuit = (possibleSuits1, possibleSuits2, possi
   return (possibleSuit1 === possibleSuits2[0] && possibleSuit1 === possibleSuits3[0] && possibleSuit1 === possibleSuits4[0] && possibleSuit1 === possibleSuits5[0]);
 };
 
+// helper function to return true if a four of a kind can be made from the possible numbers and suits
+const possibleNumbersCanBeFourOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4) => {
+  // first check the suits - four of a kind has to be S H D C
+  if (!possibleSuits1.includes(SUIT_SPADES) || !possibleSuits2.includes(SUIT_HEARTS) || !possibleSuits3.includes(SUIT_DIAMONDS) || !possibleSuits4.includes(SUIT_CLUBS)) {
+    return false;
+  }
+
+  // go through all of the first possible numbers
+  for (let i = 0; i < possibleNumbers1.length; i += 1) {
+    const possibleNumber1 = possibleNumbers1[i];
+
+    // to be four of a kind, we need this number is be possible in 2, 3 and 4
+    if (possibleNumbers2.includes(possibleNumber1)
+      && possibleNumbers3.includes(possibleNumber1)
+      && possibleNumbers4.includes(possibleNumber1)) {
+      return true;
+    }
+  }
+
+  // can't be four of a kind
+  return false;
+};
+
 // helper function to return true if a flush can be made from the possible suits
 const possibleSuitsCanBeFlush = (possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
   // go through all of the first possible suits
@@ -1074,7 +1097,7 @@ const possibleSuitsCanBeFlush = (possibleSuits1, possibleSuits2, possibleSuits3,
   return false;
 };
 
-// helper function to return true if a straight can be made from the possible numbers
+// helper function to return true if a straight can be made from the possible numbers and suits
 const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
   // first check if all suits are placed and the same, then we are not a straight - we are either a flush or straight flush
   if (allPossibleSuitsPlacedAndSameSuit(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5)) {
@@ -1117,7 +1140,7 @@ const possibleNumbersCanBeStraight = (possibleNumbers1, possibleNumbers2, possib
   return false;
 };
 
-// helper function to return true if a three of a kind can be made from the possible numbers
+// helper function to return true if a three of a kind can be made from the possible numbers and suits
 const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3) => {
   // first check if the suits of two of the first three cards are placed and the same suit, then we are not a three of a kind - as these numbers must be different
 
@@ -1162,7 +1185,7 @@ const possibleNumbersCanBeThreeOfAKind = (possibleNumbers1, possibleNumbers2, po
   return false;
 };
 
-// helper function to return true if two pair can be made from the possible numbers
+// helper function to return true if two pair can be made from the possible numbers and suits
 const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4) => {
   // first check if the suits of the first two cards are placed and the same suit, then we are not two pair - as these numbers must be different
   if (possibleSuits1.length === 1) {
@@ -1209,7 +1232,7 @@ const possibleNumbersCanBeTwoPair = (possibleNumbers1, possibleNumbers2, possibl
   return false;
 };
 
-// helper function to return true if a pair can be made from the possible numbers
+// helper function to return true if a pair can be made from the possible numbers and suits
 const possibleNumbersCanBePair = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleSuits1, possibleSuits2) => {
   // first check if the suits of the first two cards are placed and the same suit, then we are not a pair - as these numbers must be different
   if (possibleSuits1.length === 1) {
@@ -1236,7 +1259,7 @@ const possibleNumbersCanBePair = (possibleNumbers1, possibleNumbers2, possibleNu
   return false;
 };
 
-// helper function to return true if a high card can be made from the possible numbers
+// helper function to return true if a high card can be made from the possible numbers and suits
 const possibleNumbersCanBeHighCard = (possibleNumbers1, possibleNumbers2, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5) => {
   // first check if all suits are placed and the same, then we are not a high card - we are either a flush or straight flush
   if (allPossibleSuitsPlacedAndSameSuit(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5)) {
@@ -1285,8 +1308,7 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
-    console.error('canHandOptionsBeHandType TODO HAND_TYPE_FOUR_OF_A_KIND');
-    return true;
+    return possibleNumbersCanBeFourOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4);
   }
 
   if (handType === HAND_TYPE_FULL_HOUSE) {
