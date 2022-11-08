@@ -1,6 +1,10 @@
 // useful solution functions
 
-import { createCard, sortSuit } from './card-functions';
+import {
+  createCard,
+  sortSuit,
+  getStraights,
+} from './card-functions';
 
 import {
   HAND_TYPE_FLUSH,
@@ -1055,6 +1059,37 @@ const allPossibleSuitsPlacedAndSameSuit = (possibleSuits1, possibleSuits2, possi
   return (possibleSuit1 === possibleSuits2[0] && possibleSuit1 === possibleSuits3[0] && possibleSuit1 === possibleSuits4[0] && possibleSuit1 === possibleSuits5[0]);
 };
 
+// helper function to return true if a straight flush can be made from the possible numbers and suits
+// uses similar code to the get-hints-function getNoStraightFlushInNumberHints()
+// eslint-disable-next-line max-len
+const possibleNumbersCanBeStraightFlush = (handOptions, cardsStillAvailable) => {
+  // go through all of the first possible suits
+  const cardOptions1 = handOptions[0];
+  const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+  for (let i = 0; i < possibleSuits1.length; i += 1) {
+    const possibleSuit1 = possibleSuits1[i];
+
+    // get all possible straights in this suit - this is an array of each possible straights
+    // remembering to add back in any cards already placed in this handOptions
+    // and filter out straights whose numbers are not a possible option in the corresponding cards of handOptions
+    const suitOptionsIndex = convertSuitToSuitOptionsIndex(possibleSuit1);
+    const suitCardsAvailable = addPlacedCardsOfSuitFromHandOptions(
+      cardsStillAvailable[suitOptionsIndex],
+      possibleSuit1,
+      handOptions,
+    );
+    const allPossibleStraights = filterOutImpossibleByNumberStraightsInHandOptions(getStraights(suitCardsAvailable), handOptions);
+
+    // if there is one or more of these, then we can be a straight flush in this suit
+    if (allPossibleStraights.length) {
+      return true;
+    }
+  }
+
+  // couldn't find a straight flush
+  return false;
+};
+
 // helper function to return true if a four of a kind can be made from the possible numbers and suits
 const possibleNumbersCanBeFourOfAKind = (possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4) => {
   // first check the suits - four of a kind has to be S H D C
@@ -1281,33 +1316,29 @@ const possibleNumbersCanBeHighCard = (possibleNumbers1, possibleNumbers2, possib
 };
 
 // can the given handOptions be the given hand type based on the given cardsAvailable and cardsStillAvailable
-export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAvailable, cardsAvailable */) => {
-  const cardOptions1 = handOptions[0];
-  const cardOptions2 = handOptions[1];
-  const cardOptions3 = handOptions[2];
-  const cardOptions4 = handOptions[3];
-  const cardOptions5 = handOptions[4];
-
-  // we will be interested in the possible numbers left for each card
-  const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
-  const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
-  const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
-  const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
-  const possibleNumbers5 = getNumbersFromCardOptions(cardOptions5);
-
-  // we will be interested in the possible suits left for each card
-  const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
-  const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
-  const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
-  const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
-  const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
-
+export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvailable /* , cardsAvailable */) => {
   if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
-    console.error('canHandOptionsBeHandType TODO HAND_TYPE_STRAIGHT_FLUSH');
-    return true;
+    return possibleNumbersCanBeStraightFlush(handOptions, cardsStillAvailable);
   }
 
   if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+    const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+    const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+    const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
+
     return possibleNumbersCanBeFourOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4);
   }
 
@@ -1317,26 +1348,122 @@ export const canHandOptionsBeHandType = (handOptions, handType /* , cardsStillAv
   }
 
   if (handType === HAND_TYPE_FLUSH) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+    const cardOptions5 = handOptions[4];
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+    const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
+    const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
+
     return possibleSuitsCanBeFlush(possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5);
   }
 
   if (handType === HAND_TYPE_STRAIGHT) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+    const cardOptions5 = handOptions[4];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+    const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+    const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
+    const possibleNumbers5 = getNumbersFromCardOptions(cardOptions5);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+    const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
+    const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
+
     return possibleNumbersCanBeStraight(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleNumbers5, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5);
   }
 
   if (handType === HAND_TYPE_THREE_OF_A_KIND) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+    const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+    const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+
     return possibleNumbersCanBeThreeOfAKind(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3);
   }
 
   if (handType === HAND_TYPE_TWO_PAIR) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+    const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+    const possibleNumbers4 = getNumbersFromCardOptions(cardOptions4);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+    const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
+
     return possibleNumbersCanBeTwoPair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleNumbers4, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4);
   }
 
   if (handType === HAND_TYPE_PAIR) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+    const possibleNumbers3 = getNumbersFromCardOptions(cardOptions3);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+
     return possibleNumbersCanBePair(possibleNumbers1, possibleNumbers2, possibleNumbers3, possibleSuits1, possibleSuits2);
   }
 
   if (handType === HAND_TYPE_HIGH_CARD) {
+    const cardOptions1 = handOptions[0];
+    const cardOptions2 = handOptions[1];
+    const cardOptions3 = handOptions[2];
+    const cardOptions4 = handOptions[3];
+    const cardOptions5 = handOptions[4];
+
+    // we will be interested in the possible numbers left for each card
+    const possibleNumbers1 = getNumbersFromCardOptions(cardOptions1);
+    const possibleNumbers2 = getNumbersFromCardOptions(cardOptions2);
+
+    // we will be interested in the possible suits left for each card
+    const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
+    const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
+    const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
+    const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
+    const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
+
     return possibleNumbersCanBeHighCard(possibleNumbers1, possibleNumbers2, possibleSuits1, possibleSuits2, possibleSuits3, possibleSuits4, possibleSuits5);
   }
 
