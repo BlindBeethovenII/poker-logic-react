@@ -266,8 +266,8 @@ export const solution4 = {
 export const clues4 = [
   createClueHandOfType(calcHandType(solutionHands4[0]), 0),
   createClueHandOfType(calcHandType(solutionHands4[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands4[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands4[3]), 3),
+  // createClueHandOfType(calcHandType(solutionHands4[2]), 2),
+  createClueHandOfType(calcHandType(solutionHands4[3]), 3),
 
   createClueHandOdd(3),
 
@@ -381,8 +381,8 @@ export const clues6 = [
   createClueCardsSameNumber(0, 0, 2, 0),
   createClueCardsSameNumber(0, 1, 2, 1),
   createClueCardsSameNumber(0, 2, 1, 2),
-  createClueCardsSameNumber(2, 2, 3, 3),
-  createClueCardsSameNumber(2, 4, 3, 4),
+  // createClueCardsSameNumber(2, 2, 3, 3),
+  // createClueCardsSameNumber(2, 4, 3, 4),
 ];
 
 // -------------------------- //
