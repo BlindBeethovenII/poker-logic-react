@@ -1329,31 +1329,22 @@ const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
   const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
   const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
 
-  // first check if the suits of two of the first three cards are placed and the same suit, then we are not a three of a kind - as these numbers must be different
+  // first check the suits
+  // TODO I guess we should really find the actual suits of possible 3 of a kind numbers available??!!
+  const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
+  const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
+  const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
+  const possibleSuit2Diamond = possibleSuits2.includes(SUIT_DIAMONDS);
+  const possibleSuit3Diamond = possibleSuits3.includes(SUIT_DIAMONDS);
+  const possibleSuit3Club = possibleSuits3.includes(SUIT_CLUBS);
 
-  // if first suit placed
-  if (possibleSuits1.length === 1) {
-    const possibleSuit1 = possibleSuits1[0];
+  // the first three suits must be SHD, SHC or HDC
+  const possibleSHD = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Diamond;
+  const possibleSHC = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Club;
+  const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
-    // if second suit placed and the same, we are not three of a kind
-    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
-      return false;
-    }
-
-    // if third suit placed and the same, we are not three of a kind
-    if (possibleSuits3.length === 1 && possibleSuit1 === possibleSuits3[0]) {
-      return false;
-    }
-  }
-
-  // if second suit placed
-  if (possibleSuits2.length === 1) {
-    const possibleSuit2 = possibleSuits2[0];
-
-    // if third suit placed and the same, we are not three of a kind
-    if (possibleSuits3.length === 1 && possibleSuit2 === possibleSuits3[0]) {
-      return false;
-    }
+  if (!possibleSHD && !possibleSHC && !possibleHDC) {
+    return false;
   }
 
   // go through all of the first possible numbers
