@@ -1152,41 +1152,43 @@ const possibleHandOptionsCanBeFullHouse = (handOptions) => {
   const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
   const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
 
-  // first check if the suits of two of the first three cards are placed and the same suit, then this cannot be a three of a kind - as these numbers must be different - so we are not a full house
+  // first check the suits
+  // TODO I guess we should really find the actual suits of possible 3 of a kind numbers available??!!
+  const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
+  const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
+  const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
+  const possibleSuit2Diamond = possibleSuits2.includes(SUIT_DIAMONDS);
+  const possibleSuit3Diamond = possibleSuits3.includes(SUIT_DIAMONDS);
+  const possibleSuit3Club = possibleSuits3.includes(SUIT_CLUBS);
 
-  // if first suit placed
-  if (possibleSuits1.length === 1) {
-    const possibleSuit1 = possibleSuits1[0];
+  // the first three suits must be SHD, SHC or HDC
+  const possibleSHD = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Diamond;
+  const possibleSHC = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Club;
+  const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
-    // if second suit placed and the same, we are not three of a kind
-    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
-      return false;
-    }
-
-    // if third suit placed and the same, we are not three of a kind
-    if (possibleSuits3.length === 1 && possibleSuit1 === possibleSuits3[0]) {
-      return false;
-    }
+  if (!possibleSHD && !possibleSHC && !possibleHDC) {
+    return false;
   }
 
-  // if second suit placed
-  if (possibleSuits2.length === 1) {
-    const possibleSuit2 = possibleSuits2[0];
+  // now suits for cards 4 and 5
+  // TODO I guess we should really find the actual suits of possible for remaining pairs numbers available??!!
+  const possibleSuit4Spade = possibleSuits4.includes(SUIT_SPADES);
+  const possibleSuit4Heart = possibleSuits4.includes(SUIT_HEARTS);
+  const possibleSuit4Diamond = possibleSuits4.includes(SUIT_DIAMONDS);
+  const possibleSuit5Heart = possibleSuits5.includes(SUIT_HEARTS);
+  const possibleSuit5Diamond = possibleSuits5.includes(SUIT_DIAMONDS);
+  const possibleSuit5Club = possibleSuits5.includes(SUIT_CLUBS);
 
-    // if third suit placed and the same, we are not three of a kind
-    if (possibleSuits3.length === 1 && possibleSuit2 === possibleSuits3[0]) {
-      return false;
-    }
-  }
+  // the suits four and five must be SH, SD, SC, HD, HC or DC
+  const possible45SH = possibleSuit4Spade && possibleSuit5Heart;
+  const possible45SD = possibleSuit4Spade && possibleSuit5Diamond;
+  const possible45SC = possibleSuit4Spade && possibleSuit5Club;
+  const possible45HD = possibleSuit4Heart && possibleSuit5Diamond;
+  const possible45HC = possibleSuit4Heart && possibleSuit5Club;
+  const possible45DC = possibleSuit4Diamond && possibleSuit5Club;
 
-  // then check if the suits of cards four and five are placed and the same suit, then those are not two pair - as these numbers must be different - so we can't be a full house
-  if (possibleSuits4.length === 1) {
-    const possibleSuit4 = possibleSuits4[0];
-
-    // if fifth suit placed and the same, that cannot be a pair
-    if (possibleSuits5.length === 1 && possibleSuit4 === possibleSuits5[0]) {
-      return false;
-    }
+  if (!possible45SH && !possible45SD && !possible45SC && !possible45HD && !possible45HC && !possible45DC) {
+    return false;
   }
 
   // go through all of the first possible numbers
