@@ -1,10 +1,12 @@
 // get deduced clues functions
 
-import { createClueHandOfType, createClueHandTypeDeducedFromSolutionOptions } from './create-clue-functions';
+import { sortHand, calcHandType } from './card-functions';
 
 import { clueExists } from './clueExists';
 
-import { canHandOptionsBeHandType } from './solution-functions';
+import { createClueHandOfType, createClueHandTypeDeducedFromSolutionOptions, createClueHandTypeDeducedFromCardsStillAvailable } from './create-clue-functions';
+
+import { canHandOptionsBeHandType, getPlacedCardsInHandOptions } from './solution-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
@@ -266,18 +268,24 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
       logIfDevEnv(`getDeducedCluesFromSolutionOptions stillPossibleHandTypes for solutionHandsIndex ${solutionHandsIndex}: ${stillPossibleHandTypes}`);
 
       // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
-      // note: this new clue can't already be in clues or deducedClues, so we don't need to check
-      // let deducedClueCreate = false;
+      // note: this new clue can't already be in clues or deducedClues at this point, so we don't need to check
       if (stillPossibleHandTypes.length === 1) {
         deducedClues.push(createClueHandOfType(stillPossibleHandTypes[0], solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
-        // deducedClueCreate = true;
+      } else {
+        // we now cover the case where there are n cardsStillAvailable and n unplaced cards in this handOptions
+        // which means these n cardsStillAvailable must go in this hand, and so these n cardsStillAvailable and the placed cards in handOptions can only make one hand type
+        const cardsStillAvailableArray = [...cardsStillAvailable[0], ...cardsStillAvailable[1], ...cardsStillAvailable[2], ...cardsStillAvailable[3]];
+        const nCardsStillAvailable = cardsStillAvailableArray.length;
+        const handOptionsPlacedCardsArray = getPlacedCardsInHandOptions(handOptions);
+        const nHandOptionsPlacedCards = handOptionsPlacedCardsArray.length;
+        if (nCardsStillAvailable === 5 - nHandOptionsPlacedCards) {
+          // combine the cardsStillAvailable and handOptionsPlacedCards into a sorted hand
+          const hand = sortHand([...cardsStillAvailableArray, ...handOptionsPlacedCardsArray]);
+          const handType = calcHandType(hand);
+          deducedClues.push(createClueHandOfType(handType, solutionHandsIndex, [createClueHandTypeDeducedFromCardsStillAvailable(solutionHandsIndex)]));
+          logIfDevEnv(`getDeducedCluesFromSolutionOptions created hand type clue ${handType} for solutionHandsIndex ${solutionHandsIndex} as ${nCardsStillAvailable} card(s) must be in this hand`);
+        }
       }
-
-      // TODO - is this needed???
-      // if (deducedClueCreate) {
-      //   // look for some additional things that might infer a hand of type
-
-      // }
     }
   }
 

@@ -225,6 +225,7 @@ export const CLUE_HAND_NOT_SUIT_AND_NUMBER = 'HAND NOT SUIT AND NUMBER';
 export const CLUE_HAND_LOWEST_NUMBER = 'HAND LOWEST NUMBER';
 export const CLUE_HAND_HIGHEST_NUMBER = 'HAND HIGHEST NUMBER';
 export const CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS = 'HAND TYPE DEDUCED FROM SOLUTION OPTIONS'; // note: only appears in deduced prop of 'HAND OF TYPE' clue, so not in clue orderings below
+export const CLUE_HAND_TYPE_DEDUCED_FROM_CARDS_STILL_AVAILABLE = 'HAND TYPE DEDUCED FROM CARDS STILL AVAILABLE'; // note: only appears in deduced prop of 'HAND OF TYPE' clue, so not in clue orderings below
 
 // order of clues for sorting
 export const CLUE_ORDERING = {

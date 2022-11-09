@@ -114,7 +114,7 @@ const suitToN = (suit) => {
 const suitLessThan = (s1, s2) => suitToN(s1) < suitToN(s2);
 
 // sort a hand
-const sortHand = (handParam) => {
+export const sortHand = (handParam) => {
   // simple copy of hand param (just to get around eslint complaint about assigning to function params)
   const hand = [handParam[0], handParam[1], handParam[2], handParam[3], handParam[4]];
 

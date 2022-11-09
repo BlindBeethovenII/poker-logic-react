@@ -28,6 +28,7 @@ import {
   CLUE_HAND_LOWEST_NUMBER,
   CLUE_HAND_HIGHEST_NUMBER,
   CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS,
+  CLUE_HAND_TYPE_DEDUCED_FROM_CARDS_STILL_AVAILABLE,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -307,5 +308,14 @@ export const createClueHandHighestNumber = (number, solutionHandsIndex) => ({
 
 export const createClueHandTypeDeducedFromSolutionOptions = (solutionHandsIndex) => ({
   clueType: CLUE_HAND_TYPE_DEDUCED_FROM_SOLUTION_OPTIONS,
+  solutionHandsIndex,
+});
+
+// ------------------------------------------------- //
+// CLUE_HAND_TYPE_DEDUCED_FROM_CARDS_STILL_AVAILABLE //
+// ------------------------------------------------- //
+
+export const createClueHandTypeDeducedFromCardsStillAvailable = (solutionHandsIndex) => ({
+  clueType: CLUE_HAND_TYPE_DEDUCED_FROM_CARDS_STILL_AVAILABLE,
   solutionHandsIndex,
 });
