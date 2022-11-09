@@ -1161,12 +1161,13 @@ const possibleHandOptionsCanBeFullHouse = (handOptions) => {
   const possibleSuit3Diamond = possibleSuits3.includes(SUIT_DIAMONDS);
   const possibleSuit3Club = possibleSuits3.includes(SUIT_CLUBS);
 
-  // the first three suits must be SHD, SHC or HDC
+  // the first three suits must be SHD, SHC, SDC or HDC
   const possibleSHD = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Diamond;
   const possibleSHC = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Club;
+  const possibleSDC = possibleSuit1Spade && possibleSuit2Diamond && possibleSuit3Club;
   const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
-  if (!possibleSHD && !possibleSHC && !possibleHDC) {
+  if (!possibleSHD && !possibleSHC && !possibleSDC && !possibleHDC) {
     return false;
   }
 
@@ -1340,12 +1341,13 @@ const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
   const possibleSuit3Diamond = possibleSuits3.includes(SUIT_DIAMONDS);
   const possibleSuit3Club = possibleSuits3.includes(SUIT_CLUBS);
 
-  // the first three suits must be SHD, SHC or HDC
+  // the first three suits must be SHD, SHC, SDC or HDC
   const possibleSHD = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Diamond;
   const possibleSHC = possibleSuit1Spade && possibleSuit2Heart && possibleSuit3Club;
+  const possibleSDC = possibleSuit1Spade && possibleSuit2Diamond && possibleSuit3Club;
   const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
-  if (!possibleSHD && !possibleSHC && !possibleHDC) {
+  if (!possibleSHD && !possibleSHC && !possibleSDC && !possibleHDC) {
     return false;
   }
 
