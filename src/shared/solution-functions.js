@@ -1442,14 +1442,25 @@ const possibleHandOptionsCanBePair = (handOptions) => {
   const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
   const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
 
-  // first check if the suits of the first two cards are placed and the same suit, then we are not a pair - as these numbers must be different
-  if (possibleSuits1.length === 1) {
-    const possibleSuit1 = possibleSuits1[0];
+  // first check the suits
+  // TODO I guess we should really find the actual suits of possible 3 of a kind numbers available??!!
+  const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
+  const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
+  const possibleSuit1Diamond = possibleSuits1.includes(SUIT_DIAMONDS);
+  const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
+  const possibleSuit2Diamond = possibleSuits2.includes(SUIT_DIAMONDS);
+  const possibleSuit2Club = possibleSuits2.includes(SUIT_CLUBS);
 
-    // if second suit placed and the same, we are not a pair
-    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
-      return false;
-    }
+  // the first two suits must be SH, SD, SC, HD, HC or DC
+  const possibleSH = possibleSuit1Spade && possibleSuit2Heart;
+  const possibleSD = possibleSuit1Spade && possibleSuit2Diamond;
+  const possibleSC = possibleSuit1Spade && possibleSuit2Club;
+  const possibleHD = possibleSuit1Heart && possibleSuit2Diamond;
+  const possibleHC = possibleSuit1Heart && possibleSuit2Club;
+  const possibleDC = possibleSuit1Diamond && possibleSuit2Club;
+
+  if (!possibleSH && !possibleSD && !possibleSC && !possibleHD && !possibleHC && !possibleDC) {
+    return false;
   }
 
   // go through all of the first possible numbers
