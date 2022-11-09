@@ -1382,24 +1382,46 @@ const possibleHandOptionsCanBeTwoPair = (handOptions) => {
   const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
   const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
 
-  // first check if the suits of the first two cards are placed and the same suit, then we are not two pair - as these numbers must be different
-  if (possibleSuits1.length === 1) {
-    const possibleSuit1 = possibleSuits1[0];
+  // first check the suits
+  // TODO I guess we should really find the actual suits of possible for remaining pairs numbers available??!!
+  const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
+  const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
+  const possibleSuit1Diamond = possibleSuits1.includes(SUIT_DIAMONDS);
+  const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
+  const possibleSuit2Diamond = possibleSuits2.includes(SUIT_DIAMONDS);
+  const possibleSuit2Club = possibleSuits2.includes(SUIT_CLUBS);
 
-    // if second suit placed and the same, we are not two pair
-    if (possibleSuits2.length === 1 && possibleSuit1 === possibleSuits2[0]) {
-      return false;
-    }
+  // the first two suits must be SH, SD, SC, HD, HC or DC
+  const possible12SH = possibleSuit1Spade && possibleSuit2Heart;
+  const possible12SD = possibleSuit1Spade && possibleSuit2Diamond;
+  const possible12SC = possibleSuit1Spade && possibleSuit2Club;
+  const possible12HD = possibleSuit1Heart && possibleSuit2Diamond;
+  const possible12HC = possibleSuit1Heart && possibleSuit2Club;
+  const possible12DC = possibleSuit1Diamond && possibleSuit2Club;
+
+  if (!possible12SH && !possible12SD && !possible12SC && !possible12HD && !possible12HC && !possible12DC) {
+    return false;
   }
 
-  // then check if the suits of cards three and four are placed and the same suit, then we are not two pair - as these numbers must be different
-  if (possibleSuits3.length === 1) {
-    const possibleSuit3 = possibleSuits3[0];
+  // now suits for cards 3 and 4
+  // TODO I guess we should really find the actual suits of possible for remaining pairs numbers available??!!
+  const possibleSuit3Spade = possibleSuits3.includes(SUIT_SPADES);
+  const possibleSuit3Heart = possibleSuits3.includes(SUIT_HEARTS);
+  const possibleSuit3Diamond = possibleSuits3.includes(SUIT_DIAMONDS);
+  const possibleSuit4Heart = possibleSuits4.includes(SUIT_HEARTS);
+  const possibleSuit4Diamond = possibleSuits4.includes(SUIT_DIAMONDS);
+  const possibleSuit4Club = possibleSuits4.includes(SUIT_CLUBS);
 
-    // if fourth suit placed and the same, we are not two pair
-    if (possibleSuits4.length === 1 && possibleSuit3 === possibleSuits4[0]) {
-      return false;
-    }
+  // the suits three and four must be SH, SD, SC, HD, HC or DC
+  const possible34SH = possibleSuit3Spade && possibleSuit4Heart;
+  const possible34SD = possibleSuit3Spade && possibleSuit4Diamond;
+  const possible34SC = possibleSuit3Spade && possibleSuit4Club;
+  const possible34HD = possibleSuit3Heart && possibleSuit4Diamond;
+  const possible34HC = possibleSuit3Heart && possibleSuit4Club;
+  const possible34DC = possibleSuit3Diamond && possibleSuit4Club;
+
+  if (!possible34SH && !possible34SD && !possible34SC && !possible34HD && !possible34HC && !possible34DC) {
+    return false;
   }
 
   // go through all of the first possible numbers
@@ -1443,7 +1465,7 @@ const possibleHandOptionsCanBePair = (handOptions) => {
   const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
 
   // first check the suits
-  // TODO I guess we should really find the actual suits of possible 3 of a kind numbers available??!!
+  // TODO I guess we should really find the actual suits of possible for remaining pairs numbers available??!!
   const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
   const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
   const possibleSuit1Diamond = possibleSuits1.includes(SUIT_DIAMONDS);
