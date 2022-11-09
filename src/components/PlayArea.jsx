@@ -30,6 +30,7 @@ import {
   SUIT_DIAMONDS,
   SUIT_CLUBS,
   SOLUTION_OPTIONS_STATE_INVALID,
+  SOLUTION_OPTIONS_STATE_DONE,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -101,10 +102,17 @@ const playbackgroundsvg = {
 const PlayArea = () => {
   const { solutionOptionsState } = useContext(GameStateContext);
 
+  let fillColour = 'rgb(85,107,47)';
+  if (solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID) {
+    fillColour = 'red';
+  } else if (solutionOptionsState === SOLUTION_OPTIONS_STATE_DONE) {
+    fillColour = 'rgb(248,214,100)';
+  }
+
   const playbackgroundrect = {
     width: '920px',
     height: '622px',
-    fill: solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID ? 'red' : 'rgb(85,107,47)',
+    fill: fillColour,
   };
 
   return (
