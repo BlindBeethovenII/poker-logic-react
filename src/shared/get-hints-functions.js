@@ -127,6 +127,7 @@ import {
   HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
@@ -1967,10 +1968,8 @@ export const createHintClueCardsSameNumberTwoNotAvailable = (number, solutionOpt
 export const getClueCardsSameNumberTwoNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue) => {
   const hints = [];
 
-  // need to compare the card options for these two cards
-  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
-
   // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so both sets of numbers are the same
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
   const numbers = getNumbersFromCardOptions(cardOptions1);
 
   // we have to check that the number hasn't been placed - if it has, then both have, and so nothing for us to do
@@ -2016,10 +2015,8 @@ export const createHintClueCardsSameNumberThreeNotAvailable = (number, solutionO
 export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, cardsAvailable, solutionOptions, clue1, clue2) => {
   const hints = [];
 
-  // need to compare the card options for these two cards
-  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
-
   // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so all three sets of numbers are the same
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
   const numbers = getNumbersFromCardOptions(cardOptions1);
 
   // we have to check that the number hasn't been placed - if it has, then all three cards have their number set, and so nothing for us to do
@@ -2041,6 +2038,55 @@ export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex1, handOptionsIndex1, clue1, clue2));
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex2, handOptionsIndex2, clue1, clue2));
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex3, handOptionsIndex3, clue1, clue2));
+    }
+  });
+
+  return hints;
+};
+
+// ---------------------------------------------- //
+// HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE //
+// ---------------------------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE
+export const createHintClueCardsSameNumberFourNotAvailable = (number, solutionOptionsIndex, handOptionsIndex, clue1, clue2) => ({
+  hintType: HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE,
+  number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue1,
+  clue2,
+});
+
+// create HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE hint to remove any numbers which don't have enough available to fill these four slots
+// eslint-disable-next-line max-len
+export const getClueCardsSameNumberFourNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, solutionHandsIndex4, handOptionsIndex4, cardsAvailable, solutionOptions, clue1, clue2) => {
+  const hints = [];
+
+  // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so all four sets of numbers are the same
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const numbers = getNumbersFromCardOptions(cardOptions1);
+
+  // we have to check that the number hasn't been placed - if it has, then all four cards have their number set, and so nothing for us to do
+  if (numbers.length === 1) {
+    return [];
+  }
+
+  // for all possible numbers still available at these four positions
+  numbers.forEach((number) => {
+    // how many of this number are in cards available
+    const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
+
+    // how many cards in solutionOptions have this number placed
+    const numberPlacedCount = countNumberPlacedInSolutionOptions(number, solutionOptions);
+
+    // we need at least 4 available after numberPlacedCount has been removed, for this number to be available for all four cards
+    if (numberAvailableCount - numberPlacedCount < 4) {
+      // at least 4 not available - so remove this number from all four cards
+      hints.push(createHintClueCardsSameNumberFourNotAvailable(number, solutionHandsIndex1, handOptionsIndex1, clue1, clue2));
+      hints.push(createHintClueCardsSameNumberFourNotAvailable(number, solutionHandsIndex2, handOptionsIndex2, clue1, clue2));
+      hints.push(createHintClueCardsSameNumberFourNotAvailable(number, solutionHandsIndex3, handOptionsIndex3, clue1, clue2));
+      hints.push(createHintClueCardsSameNumberFourNotAvailable(number, solutionHandsIndex4, handOptionsIndex4, clue1, clue2));
     }
   });
 
@@ -3561,6 +3607,39 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
             const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue21, handOptionsIndexClue21, cardsAvailable, solutionOptions, clue, clue2);
             if (clueCardsSameNumberThreeNotAvailableHints.length) {
               return clueCardsSameNumberThreeNotAvailableHints;
+            }
+          }
+        }
+      }
+
+      // now look to see if there is a HAND_OF_TYPE clue that relates to this, to check we have enough cards of that number to fullfil both clues
+      for (let j = 0; j < clues.length; j += 1) {
+        const clue2 = clues[j];
+        const { clueType: clueType2 } = clue2;
+        if (clueType2 === CLUE_HAND_OF_TYPE) {
+          const {
+            handType: handTypeClue2,
+            solutionHandsIndex: solutionHandsIndexClue2,
+          } = clue2;
+          if (handTypeClue2 === HAND_TYPE_FULL_HOUSE || handTypeClue2 === HAND_TYPE_THREE_OF_A_KIND) {
+            // if same number clue matches card 1, card 2 or card 3 of the hand type hand, then we need to check 4 cards are available
+            // remember the same number clue can be either way around
+            const part1Matches = (solutionHandsIndex1 === solutionHandsIndexClue2 && (handOptionsIndex1 === 0 || handOptionsIndex1 === 1 || handOptionsIndex1 === 2));
+            if (part1Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberFourNotAvailableHints = getClueCardsSameNumberFourNotAvailableHints(solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue2, 0, solutionHandsIndexClue2, 1, solutionHandsIndexClue2, 2, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberFourNotAvailableHints.length) {
+                return clueCardsSameNumberFourNotAvailableHints;
+              }
+            }
+
+            const part2Matches = (solutionHandsIndex2 === solutionHandsIndexClue2 && (handOptionsIndex2 === 0 || handOptionsIndex2 === 1 || handOptionsIndex2 === 2));
+            if (part2Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberFourNotAvailableHints = getClueCardsSameNumberFourNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndexClue2, 0, solutionHandsIndexClue2, 1, solutionHandsIndexClue2, 2, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberFourNotAvailableHints.length) {
+                return clueCardsSameNumberFourNotAvailableHints;
+              }
             }
           }
         }

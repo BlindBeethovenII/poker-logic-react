@@ -378,11 +378,9 @@ export const clues6 = [
 
   createClueNumber(NUMBER_5, 1, 4),
 
-  createClueCardsSameNumber(0, 0, 2, 0),
-  createClueCardsSameNumber(0, 1, 2, 1),
+  // createClueCardsSameNumber(0, 0, 2, 0),
+  // createClueCardsSameNumber(0, 1, 2, 1),
   createClueCardsSameNumber(0, 2, 1, 2),
-  // createClueCardsSameNumber(2, 2, 3, 3),
-  // createClueCardsSameNumber(2, 4, 3, 4),
 ];
 
 // -------------------------- //
