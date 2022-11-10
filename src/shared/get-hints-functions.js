@@ -3621,6 +3621,7 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
             handType: handTypeClue2,
             solutionHandsIndex: solutionHandsIndexClue2,
           } = clue2;
+          // first consider the case where 4 cards are needed for the same number into a three of a kind
           if (handTypeClue2 === HAND_TYPE_FULL_HOUSE || handTypeClue2 === HAND_TYPE_THREE_OF_A_KIND) {
             // if same number clue matches card 1, card 2 or card 3 of the hand type hand, then we need to check 4 cards are available
             // remember the same number clue can be either way around
@@ -3639,6 +3640,75 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
               const clueCardsSameNumberFourNotAvailableHints = getClueCardsSameNumberFourNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndexClue2, 0, solutionHandsIndexClue2, 1, solutionHandsIndexClue2, 2, cardsAvailable, solutionOptions, clue, clue2);
               if (clueCardsSameNumberFourNotAvailableHints.length) {
                 return clueCardsSameNumberFourNotAvailableHints;
+              }
+            }
+          }
+
+          // now consider where 3 cards are needed for the same number into a pair - this case covers a pair, and the first pair of two pair
+          if (handTypeClue2 === HAND_TYPE_PAIR || handTypeClue2 === HAND_TYPE_TWO_PAIR) {
+            // if same number clue matches card 1 or card 2 of the hand type hand, then we need to check 3 cards are available
+            // remember the same number clue can be either way around
+            const part1Matches = (solutionHandsIndex1 === solutionHandsIndexClue2 && (handOptionsIndex1 === 0 || handOptionsIndex1 === 1));
+            if (part1Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue2, 0, solutionHandsIndexClue2, 1, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
+              }
+            }
+
+            const part2Matches = (solutionHandsIndex2 === solutionHandsIndexClue2 && (handOptionsIndex2 === 0 || handOptionsIndex2 === 1));
+            if (part2Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndexClue2, 0, solutionHandsIndexClue2, 1, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
+              }
+            }
+          }
+
+          // now consider where 3 cards are needed for the same number into a pair - this case the second pair of two pair
+          if (handTypeClue2 === HAND_TYPE_TWO_PAIR) {
+            // if same number clue matches card 1 or card 2 of the hand type hand, then we need to check 3 cards are available
+            // remember the same number clue can be either way around
+            const part1Matches = (solutionHandsIndex1 === solutionHandsIndexClue2 && (handOptionsIndex1 === 2 || handOptionsIndex1 === 3));
+            if (part1Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue2, 2, solutionHandsIndexClue2, 3, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
+              }
+            }
+
+            const part2Matches = (solutionHandsIndex2 === solutionHandsIndexClue2 && (handOptionsIndex2 === 2 || handOptionsIndex2 === 3));
+            if (part2Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndexClue2, 2, solutionHandsIndexClue2, 3, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
+              }
+            }
+          }
+
+          // now consider where 3 cards are needed for the same number into a pair - this case the pair of a full house
+          if (handTypeClue2 === HAND_TYPE_FULL_HOUSE) {
+            // if same number clue matches card 1 or card 2 of the hand type hand, then we need to check 3 cards are available
+            // remember the same number clue can be either way around
+            const part1Matches = (solutionHandsIndex1 === solutionHandsIndexClue2 && (handOptionsIndex1 === 3 || handOptionsIndex1 === 4));
+            if (part1Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue2, 3, solutionHandsIndexClue2, 4, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
+              }
+            }
+
+            const part2Matches = (solutionHandsIndex2 === solutionHandsIndexClue2 && (handOptionsIndex2 === 3 || handOptionsIndex2 === 4));
+            if (part2Matches) {
+              // eslint-disable-next-line max-len
+              const clueCardsSameNumberThreeNotAvailableHints = getClueCardsSameNumberThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndexClue2, 3, solutionHandsIndexClue2, 4, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameNumberThreeNotAvailableHints.length) {
+                return clueCardsSameNumberThreeNotAvailableHints;
               }
             }
           }
