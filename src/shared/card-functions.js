@@ -1261,3 +1261,17 @@ export const isCardEven = (number) => {
 
   return number % 2 === 0;
 };
+
+// return the maximum count of the same card number, for example [A, A, A, K] is 3 as there are 3 aces
+export const getMaxCountOfSameCardNumber = (cards) => {
+  // easiest approach is to have array of 0 counts for each card number, where the index is (card number - 1)
+  const counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  cards.forEach((card) => {
+    const { number } = card;
+    const countsIndex = number - 1;
+    counts[countsIndex] += 1;
+  });
+
+  // now we can just return the max count
+  return Math.max(...counts);
+};

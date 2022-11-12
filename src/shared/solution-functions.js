@@ -1061,8 +1061,12 @@ const allPossibleSuitsPlacedAndSameSuit = (possibleSuits1, possibleSuits2, possi
 
 // helper function to return true if a straight flush can be made from the possible numbers and suits
 // uses similar code to the get-hints-function getNoStraightFlushInNumberHints()
-// eslint-disable-next-line max-len
-const possibleHandOptionsCanBeStraightFlush = (handOptions, cardsStillAvailable) => {
+const possibleHandOptionsCanBeStraightFlush = (handOptions, cardsStillAvailable, maxCountOfSameCardNumber) => {
+  // we cannot be a straight flush if we have two of the same number
+  if (maxCountOfSameCardNumber > 1) {
+    return false;
+  }
+
   // go through all of the first possible suits
   const cardOptions1 = handOptions[0];
   const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
@@ -1220,7 +1224,12 @@ const possibleHandOptionsCanBeFullHouse = (handOptions) => {
 };
 
 // helper function to return true if a flush can be made from the possible handOptions
-const possibleHandOptionsCanBeFlush = (handOptions) => {
+const possibleHandOptionsCanBeFlush = (handOptions, maxCountOfSameCardNumber) => {
+  // we cannot be a flush if we have two of the same number
+  if (maxCountOfSameCardNumber > 1) {
+    return false;
+  }
+
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1252,7 +1261,12 @@ const possibleHandOptionsCanBeFlush = (handOptions) => {
 };
 
 // helper function to return true if a straight can be made from the possible handOptions
-const possibleHandOptionsCanBeStraight = (handOptions) => {
+const possibleHandOptionsCanBeStraight = (handOptions, maxCountOfSameCardNumber) => {
+  // we cannot be a straight if we have two of the same number
+  if (maxCountOfSameCardNumber > 1) {
+    return false;
+  }
+
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1368,7 +1382,12 @@ const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
 };
 
 // helper function to return true if two pair can be made from the possible handOptions
-const possibleHandOptionsCanBeTwoPair = (handOptions) => {
+const possibleHandOptionsCanBeTwoPair = (handOptions, maxCountOfSameCardNumber) => {
+  // we cannot be a two pair if we have three of the same number
+  if (maxCountOfSameCardNumber > 2) {
+    return false;
+  }
+
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1454,7 +1473,12 @@ const possibleHandOptionsCanBeTwoPair = (handOptions) => {
 };
 
 // helper function to return true if a pair can be made from the possible handOptions
-const possibleHandOptionsCanBePair = (handOptions) => {
+const possibleHandOptionsCanBePair = (handOptions, maxCountOfSameCardNumber) => {
+  // we cannot be a pair if we have three of the same number
+  if (maxCountOfSameCardNumber > 2) {
+    return false;
+  }
+
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1505,7 +1529,12 @@ const possibleHandOptionsCanBePair = (handOptions) => {
 };
 
 // helper function to return true if a high card can be made from the possible handOptions
-const possibleHandOptionsCanBeHighCard = (handOptions) => {
+const possibleHandOptionsCanBeHighCard = (handOptions, maxCountOfSameCardNumber) => {
+  // we cannot be a high card if we have two of the same number
+  if (maxCountOfSameCardNumber > 1) {
+    return false;
+  }
+
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1542,10 +1571,11 @@ const possibleHandOptionsCanBeHighCard = (handOptions) => {
   return false;
 };
 
-// can the given handOptions be the given hand type based on the given cardsAvailable and cardsStillAvailable
-export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvailable /* , cardsAvailable */) => {
+// can the given handOptions be the given hand type based on the given cardsAvailable, and the requiredCards that must go in this hand
+// for efficiency we are also told the maximum count of the same card number in requiredCards
+export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvailable, requiredCards, maxCountOfSameCardNumber) => {
   if (handType === HAND_TYPE_STRAIGHT_FLUSH) {
-    return possibleHandOptionsCanBeStraightFlush(handOptions, cardsStillAvailable);
+    return possibleHandOptionsCanBeStraightFlush(handOptions, cardsStillAvailable, maxCountOfSameCardNumber);
   }
 
   if (handType === HAND_TYPE_FOUR_OF_A_KIND) {
@@ -1557,11 +1587,11 @@ export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvaila
   }
 
   if (handType === HAND_TYPE_FLUSH) {
-    return possibleHandOptionsCanBeFlush(handOptions);
+    return possibleHandOptionsCanBeFlush(handOptions, maxCountOfSameCardNumber);
   }
 
   if (handType === HAND_TYPE_STRAIGHT) {
-    return possibleHandOptionsCanBeStraight(handOptions);
+    return possibleHandOptionsCanBeStraight(handOptions, maxCountOfSameCardNumber);
   }
 
   if (handType === HAND_TYPE_THREE_OF_A_KIND) {
@@ -1569,18 +1599,42 @@ export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvaila
   }
 
   if (handType === HAND_TYPE_TWO_PAIR) {
-    return possibleHandOptionsCanBeTwoPair(handOptions);
+    return possibleHandOptionsCanBeTwoPair(handOptions, maxCountOfSameCardNumber);
   }
 
   if (handType === HAND_TYPE_PAIR) {
-    return possibleHandOptionsCanBePair(handOptions);
+    return possibleHandOptionsCanBePair(handOptions, maxCountOfSameCardNumber);
   }
 
   if (handType === HAND_TYPE_HIGH_CARD) {
-    return possibleHandOptionsCanBeHighCard(handOptions);
+    return possibleHandOptionsCanBeHighCard(handOptions, maxCountOfSameCardNumber);
   }
 
   // we should never get here
   console.error(`canHandOptionsBeHandType cannot cope with handType ${handType}`);
   return true;
+};
+
+// return an array of solutionHandsIndex of each hand that the given card can still be placed in
+// note: the given card is not placed yet
+export const getHandsInWhichCardCanStillBePlaced = (card, solutionOptions) => {
+  const result = [];
+
+  const { suit, number } = card;
+
+  // look at each hand option to see if it can still be placed there
+  for (let solutionOptionsIndex = 0; solutionOptionsIndex < solutionOptions.length; solutionOptionsIndex += 1) {
+    const handOptions = solutionOptions[solutionOptionsIndex];
+    let canBePlaced = false;
+    for (let handOptionsIndex = 0; handOptionsIndex < handOptions.length && !canBePlaced; handOptionsIndex += 1) {
+      const cardOptions = handOptions[handOptionsIndex];
+      if (isSuitTrueInCardOptions(suit, cardOptions) && isNumberTrueInCardOptions(number, cardOptions)) {
+        // yet, this card can be placed here
+        canBePlaced = true;
+        result.push(solutionOptionsIndex);
+      }
+    }
+  }
+
+  return result;
 };

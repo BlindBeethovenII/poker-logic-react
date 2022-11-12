@@ -1,12 +1,12 @@
 // get deduced clues functions
 
-import { sortHand, calcHandType } from './card-functions';
+import { sortHand, calcHandType, getMaxCountOfSameCardNumber } from './card-functions';
 
 import { clueExists } from './clueExists';
 
 import { createClueHandOfType, createClueHandTypeDeducedFromSolutionOptions, createClueHandTypeDeducedFromCardsStillAvailable } from './create-clue-functions';
 
-import { canHandOptionsBeHandType, getPlacedCardsInHandOptions } from './solution-functions';
+import { canHandOptionsBeHandType, getPlacedCardsInHandOptions, getHandsInWhichCardCanStillBePlaced } from './solution-functions';
 
 import {
   CLUE_HAND_OF_TYPE,
@@ -247,6 +247,28 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
     }
   }
 
+  // do some prep work
+
+  // look at each card that is still available and see if it can only be placed in a single hand
+  const requiredCardsBySolutionHandsIndex = [[], [], [], []];
+  cardsStillAvailable.forEach((suitCardsAvailable) => {
+    suitCardsAvailable.forEach((card) => {
+      // in which hands can this card be placed?
+      const possibleHands = getHandsInWhichCardCanStillBePlaced(card, solutionOptions);
+
+      // if there is only one, then remember it
+      if (possibleHands.length === 1) {
+        const possibleHand = possibleHands[0];
+        requiredCardsBySolutionHandsIndex[possibleHand].push(card);
+      } else if (possibleHands.length === 0) {
+        console.error(`getDeducedCluesFromSolutionOptions: this should never happen - card ${JSON.stringify(card)} cannot be placed in a hand`);
+      }
+    });
+  });
+
+  // TODO REMOVE
+  console.error('TODO REMOVE getDeducedCluesFromSolutionOptions requiredCardsBySolutionHandsIndex is', requiredCardsBySolutionHandsIndex);
+
   // consider any hand type we don't know yet
   for (let solutionHandsIndex = 0; solutionHandsIndex < knownHandTypes.length; solutionHandsIndex += 1) {
     if (knownHandTypes[solutionHandsIndex] === undefined) {
@@ -257,9 +279,16 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
       // check each possible hand type and reject those that are no longer possible given the current solutionOptions, cardsAvailable and cardsStillAvailable
       const stillPossibleHandTypesSet = new Set(possibleHandTypes);
       const handOptions = solutionOptions[solutionHandsIndex];
+
+      // there may be certain cards in cardsStillAvailable can only now go in this hand
+      const requiredCards = requiredCardsBySolutionHandsIndex[solutionHandsIndex];
+
+      // we need to know the max number of cards of the same number (e.g. [A, A, A, K] is 3)
+      const maxCountOfSameCardNumber = getMaxCountOfSameCardNumber(requiredCards);
+
       for (let possibleHandTypeIndex = 0; possibleHandTypeIndex < possibleHandTypes.length; possibleHandTypeIndex += 1) {
         const possibleHandType = possibleHandTypes[possibleHandTypeIndex];
-        if (!canHandOptionsBeHandType(handOptions, possibleHandType, cardsStillAvailable, cardsAvailable)) {
+        if (!canHandOptionsBeHandType(handOptions, possibleHandType, cardsStillAvailable, requiredCards, maxCountOfSameCardNumber)) {
           stillPossibleHandTypesSet.delete(possibleHandType);
         }
       }
