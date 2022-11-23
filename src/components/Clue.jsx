@@ -20,12 +20,12 @@ const Button = styled.button`
 `;
 
 const Clue = (props) => {
-  const { clueText, clueIndex } = props;
+  const { clueText, clueIndex, clueShowIndex } = props;
 
-  const { showClues, toggleShowClue } = useContext(GameStateContext);
+  const { toggleShowClue } = useContext(GameStateContext);
 
   const left = colToLeft(0.9);
-  const top = rowToTop(4 + clueIndex * 0.3);
+  const top = rowToTop(4 + clueShowIndex * 0.3);
 
   const divstyle = {
     position: 'absolute',
@@ -35,11 +35,6 @@ const Clue = (props) => {
     textAlign: 'left',
     zIndex: 0,
   };
-
-  // get our show clue bool
-  const showClue = showClues[clueIndex];
-
-  const labelText = showClue ? clueText : '******************';
 
   const preventDefaultAndToggle = (e) => {
     // stop the context menu appearing
@@ -55,7 +50,7 @@ const Clue = (props) => {
         onKeyDown={preventDefaultAndToggle}
         onContextMenu={preventDefaultAndToggle}
       >
-        {labelText}
+        {clueText}
       </Button>
     </div>
   );
@@ -64,6 +59,7 @@ const Clue = (props) => {
 Clue.propTypes = {
   clueText: PropTypes.string.isRequired,
   clueIndex: PropTypes.number.isRequired,
+  clueShowIndex: PropTypes.number.isRequired,
 };
 
 export default Clue;

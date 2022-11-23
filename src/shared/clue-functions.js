@@ -601,7 +601,7 @@ export const sortCluesReducing = (cluesParam) => {
 // a clue with deduced defined is shown to the user if any of its deduced clues is no longer still in clues
 //   - that it, either of those clues was removed by reduceClues() and now they are not available to the user to deduce the deduced clue
 // otherwise the deduced clue is not shown
-export const showClue = (clue, clues) => {
+export const showDeducedClue = (clue, clues) => {
   const { deduced } = clue;
   if (deduced === undefined) {
     return true;

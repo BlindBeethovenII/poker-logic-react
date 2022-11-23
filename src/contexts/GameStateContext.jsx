@@ -34,7 +34,7 @@ import {
   createCluesForSolutionHands,
   createInitialShowClues,
   sortCluesShowing,
-  showClue,
+  showDeducedClue,
 } from '../shared/clue-functions';
 
 import { addInDeducedClues } from '../shared/get-deduced-clues-functions';
@@ -98,6 +98,9 @@ export const GameStateContextProvider = ({ children }) => {
 
   // show of hide each clue
   const [showClues, setShowClues] = useState(() => createInitialShowClues(clues));
+
+  // show the hidden clues
+  const [showHiddenClues, setShowHiddenClues] = useState(false);
 
   // show or hide the solution
   const [showSolution, setShowSolution] = useState(false);
@@ -419,7 +422,7 @@ export const GameStateContextProvider = ({ children }) => {
 
       // only consider clues that are shown to the user
       // only consider 'HAND OF TYPE' clues if not instructed to keep them
-      if (showClue(clue, finalClues) && (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes)) {
+      if (showDeducedClue(clue, finalClues) && (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes)) {
         // the new clues without that one
         const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
         // remember to add in the deduced clues (which applies if we've removed a HAND_TYPE clue that can now be deduced)
@@ -497,6 +500,10 @@ export const GameStateContextProvider = ({ children }) => {
     setShowClues(newShowClues);
   }, [showClues]);
 
+  const toggleShowHiddenClues = useCallback(() => {
+    setShowHiddenClues(!showHiddenClues);
+  }, [showHiddenClues]);
+
   // ----------- //
   // the context //
   // ----------- //
@@ -548,6 +555,8 @@ export const GameStateContextProvider = ({ children }) => {
     // showSolution stuff
     showSolution,
     toggleShowSolution,
+    showHiddenClues,
+    toggleShowHiddenClues,
 
     // showClues stuff
     showClues,
@@ -586,6 +595,8 @@ export const GameStateContextProvider = ({ children }) => {
     toggleShowSolution,
     showClues,
     toggleShowClue,
+    showHiddenClues,
+    toggleShowHiddenClues,
     showSpinKitCircle,
   ]);
 
