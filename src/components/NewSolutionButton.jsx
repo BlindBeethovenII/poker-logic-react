@@ -23,10 +23,10 @@ const NewSolutionButton = (props) => {
 
   const { newSolution, nextHardCodedSolution } = useContext(GameStateContext);
 
-  const offset = hardCoded ? 3 : 0;
+  const offset = hardCoded ? 1.8 : 0;
 
-  const left = colToLeft(1.7 + offset);
-  const top = rowToTop(4);
+  const left = colToLeft(8 + offset);
+  const top = rowToTop(5.95);
 
   const divstyle = {
     position: 'absolute',
