@@ -1,10 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 
+import { colToLeft, rowToTop } from '../shared/card-functions';
+
 import gitLog from '../_generated_git_log';
 
-const left = 20;
-const top = 580;
+const left = colToLeft(12.1);
+const top = rowToTop(6.55);
 
 const builtstyle = {
   position: 'absolute',
