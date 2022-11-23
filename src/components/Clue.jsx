@@ -24,8 +24,8 @@ const Clue = (props) => {
 
   const { showClues, toggleShowClue } = useContext(GameStateContext);
 
-  const left = colToLeft(0) + 36;
-  const top = rowToTop(5 + clueIndex * 0.3);
+  const left = colToLeft(0.9);
+  const top = rowToTop(4 + clueIndex * 0.3);
 
   const divstyle = {
     position: 'absolute',
