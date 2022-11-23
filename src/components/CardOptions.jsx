@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
+import { isMobile } from 'react-device-detect';
+
 import CardBlankImage from '../images/cards/cardblank.png';
 
 import {
@@ -334,9 +336,24 @@ const CardOptions = (props) => {
         }
       };
 
-      // need this to stop the context menu appearing
-      const stopContextMenuAppearing = (e) => {
+      // the context menu for a number - only used on a mobile
+      const onContextMenuNumber = (e) => {
+        logIfDevEnv(`onContextMenuNumber: for number ${number} isMobile=${isMobile}`);
+
         e.preventDefault();
+
+        // if we are on a mobile, then we come in this way to toggle the selected number option
+        // note: shift key won't be involved, so we don't have "else if (e.shiftKey)"
+        if (isMobile) {
+          // if this is the single number option, then toggle means make all options available again
+          if (isSingleNumberOption) {
+            resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
+          } else {
+            // toggle just this card's number
+            logIfDevEnv(`onContextMenuNumber ${number} calling toggleNumberOption`);
+            toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+          }
+        }
       };
 
       const numberDivId = `${id}-num-${number}`;
@@ -352,7 +369,7 @@ const CardOptions = (props) => {
           onKeyDown={numberSelectThisOptionOnly}
           onMouseDown={onMouseDownNumber}
           onMouseEnter={onMouseEnterNumber}
-          onContextMenu={stopContextMenuAppearing}
+          onContextMenu={onContextMenuNumber}
         >
           {cardnumber}
         </div>
