@@ -102,7 +102,7 @@ export const clues1 = [
 
   createClueNumber(NUMBER_5, 1, 1),
 
-  createClueNotSuit(SUIT_HEARTS, 3, 0),
+  // createClueNotSuit(SUIT_HEARTS, 3, 0),
 
   createClueNotNumber(NUMBER_9, 1, 4),
 
