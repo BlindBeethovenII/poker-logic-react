@@ -6,36 +6,36 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 
 import GameStateContext from '../contexts/GameStateContext';
 
-const Button = styled.button`
-  background: #761d38;
+const left = colToLeft(6) - 8;
+const top = rowToTop(0);
+
+const divStyle = {
+  position: 'absolute',
+  left: `${left}px`,
+  top: `${top}px`,
+  height: '16px',
+  textAlign: 'left',
+  zIndex: 0,
+  pointerEvents: 'none',
+};
+
+const Label = styled.h2`
+  background: rgb(85,107,47);
   color: white;
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 0.25em;
-  border: 2px solid #761d38;
-  border-radius: 3px;
+  font-size: 0.8em;
+  margin: 0.4em;
+  padding: 0.2em 0.4em 0.2em 0.2em;
+  border: 1px solid #761d38;
+  border-radius: 2px;
   pointer-events: none;
 `;
-
-const left = colToLeft(6) - 16;
-const top = rowToTop(0);
 
 const CompleteIncorrectMark = () => {
   const { solutionOptionsState } = useContext(GameStateContext);
 
-  const buttonDivStyle = {
-    position: 'absolute',
-    left: `${left}px`,
-    top: `${top}px`,
-    height: '16px',
-    textAlign: 'left',
-    zIndex: 0,
-    pointerEvents: 'none',
-  };
-
   return (
-    <div style={buttonDivStyle}>
-      <Button>{solutionOptionsState}</Button>
+    <div style={divStyle}>
+      <Label>{solutionOptionsState}</Label>
     </div>
   );
 };
