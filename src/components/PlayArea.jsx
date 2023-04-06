@@ -10,6 +10,7 @@ import BorderBottomRightImage from '../images/borders/bottomright.png';
 import BorderRightImage from '../images/borders/right.png';
 
 import SolutionHand from './SolutionHand';
+import ShowHandOrdering from './ShowHandOrdering';
 import SolutionPerson from './SolutionPerson';
 import AvailableCardsInSuit from './AvailableCardsInSuit';
 import SolutionOptions from './SolutionOptions';
@@ -133,6 +134,7 @@ const PlayArea = () => {
       <SolutionHand solutionHandIndex={1} />
       <SolutionHand solutionHandIndex={2} />
       <SolutionHand solutionHandIndex={3} />
+      <ShowHandOrdering />
       <SolutionPerson solutionPersonIndex={0} />
       <SolutionPerson solutionPersonIndex={1} />
       <SolutionPerson solutionPersonIndex={2} />
