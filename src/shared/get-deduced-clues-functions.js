@@ -266,8 +266,7 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
     });
   });
 
-  // TODO REMOVE
-  console.error('TODO REMOVE getDeducedCluesFromSolutionOptions requiredCardsBySolutionHandsIndex is', requiredCardsBySolutionHandsIndex);
+  // console.error('TODO REMOVE getDeducedCluesFromSolutionOptions requiredCardsBySolutionHandsIndex is', requiredCardsBySolutionHandsIndex);
 
   // consider any hand type we don't know yet
   for (let solutionHandsIndex = 0; solutionHandsIndex < knownHandTypes.length; solutionHandsIndex += 1) {
@@ -299,7 +298,12 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
       // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
       // note: this new clue can't already be in clues or deducedClues at this point, so we don't need to check
       if (stillPossibleHandTypes.length === 1) {
-        deducedClues.push(createClueHandOfType(stillPossibleHandTypes[0], solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
+        const handType = stillPossibleHandTypes[0];
+        deducedClues.push(createClueHandOfType(handType, solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
+
+        // we now know a hand type, so previous hand types might be restricted, so start the loop again
+        knownHandTypes[solutionHandsIndex] = handType;
+        solutionHandsIndex = -1;
       } else {
         // we now cover the case where there are n cardsStillAvailable and n unplaced cards in this handOptions
         // which means these n cardsStillAvailable must go in this hand, and so these n cardsStillAvailable and the placed cards in handOptions can only make one hand type
@@ -313,6 +317,10 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
           const handType = calcHandType(hand);
           deducedClues.push(createClueHandOfType(handType, solutionHandsIndex, [createClueHandTypeDeducedFromCardsStillAvailable(solutionHandsIndex)]));
           logIfDevEnv(`getDeducedCluesFromSolutionOptions created hand type clue ${handType} for solutionHandsIndex ${solutionHandsIndex} as ${nCardsStillAvailable} card(s) must be in this hand`);
+
+          // we now know a hand type, so previous hand types might be restricted, so start the loop again
+          knownHandTypes[solutionHandsIndex] = handType;
+          solutionHandsIndex = -1;
         }
       }
     }

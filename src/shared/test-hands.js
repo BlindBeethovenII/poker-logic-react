@@ -429,9 +429,9 @@ export const clues7 = [
   // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
   // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
 
-  createClueNumber(NUMBER_8, 0, 4),
+  // createClueNumber(NUMBER_8, 0, 4),
 
-  createClueHandEven(3),
+  // createClueHandEven(3),
 
   createClueHandHighestNumber(NUMBER_Q, 2),
 
@@ -440,17 +440,17 @@ export const clues7 = [
   createClueCardsSameNumber(1, 4, 2, 3),
 
   // createClueCardsSameSuit(3, 1, 3, 3),
-  createClueCardsSameSuit(3, 4, 3, 1),
+  // createClueCardsSameSuit(3, 4, 3, 1),
 
-  createClueCardEven(1, 1),
+  // createClueCardEven(1, 1),
 
   // createClueCardOdd(1, 3),
 
-  createClueHandHasNumber(NUMBER_A, 3),
+  // createClueHandHasNumber(NUMBER_A, 3),
 
   // createClueHandNotNumber(NUMBER_J, 1),
 
-  createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1),
+  // createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1),
 
   // createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
 ];
