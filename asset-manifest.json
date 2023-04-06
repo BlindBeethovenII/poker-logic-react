@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/poker-logic-react/static/css/main.e6c13ad2.css",
-    "main.js": "/poker-logic-react/static/js/main.3cef62d8.js",
+    "main.js": "/poker-logic-react/static/js/main.259c3767.js",
     "index.html": "/poker-logic-react/index.html",
     "main.e6c13ad2.css.map": "/poker-logic-react/static/css/main.e6c13ad2.css.map",
-    "main.3cef62d8.js.map": "/poker-logic-react/static/js/main.3cef62d8.js.map"
+    "main.259c3767.js.map": "/poker-logic-react/static/js/main.259c3767.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.3cef62d8.js"
+    "static/js/main.259c3767.js"
   ]
 }
