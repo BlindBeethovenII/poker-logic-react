@@ -327,7 +327,7 @@ export const clues5 = [
   createClueCardsSameNumber(3, 1, 3, 0),
   createClueCardsSameNumber(3, 1, 3, 2),
 
-  createClueBlackSuits(2),
+  // createClueBlackSuits(2),
 ];
 
 // -------------------------- //
