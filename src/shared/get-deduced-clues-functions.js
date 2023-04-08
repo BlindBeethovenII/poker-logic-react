@@ -295,9 +295,14 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
       const stillPossibleHandTypes = Array.from(stillPossibleHandTypesSet);
       logIfDevEnv(`getDeducedCluesFromSolutionOptions stillPossibleHandTypes for solutionHandsIndex ${solutionHandsIndex}: ${stillPossibleHandTypes}`);
 
-      // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
-      // note: this new clue can't already be in clues or deducedClues at this point, so we don't need to check
-      if (stillPossibleHandTypes.length === 1) {
+      // if no possible hand types - then we have a problem!
+      if (stillPossibleHandTypes.length === 0) {
+        console.error(
+          `getDeducedCluesFromSolutionOptions: this should never happen - no stillPossibleHandTypes for solutionHandsIndex ${solutionHandsIndex}: possibleHandTypes = ${possibleHandTypes}`,
+        );
+      } else if (stillPossibleHandTypes.length === 1) {
+        // if there is only a single hand type left, then create the deduced clue to state that it is this hand type
+        // note: this new clue can't already be in clues or deducedClues at this point, so we don't need to check
         const handType = stillPossibleHandTypes[0];
         deducedClues.push(createClueHandOfType(handType, solutionHandsIndex, [createClueHandTypeDeducedFromSolutionOptions(solutionHandsIndex)]));
 

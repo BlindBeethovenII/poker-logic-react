@@ -1296,10 +1296,10 @@ const possibleHandOptionsCanBeStraight = (handOptions, maxCountOfSameCardNumber)
   for (let i = 0; i < possibleNumbers1.length; i += 1) {
     const possibleNumber1 = possibleNumbers1[i];
     // first check for normal straights, where each number is 1 apart
-    if (possibleNumbers2.includes(possibleNumber1 + 1)
-      && possibleNumbers3.includes(possibleNumber1 + 2)
-      && possibleNumbers4.includes(possibleNumber1 + 3)
-      && possibleNumbers5.includes(possibleNumber1 + 4)) {
+    if (possibleNumbers2.includes(possibleNumber1 - 1)
+      && possibleNumbers3.includes(possibleNumber1 - 2)
+      && possibleNumbers4.includes(possibleNumber1 - 3)
+      && possibleNumbers5.includes(possibleNumber1 - 4)) {
       return true;
     }
 

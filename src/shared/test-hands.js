@@ -268,7 +268,7 @@ export const clues4 = [
   createClueSuitAndNumber(SUIT_SPADES, NUMBER_9, HAND_2, CARD_1),
 
   createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_4, HAND_3),
-  createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_3, HAND_4),
+  // createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_3, HAND_4),
 
   createClueSuit(SUIT_CLUBS, HAND_3, CARD_2),
 
