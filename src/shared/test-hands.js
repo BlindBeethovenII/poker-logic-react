@@ -567,8 +567,67 @@ export const clues9 = [
   createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
 ];
 
+// -------------------------- //
+// hard-coded solution hand 10 //
+// -------------------------- //
+
+export const solutionHands10 = [
+  [
+    createCard(SUIT_DIAMONDS, NUMBER_J),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_7),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_7),
+    createCard(SUIT_CLUBS, NUMBER_5),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_3),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+    createCard(SUIT_CLUBS, NUMBER_3),
+    createCard(SUIT_HEARTS, NUMBER_7),
+    createCard(SUIT_CLUBS, NUMBER_4),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_J),
+    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_SPADES, NUMBER_7),
+    createCard(SUIT_DIAMONDS, NUMBER_6),
+    createCard(SUIT_HEARTS, NUMBER_4),
+  ],
+];
+
+export const solution10 = {
+  solutionHands: solutionHands10,
+  missingNumber: NUMBER_2,
+};
+
+export const clues10 = [
+  createClueSuitAndNumber(SUIT_HEARTS, NUMBER_J, HAND_4, CARD_1),
+  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_K, HAND_2, CARD_1),
+
+  createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_7, HAND_4),
+
+  createClueHandLowestNumber(NUMBER_4, HAND_4),
+  createClueHandLowestNumber(NUMBER_5, HAND_2),
+
+  createClueCardsSameSuit(HAND_2, CARD_2, HAND_3, CARD_5),
+
+  createClueCardsSameNumber(HAND_1, CARD_2, HAND_2, CARD_2),
+  createClueCardsSameNumber(HAND_1, CARD_5, HAND_3, CARD_4),
+
+  createClueCardsNotSameNumber(HAND_2, CARD_2, HAND_4, CARD_1),
+  createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_2),
+  createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_4),
+  createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_5),
+];
+
 export const stillTODOClues = [
-  createClueCardsNotSameNumber(1, 4, 0, 1),
   createClueRedSuits(0),
   createClueHandEven(3),
 ];
