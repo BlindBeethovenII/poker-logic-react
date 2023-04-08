@@ -504,10 +504,71 @@ export const clues8 = [
   createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_4),
 ];
 
+// -------------------------- //
+// hard-coded solution hand 9 //
+// -------------------------- //
+
+export const solutionHands9 = [
+  [
+    createCard(SUIT_DIAMONDS, NUMBER_A),
+    createCard(SUIT_DIAMONDS, NUMBER_K),
+    createCard(SUIT_DIAMONDS, NUMBER_Q),
+    createCard(SUIT_DIAMONDS, NUMBER_J),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_SPADES, NUMBER_3),
+    createCard(SUIT_CLUBS, NUMBER_3),
+    createCard(SUIT_CLUBS, NUMBER_7),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_K),
+    createCard(SUIT_HEARTS, NUMBER_K),
+    createCard(SUIT_HEARTS, NUMBER_A),
+    createCard(SUIT_HEARTS, NUMBER_Q),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_6),
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+  ],
+];
+
+export const solution9 = {
+  solutionHands: solutionHands9,
+  missingNumber: NUMBER_4,
+};
+
+export const clues9 = [
+  createClueHandOfType(calcHandType(solutionHands9[0]), HAND_1),
+
+  createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, HAND_3, CARD_1),
+
+  createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_8, HAND_3),
+
+  createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_7, HAND_4),
+
+  createClueSuit(SUIT_CLUBS, HAND_4, CARD_2),
+
+  createClueRedSuit(HAND_3, CARD_3),
+
+  createClueCardEven(HAND_3, CARD_4),
+
+  createClueCardsSameSuit(HAND_2, CARD_2, HAND_4, CARD_5),
+  createClueCardsSameSuit(HAND_2, CARD_2, HAND_4, CARD_4),
+  createClueCardsSameSuit(HAND_1, CARD_1, HAND_4, CARD_5),
+  createClueCardsSameSuit(HAND_1, CARD_1, HAND_3, CARD_5),
+
+  createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
+];
+
 export const stillTODOClues = [
   createClueCardsNotSameNumber(1, 4, 0, 1),
-  createClueRedSuit(1, 1),
   createClueRedSuits(0),
   createClueHandEven(3),
-  createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
 ];
