@@ -49,6 +49,15 @@ import {
   SUIT_DIAMONDS,
   SUIT_HEARTS,
   SUIT_SPADES,
+  HAND_1,
+  HAND_2,
+  HAND_3,
+  HAND_4,
+  CARD_1,
+  CARD_2,
+  CARD_3,
+  CARD_4,
+  CARD_5,
 } from './constants';
 
 // -------------------------- //
@@ -92,21 +101,18 @@ export const solution1 = {
 };
 
 export const clues1 = [
-  // createClueHandOfType(calcHandType(solutionHands1[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands1[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands1[2]), 2),
-  createClueHandOfType(calcHandType(solutionHands1[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands1[1]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands1[2]), HAND_3),
+  createClueHandOfType(calcHandType(solutionHands1[3]), HAND_4),
 
-  createClueSuit(SUIT_HEARTS, 0, 4),
-  createClueSuit(SUIT_CLUBS, 2, 3),
+  createClueSuit(SUIT_HEARTS, HAND_1, CARD_5),
+  createClueSuit(SUIT_CLUBS, HAND_3, CARD_4),
 
-  createClueNumber(NUMBER_5, 1, 1),
+  createClueNumber(NUMBER_5, HAND_2, CARD_2),
 
-  // createClueNotSuit(SUIT_HEARTS, 3, 0),
+  createClueNotNumber(NUMBER_9, HAND_2, CARD_5),
 
-  createClueNotNumber(NUMBER_9, 1, 4),
-
-  createClueCardsSameNumber(0, 4, 3, 0),
+  createClueCardsSameNumber(HAND_1, CARD_5, HAND_4, CARD_1),
 ];
 
 // -------------------------- //
@@ -150,20 +156,20 @@ export const solution2 = {
 };
 
 export const clues2 = [
-  createClueHandOfType(calcHandType(solutionHands2[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands2[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands2[2]), 2),
-  createClueHandOfType(calcHandType(solutionHands2[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands2[0]), HAND_1),
+  createClueHandOfType(calcHandType(solutionHands2[1]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands2[2]), HAND_3),
+  createClueHandOfType(calcHandType(solutionHands2[3]), HAND_4),
 
-  createClueSuit(SUIT_SPADES, 2, 0),
-  createClueSuit(SUIT_DIAMONDS, 2, 3),
-  createClueSuit(SUIT_SPADES, 3, 4),
+  createClueSuit(SUIT_SPADES, HAND_3, CARD_1),
+  createClueSuit(SUIT_DIAMONDS, HAND_3, CARD_4),
+  createClueSuit(SUIT_SPADES, HAND_4, CARD_5),
 
-  createClueNotSuit(SUIT_HEARTS, 2, 1),
+  createClueNotSuit(SUIT_HEARTS, HAND_3, CARD_2),
 
-  createClueNotNumber(NUMBER_Q, 3, 2),
+  createClueNotNumber(NUMBER_Q, HAND_4, CARD_3),
 
-  createClueCardsSameNumber(2, 2, 3, 2),
+  createClueCardsSameNumber(HAND_3, CARD_3, HAND_4, CARD_3),
 ];
 
 // -------------------------- //
@@ -207,20 +213,20 @@ export const solution3 = {
 };
 
 export const clues3 = [
-  createClueHandOfType(calcHandType(solutionHands3[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands3[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands3[2]), 2),
-  createClueHandOfType(calcHandType(solutionHands3[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands3[0]), HAND_1),
+  createClueHandOfType(calcHandType(solutionHands3[1]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands3[2]), HAND_3),
+  createClueHandOfType(calcHandType(solutionHands3[3]), HAND_4),
 
-  createClueSuit(SUIT_DIAMONDS, 2, 0),
+  createClueSuit(SUIT_DIAMONDS, HAND_3, CARD_1),
 
-  createClueCardsSameNumber(0, 4, 1, 0),
+  createClueCardsSameNumber(HAND_1, CARD_5, HAND_2, CARD_1),
 
-  createClueCardsSameSuit(3, 2, 2, 4),
+  createClueCardsSameSuit(HAND_4, CARD_3, HAND_3, CARD_5),
 
-  createClueCardsNotSameSuit(3, 3, 1, 0),
+  createClueCardsNotSameSuit(HAND_4, CARD_4, HAND_2, CARD_1),
 
-  createClueBlackSuit(3, 4),
+  createClueBlackSuit(HAND_4, CARD_5),
 ];
 
 // -------------------------- //
@@ -264,14 +270,13 @@ export const solution4 = {
 };
 
 export const clues4 = [
-  createClueHandOfType(calcHandType(solutionHands4[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands4[1]), 1),
-  // createClueHandOfType(calcHandType(solutionHands4[2]), 2),
-  createClueHandOfType(calcHandType(solutionHands4[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands4[0]), HAND_1),
+  createClueHandOfType(calcHandType(solutionHands4[1]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands4[3]), HAND_4),
 
-  createClueHandOdd(3),
+  createClueHandOdd(HAND_4),
 
-  createClueHandNotNumber(NUMBER_6, 0),
+  createClueHandNotNumber(NUMBER_6, HAND_1),
 ];
 
 // -------------------------- //
@@ -315,19 +320,14 @@ export const solution5 = {
 };
 
 export const clues5 = [
-  // createClueHandOfType(calcHandType(solutionHands5[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands5[1]), 1),
-  // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands5[1]), HAND_2),
 
-  createClueHandLowestNumber(NUMBER_5, 1),
+  createClueHandLowestNumber(NUMBER_5, HAND_2),
 
-  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
+  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, HAND_2, CARD_3),
 
-  createClueCardsSameNumber(3, 1, 3, 0),
-  createClueCardsSameNumber(3, 1, 3, 2),
-
-  // createClueBlackSuits(2),
+  createClueCardsSameNumber(HAND_4, CARD_2, HAND_4, CARD_1),
+  createClueCardsSameNumber(HAND_4, CARD_2, HAND_4, CARD_3),
 ];
 
 // -------------------------- //
@@ -371,16 +371,12 @@ export const solution6 = {
 };
 
 export const clues6 = [
-  // createClueHandOfType(calcHandType(solutionHands5[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands5[1]), 1),
-  createClueHandOfType(calcHandType(solutionHands5[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands5[1]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands5[2]), HAND_3),
 
-  createClueNumber(NUMBER_5, 1, 4),
+  createClueNumber(NUMBER_5, HAND_2, CARD_5),
 
-  // createClueCardsSameNumber(0, 0, 2, 0),
-  // createClueCardsSameNumber(0, 1, 2, 1),
-  createClueCardsSameNumber(0, 2, 1, 2),
+  createClueCardsSameNumber(HAND_1, CARD_3, HAND_2, CARD_3),
 ];
 
 // -------------------------- //
@@ -424,35 +420,14 @@ export const solution7 = {
 };
 
 export const clues7 = [
-  createClueHandOfType(calcHandType(solutionHands7[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands7[1]), 1),
-  // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
+  createClueHandOfType(calcHandType(solutionHands7[0]), HAND_1),
+  createClueHandOfType(calcHandType(solutionHands7[1]), HAND_2),
 
-  // createClueNumber(NUMBER_8, 0, 4),
+  createClueHandHighestNumber(NUMBER_Q, HAND_3),
 
-  // createClueHandEven(3),
+  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, HAND_2, CARD_3),
 
-  createClueHandHighestNumber(NUMBER_Q, 2),
-
-  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
-
-  createClueCardsSameNumber(1, 4, 2, 3),
-
-  // createClueCardsSameSuit(3, 1, 3, 3),
-  // createClueCardsSameSuit(3, 4, 3, 1),
-
-  // createClueCardEven(1, 1),
-
-  // createClueCardOdd(1, 3),
-
-  // createClueHandHasNumber(NUMBER_A, 3),
-
-  // createClueHandNotNumber(NUMBER_J, 1),
-
-  // createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1),
-
-  // createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
+  createClueCardsSameNumber(HAND_2, 4, HAND_3, CARD_4),
 ];
 
 // -------------------------- //
@@ -461,32 +436,32 @@ export const clues7 = [
 
 export const solutionHands8 = [
   [
-    createCard(SUIT_HEARTS, NUMBER_Q),
-    createCard(SUIT_HEARTS, NUMBER_J),
-    createCard(SUIT_HEARTS, NUMBER_10),
-    createCard(SUIT_HEARTS, NUMBER_9),
-    createCard(SUIT_HEARTS, NUMBER_8),
-  ],
-  [
-    createCard(SUIT_SPADES, NUMBER_10),
-    createCard(SUIT_DIAMONDS, NUMBER_10),
-    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_7),
+    createCard(SUIT_HEARTS, NUMBER_6),
     createCard(SUIT_HEARTS, NUMBER_5),
-    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_HEARTS, NUMBER_3),
   ],
   [
-    createCard(SUIT_SPADES, NUMBER_Q),
-    createCard(SUIT_SPADES, NUMBER_J),
-    createCard(SUIT_SPADES, NUMBER_7),
-    createCard(SUIT_SPADES, NUMBER_5),
+    createCard(SUIT_SPADES, NUMBER_9),
+    createCard(SUIT_HEARTS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_A),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_8),
+    createCard(SUIT_CLUBS, NUMBER_7),
+    createCard(SUIT_SPADES, NUMBER_6),
+    createCard(SUIT_CLUBS, NUMBER_5),
     createCard(SUIT_SPADES, NUMBER_4),
   ],
   [
-    createCard(SUIT_HEARTS, NUMBER_A),
-    createCard(SUIT_DIAMONDS, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_A),
-    createCard(SUIT_DIAMONDS, NUMBER_8),
-    createCard(SUIT_DIAMONDS, NUMBER_4),
+    createCard(SUIT_SPADES, NUMBER_J),
+    createCard(SUIT_HEARTS, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_CLUBS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
   ],
 ];
 
@@ -496,114 +471,23 @@ export const solution8 = {
 };
 
 export const clues8 = [
-  createClueHandOfType(calcHandType(solutionHands7[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands7[1]), 1),
-  // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
+  createClueSuitAndNumber(SUIT_SPADES, NUMBER_8, HAND_3, CARD_1),
+  createClueSuitAndNumber(SUIT_SPADES, NUMBER_9, HAND_2, CARD_1),
 
-  createClueNumber(NUMBER_8, 0, 4),
-
-  createClueHandEven(3),
-
-  createClueHandHighestNumber(NUMBER_Q, 2),
-
-  createClueHandLowestNumber(NUMBER_5, 1),
-
-  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
-
-  createClueCardsSameNumber(1, 4, 2, 3),
-
-  createClueCardsSameSuit(3, 1, 3, 3),
-  createClueCardsSameSuit(3, 4, 3, 1),
-
-  createClueCardEven(1, 1),
-
-  createClueCardOdd(1, 3),
-
-  createClueHandHasNumber(NUMBER_A, 3),
-
-  createClueHandNotNumber(NUMBER_J, 1),
-
-  createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1),
-
-  createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
+  createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_4, CARD_3),
+  createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_3, CARD_3),
 ];
 
-// **** TODO2 - see notes **** //
-
-export const solutionHandsTODO2 = [
-  [
-    createCard(SUIT_HEARTS, NUMBER_Q),
-    createCard(SUIT_HEARTS, NUMBER_J),
-    createCard(SUIT_HEARTS, NUMBER_10),
-    createCard(SUIT_HEARTS, NUMBER_9),
-    createCard(SUIT_HEARTS, NUMBER_8),
-  ],
-  [
-    createCard(SUIT_SPADES, NUMBER_10),
-    createCard(SUIT_DIAMONDS, NUMBER_10),
-    createCard(SUIT_CLUBS, NUMBER_10),
-    createCard(SUIT_SPADES, NUMBER_5),
-    createCard(SUIT_DIAMONDS, NUMBER_5),
-  ],
-  [
-    createCard(SUIT_SPADES, NUMBER_Q),
-    createCard(SUIT_SPADES, NUMBER_J),
-    createCard(SUIT_SPADES, NUMBER_7),
-    createCard(SUIT_SPADES, NUMBER_6),
-    createCard(SUIT_SPADES, NUMBER_4),
-  ],
-  [
-    createCard(SUIT_HEARTS, NUMBER_A),
-    createCard(SUIT_DIAMONDS, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_A),
-    createCard(SUIT_CLUBS, NUMBER_8),
-    createCard(SUIT_HEARTS, NUMBER_4),
-  ],
-];
-
-export const solutionTODO2 = {
-  solutionHands: solutionHandsTODO2,
-  missingNumber: NUMBER_K,
-};
-
-export const cluesTODO2 = [
-  // createClueHandOfType(calcHandType(solutionHands5[0]), 0),
-  createClueHandOfType(calcHandType(solutionHands5[1]), 1),
-  // createClueHandOfType(calcHandType(solutionHands5[2]), 2),
-  // createClueHandOfType(calcHandType(solutionHands5[3]), 3),
-
-  createClueNumber(NUMBER_8, 0, 4),
-
-  createClueHandEven(3),
-
-  createClueHandHighestNumber(NUMBER_Q, 2),
-
-  createClueHandLowestNumber(NUMBER_5, 1),
-
-  createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1, 2),
-
+export const stillTODOClues = [
   createClueCardsNotSameNumber(1, 4, 0, 1),
-
   createClueRedSuit(1, 1),
-
   createClueRedSuits(0),
-
   createClueBlackSuits(2),
-
-  createClueCardEven(1, 1),
-
-  createClueCardOdd(1, 3),
-
-  createClueHandHasNumber(NUMBER_A, 3),
-
-  createClueHandNotNumber(NUMBER_J, 1),
-
   createClueHandHasSuit(SUIT_HEARTS, 3),
-
   createClueHandNotSuit(SUIT_SPADES, 3),
-
-  createClueHandHasSuitAndNumber(SUIT_CLUBS, NUMBER_10, 1),
-
+  createClueHandEven(3),
+  createClueCardEven(1, 1),
+  createClueCardOdd(1, 3),
+  createClueHandHasNumber(NUMBER_A, 3),
   createClueHandNotSuitAndNumber(SUIT_CLUBS, NUMBER_5, 1),
 ];

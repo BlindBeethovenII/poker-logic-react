@@ -59,9 +59,21 @@ export const NUMBERS_SORTED = [
   NUMBER_3,
   NUMBER_2,
 ];
+
 export const NUMBER_NONE = -1;
 
 export const CARD_NONE = { suit: SUIT_NONE, number: NUMBER_NONE };
+
+export const HAND_1 = 0;
+export const HAND_2 = 1;
+export const HAND_3 = 2;
+export const HAND_4 = 3;
+
+export const CARD_1 = 0;
+export const CARD_2 = 1;
+export const CARD_3 = 2;
+export const CARD_4 = 3;
+export const CARD_5 = 4;
 
 export const PERSON_1 = 'PERSON 1';
 export const PERSON_2 = 'PERSON 2';
