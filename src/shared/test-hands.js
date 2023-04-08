@@ -567,9 +567,9 @@ export const clues9 = [
   createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
 ];
 
-// -------------------------- //
+// --------------------------- //
 // hard-coded solution hand 10 //
-// -------------------------- //
+// --------------------------- //
 
 export const solutionHands10 = [
   [
@@ -627,7 +627,63 @@ export const clues10 = [
   createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_5),
 ];
 
-export const stillTODOClues = [
-  createClueRedSuits(0),
-  createClueHandEven(3),
+// -------------------------- //
+// hard-coded solution hand 11 //
+// -------------------------- //
+
+export const solutionHands11 = [
+  [
+    createCard(SUIT_SPADES, NUMBER_3),
+    createCard(SUIT_HEARTS, NUMBER_3),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+    createCard(SUIT_CLUBS, NUMBER_3),
+    createCard(SUIT_HEARTS, NUMBER_J),
+  ],
+  [
+    createCard(SUIT_DIAMONDS, NUMBER_A),
+    createCard(SUIT_DIAMONDS, NUMBER_10),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_6),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_10),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_2),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_K),
+    createCard(SUIT_DIAMONDS, NUMBER_Q),
+    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_SPADES, NUMBER_9),
+    createCard(SUIT_SPADES, NUMBER_8),
+  ],
+];
+
+export const solution11 = {
+  solutionHands: solutionHands11,
+  missingNumber: NUMBER_7,
+};
+
+export const clues11 = [
+  createClueSuitAndNumber(SUIT_SPADES, NUMBER_K, HAND_4, CARD_1),
+
+  createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_9, HAND_4),
+
+  createClueSuit(SUIT_DIAMONDS, HAND_4, CARD_2),
+
+  createClueHandNotSuit(SUIT_HEARTS, HAND_4),
+
+  createClueRedSuits(HAND_2),
+
+  createClueNumber(NUMBER_4, HAND_2, CARD_5),
+
+  createClueHandEven(HAND_2),
+
+  createClueHandLowestNumber(NUMBER_8, HAND_4),
+
+  createClueCardsSameNumber(HAND_1, CARD_5, HAND_4, CARD_3),
+  createClueCardsSameNumber(HAND_2, CARD_2, HAND_3, CARD_3),
 ];
