@@ -161,7 +161,7 @@ const CardOptions = (props) => {
     const suitSelectThisOptionOnly = (e) => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
       // if the shift key is down, then set for all cards in this hand
-      if (e.shiftKey) {
+      if (e.shiftKey || e.ctrlKey) {
         setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
       } else {
         // just set for this card
@@ -179,7 +179,7 @@ const CardOptions = (props) => {
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
-      } else if (e.shiftKey) {
+      } else if (e.shiftKey || e.ctrlKey) {
         // the shift key is down to toggle suit for all cards in this hand
         turnOffSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex);
       } else {
@@ -307,7 +307,7 @@ const CardOptions = (props) => {
           // if this is the single number option, then toggle means make all options available again
           if (isSingleNumberOption) {
             resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
-          } else if (e.shiftKey) {
+          } else if (e.shiftKey || e.ctrlKey) {
             // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
             turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
           } else {
@@ -324,7 +324,7 @@ const CardOptions = (props) => {
           logIfDevEnv(`onMouseEnterNumber: right button on for number ${number}`);
 
           if (!isSingleNumberOption && !faded) {
-            if (e.shiftKey) {
+            if (e.shiftKey || e.ctrlKey) {
               // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
               turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
             } else {
@@ -343,7 +343,7 @@ const CardOptions = (props) => {
         e.preventDefault();
 
         // if we are on a mobile, then we come in this way to toggle the selected number option
-        // note: shift key won't be involved, so we don't have "else if (e.shiftKey)"
+        // note: shift/ctrl key won't be involved, so we don't have "else if (e.shiftKey || e.ctrlKey)"
         if (isMobile) {
           // if this is the single number option, then toggle means make all options available again
           if (isSingleNumberOption) {
