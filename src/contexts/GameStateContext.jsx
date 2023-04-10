@@ -64,6 +64,8 @@ import {
   clues10,
   solution11,
   clues11,
+  solution12,
+  clues12,
 } from '../shared/test-hands';
 
 import {
@@ -363,6 +365,11 @@ export const GameStateContextProvider = ({ children }) => {
       nextNewSolution = solution11;
       nextClues = clues11;
       setCurrentSolutionLabel('Hard-coded Solution 11');
+      setNextHardCodedSolution(12);
+    } else if (newSolutionIndex === 12) {
+      nextNewSolution = solution12;
+      nextClues = clues12;
+      setCurrentSolutionLabel('Hard-coded Solution 12');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();
