@@ -1175,7 +1175,7 @@ const possibleHandOptionsCanBeFullHouse = (handOptions, cardsStillAvailable) => 
     return false;
   }
 
-  // now so the same simple check for suits of the pair in cards 4 and 5
+  // now do the same simple check for suits of the pair in cards 4 and 5
   const possibleSuit4Spade = possibleSuits4.includes(SUIT_SPADES);
   const possibleSuit4Heart = possibleSuits4.includes(SUIT_HEARTS);
   const possibleSuit4Diamond = possibleSuits4.includes(SUIT_DIAMONDS);
