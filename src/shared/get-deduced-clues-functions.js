@@ -287,7 +287,7 @@ const getDeducedCluesFromSolutionOptions = (cardsStillAvailable, cardsAvailable,
 
       for (let possibleHandTypeIndex = 0; possibleHandTypeIndex < possibleHandTypes.length; possibleHandTypeIndex += 1) {
         const possibleHandType = possibleHandTypes[possibleHandTypeIndex];
-        if (!canHandOptionsBeHandType(handOptions, possibleHandType, cardsStillAvailable, requiredCards, maxCountOfSameCardNumber)) {
+        if (!canHandOptionsBeHandType(handOptions, possibleHandType, cardsStillAvailable, maxCountOfSameCardNumber)) {
           stillPossibleHandTypesSet.delete(possibleHandType);
         }
       }
