@@ -1660,8 +1660,8 @@ const possibleHandOptionsCanBeTwoPair = (handOptions, maxCountOfSameCardNumber) 
   return false;
 };
 
-// helper function to return true if a pair can be made from the possible handOptions
-const possibleHandOptionsCanBePair = (handOptions, maxCountOfSameCardNumber) => {
+// helper function to return true if a pair can be made from the possible handOptions based on the cardsStillAvailable
+const possibleHandOptionsCanBePair = (handOptions, maxCountOfSameCardNumber, cardsStillAvailable) => {
   // we cannot be a pair if we have three of the same number
   if (maxCountOfSameCardNumber > 2) {
     return false;
@@ -1680,8 +1680,7 @@ const possibleHandOptionsCanBePair = (handOptions, maxCountOfSameCardNumber) => 
   const possibleSuits1 = getSuitsFromCardOptions(cardOptions1);
   const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
 
-  // first check the suits
-  // TODO I guess we should really find the actual suits of possible for remaining pairs numbers available??!!
+  // first do a simple check that the possible pair suits are in card options
   const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
   const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
   const possibleSuit1Diamond = possibleSuits1.includes(SUIT_DIAMONDS);
@@ -1698,17 +1697,69 @@ const possibleHandOptionsCanBePair = (handOptions, maxCountOfSameCardNumber) => 
   const possibleDC = possibleSuit1Diamond && possibleSuit2Club;
 
   if (!possibleSH && !possibleSD && !possibleSC && !possibleHD && !possibleHC && !possibleDC) {
+    // pair suits are not in card options, so this hand cannot be a pair
     return false;
   }
 
-  // go through all of the first possible numbers
-  for (let i = 0; i < possibleNumbers1.length; i += 1) {
-    const possibleNumber1 = possibleNumbers1[i];
+  // same simple check when one of the pair card options has already placed a number - we check the other card options allow that placed number
+  let placedNumber;
+  if (possibleNumbers1.length === 1) {
+    // first card has a single number placed
+    [placedNumber] = possibleNumbers1;
+  } else if (possibleNumbers2.length === 1) {
+    // second card has a single number placed
+    [placedNumber] = possibleNumbers2;
+  }
 
-    // to be a pair, this number must be possible the second, and we need a different number available for the third
-    if (possibleNumbers2.includes(possibleNumber1)
-      && anotherNumberIsPossible(possibleNumbers3, possibleNumber1)) {
-      return true;
+  if (placedNumber !== undefined) {
+    // one of the pair has a number placed
+    // so check that both cards of the pair allow this number (which includes the one placed, of course)
+    if (!possibleNumbers1.includes(placedNumber) || !possibleNumbers2.includes(placedNumber)) {
+      // cannot be a full house as the pair cards cannot both be this placed number
+      return false;
+    }
+  }
+
+  // we are now going to iterate over each number in the first card, then each suit of the first two cards, looking for a single possible pair using placed and still available cards
+  // card 1 numbers
+  for (let i1n = 0; i1n < possibleNumbers1.length; i1n += 1) {
+    const possibleNumber = possibleNumbers1[i1n];
+
+    // first a quick check that this number is a card option in card 2, and a different number possible in card option for card 3
+    if (possibleNumbers2.includes(possibleNumber) && anotherNumberIsPossible(possibleNumbers3, possibleNumber)) {
+      // card 1 suits
+      for (let i1s = 0; i1s < possibleSuits1.length; i1s += 1) {
+        const possibleSuit1 = possibleSuits1[i1s];
+        const possibleSuit1Index = convertSuitToSuitOptionsIndex(possibleSuit1);
+
+        // card 2 suits
+        for (let i2s = 0; i2s < possibleSuits2.length; i2s += 1) {
+          const possibleSuit2 = possibleSuits2[i2s];
+          const possibleSuit2Index = convertSuitToSuitOptionsIndex(possibleSuit2);
+
+          // only interested in suits that are 'lower' (which means index is higher)
+          if (possibleSuit2Index > possibleSuit1Index) {
+            // okay, found two valid suits and this number in the two card options
+            // now check that each is either placed or still in cardsStillAvailable
+            // TODO: for now ignore the fact that a card can be in cardsStillAvailable but its number could be placed in another hand, which could mean a pair is not possible here
+
+            // logic to check card 1
+            const card1Placed = possibleNumbers1.length === 1 && possibleSuits1.length === 1;
+            const card1InCardsStillAvailable = getNumbersFromSuitCardsAvailable(cardsStillAvailable[possibleSuit1Index]).includes(possibleNumber);
+            const card1Okay = card1Placed || card1InCardsStillAvailable;
+
+            // logic to check card 2
+            const card2Placed = possibleNumbers2.length === 1 && possibleSuits2.length === 1;
+            const card2InCardsStillAvailable = getNumbersFromSuitCardsAvailable(cardsStillAvailable[possibleSuit2Index]).includes(possibleNumber);
+            const card2Okay = card2Placed || card2InCardsStillAvailable;
+
+            if (card1Okay && card2Okay) {
+              // okay - possible pair for this hand
+              return true;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1791,7 +1842,7 @@ export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvaila
   }
 
   if (handType === HAND_TYPE_PAIR) {
-    return possibleHandOptionsCanBePair(handOptions, maxCountOfSameCardNumber);
+    return possibleHandOptionsCanBePair(handOptions, maxCountOfSameCardNumber, cardsStillAvailable);
   }
 
   if (handType === HAND_TYPE_HIGH_CARD) {
