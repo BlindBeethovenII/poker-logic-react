@@ -265,36 +265,20 @@ export const solution4 = {
 
 export const clues4 = [
   createClueSuitAndNumber(SUIT_SPADES, NUMBER_8, HAND_3, CARD_1),
-  // createClueSuitAndNumber(SUIT_SPADES, NUMBER_9, HAND_2, CARD_1),
 
   createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_4, HAND_3),
-  // createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_3, HAND_4),
 
   createClueSuit(SUIT_CLUBS, HAND_3, CARD_2),
 
-  createClueHandHasSuit(SUIT_SPADES, HAND_4),
-
-  createClueHandNotSuit(SUIT_DIAMONDS, HAND_1),
-  // createClueHandNotSuit(SUIT_CLUBS, HAND_1),
-  // createClueHandNotSuit(SUIT_SPADES, HAND_1),
-
   createClueBlackSuits(HAND_3),
 
-  createClueHandHasNumber(NUMBER_5, HAND_4),
-
-  // createClueCardEven(HAND_1, CARD_4),
-
-  createClueCardOdd(HAND_2, CARD_4),
+  createClueHandHasNumber(NUMBER_A, HAND_2),
 
   createClueHandLowestNumber(NUMBER_9, HAND_2),
 
   createClueHandHighestNumber(NUMBER_7, HAND_1),
 
-  // createClueCardsSameSuit(HAND_1, CARD_2, HAND_4, CARD_2),
   createClueCardsSameSuit(HAND_1, CARD_2, HAND_2, CARD_2),
-
-  // createClueCardsSameNumber(HAND_3, CARD_5, HAND_4, CARD_4),
-  // createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_4),
 ];
 
 // -------------------------- //
@@ -685,4 +669,9 @@ export const clues11 = [
   createClueSuitAndNumber(SUIT_CLUBS, NUMBER_10, HAND_2, CARD_3),
 
   createClueCardsSameNumber(HAND_2, CARD_5, HAND_3, CARD_4),
+];
+
+export const cluesTODO = [
+  createClueHandHasSuit(SUIT_SPADES, HAND_4),
+  createClueCardOdd(HAND_2, CARD_4),
 ];
