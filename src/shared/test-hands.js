@@ -736,6 +736,66 @@ export const clues12 = [
   createClueCardsSameNumber(HAND_2, CARD_5, HAND_3, CARD_5),
 ];
 
-export const cluesTODO = [
-  createClueCardOdd(HAND_2, CARD_4),
+// --------------------------- //
+// hard-coded solution hand 13 //
+// --------------------------- //
+
+export const solutionHands13 = [
+  [
+    createCard(SUIT_SPADES, NUMBER_J),
+    createCard(SUIT_SPADES, NUMBER_9),
+    createCard(SUIT_SPADES, NUMBER_8),
+    createCard(SUIT_SPADES, NUMBER_6),
+    createCard(SUIT_SPADES, NUMBER_3),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_A),
+    createCard(SUIT_CLUBS, NUMBER_A),
+    createCard(SUIT_SPADES, NUMBER_7),
+    createCard(SUIT_DIAMONDS, NUMBER_7),
+    createCard(SUIT_SPADES, NUMBER_5),
+  ],
+  [
+    createCard(SUIT_SPADES, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_10),
+    createCard(SUIT_HEARTS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_CLUBS, NUMBER_4),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_Q),
+    createCard(SUIT_DIAMONDS, NUMBER_J),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_3),
+  ],
+];
+
+export const solution13 = {
+  solutionHands: solutionHands13,
+  missingNumber: NUMBER_K,
+};
+
+export const clues13 = [
+  createClueHandHasSuitAndNumber(SUIT_SPADES, NUMBER_10, HAND_3),
+  createClueHandHasSuitAndNumber(SUIT_DIAMONDS, NUMBER_4, HAND_4),
+
+  createClueNumber(NUMBER_5, HAND_2, CARD_5),
+
+  createClueSuit(SUIT_CLUBS, HAND_2, CARD_2),
+
+  createClueRedSuit(HAND_3, CARD_3),
+
+  createClueHandNotNumber(NUMBER_7, HAND_1),
+
+  createClueCardOdd(HAND_3, CARD_4),
+
+  createClueHandLowestNumber(NUMBER_5, HAND_2),
+
+  createClueHandHighestNumber(NUMBER_10, HAND_3),
+
+  createClueCardsNotSameSuit(HAND_1, CARD_1, HAND_3, CARD_4),
+
+  createClueCardsSameNumber(HAND_1, CARD_2, HAND_4, CARD_3),
+  createClueCardsSameNumber(HAND_3, CARD_3, HAND_4, CARD_3),
 ];
