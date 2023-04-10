@@ -447,7 +447,7 @@ export const clues7 = [
   createClueCardsSameNumber(HAND_1, CARD_2, HAND_2, CARD_2),
   createClueCardsSameNumber(HAND_1, CARD_5, HAND_3, CARD_4),
 
-  createClueCardsNotSameNumber(HAND_2, CARD_2, HAND_4, CARD_1),
+  // createClueCardsNotSameNumber(HAND_2, CARD_2, HAND_4, CARD_1),
   createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_2),
   createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_4),
   createClueCardsNotSameNumber(HAND_3, CARD_4, HAND_4, CARD_5),

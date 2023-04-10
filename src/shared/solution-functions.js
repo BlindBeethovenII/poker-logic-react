@@ -1156,7 +1156,7 @@ const possibleHandOptionsCanBeFullHouse = (handOptions, cardsStillAvailable) => 
   const possibleSuits4 = getSuitsFromCardOptions(cardOptions4);
   const possibleSuits5 = getSuitsFromCardOptions(cardOptions5);
 
-  // first do a simple check that the possible three of a kind suits are card options
+  // first do a simple check that the possible three of a kind suits are in card options
   const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
   const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
   const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
@@ -1171,7 +1171,7 @@ const possibleHandOptionsCanBeFullHouse = (handOptions, cardsStillAvailable) => 
   const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
   if (!possibleSHD && !possibleSHC && !possibleSDC && !possibleHDC) {
-    // three of a kind suits are not card options, so this hand cannot be a full house
+    // three of a kind suits are not in card options, so this hand cannot be a full house
     return false;
   }
 
@@ -1447,8 +1447,8 @@ const possibleHandOptionsCanBeStraight = (handOptions, maxCountOfSameCardNumber)
   return false;
 };
 
-// helper function to return true if a three of a kind can be made from the possible handOptions
-const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
+// helper function to return true if a three of a kind can be made from the possible handOptions based on the cardsStillAvailable
+const possibleHandOptionsCanBeThreeOfAKind = (handOptions, cardsStillAvailable) => {
   const cardOptions1 = handOptions[0];
   const cardOptions2 = handOptions[1];
   const cardOptions3 = handOptions[2];
@@ -1465,8 +1465,7 @@ const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
   const possibleSuits2 = getSuitsFromCardOptions(cardOptions2);
   const possibleSuits3 = getSuitsFromCardOptions(cardOptions3);
 
-  // first check the suits
-  // TODO I guess we should really find the actual suits of possible 3 of a kind numbers available??!!
+  // first do a simple check that the possible three of a kind suits are in card options
   const possibleSuit1Spade = possibleSuits1.includes(SUIT_SPADES);
   const possibleSuit1Heart = possibleSuits1.includes(SUIT_HEARTS);
   const possibleSuit2Heart = possibleSuits2.includes(SUIT_HEARTS);
@@ -1481,18 +1480,88 @@ const possibleHandOptionsCanBeThreeOfAKind = (handOptions) => {
   const possibleHDC = possibleSuit1Heart && possibleSuit2Diamond && possibleSuit3Club;
 
   if (!possibleSHD && !possibleSHC && !possibleSDC && !possibleHDC) {
+    // three of a kind suits are not in card options, so this hand cannot be a three of a kind hand
     return false;
   }
 
-  // go through all of the first possible numbers
-  for (let i = 0; i < possibleNumbers1.length; i += 1) {
-    const possibleNumber1 = possibleNumbers1[i];
+  // next, another simple check when one of the first three card options has already placed a number - we check the other cards options allow that placed number
+  let placedNumber;
+  if (possibleNumbers1.length === 1) {
+    // first card has a single number placed
+    [placedNumber] = possibleNumbers1;
+  } else if (possibleNumbers2.length === 1) {
+    // second card has a single number placed
+    [placedNumber] = possibleNumbers2;
+  } else if (possibleNumbers3.length === 1) {
+    // third card has a single number placed
+    [placedNumber] = possibleNumbers3;
+  }
 
-    // to be three of a kind, we need this number is be possible in 2 and 3, and a different number possible in 4
-    if (possibleNumbers2.includes(possibleNumber1)
-      && possibleNumbers3.includes(possibleNumber1)
-      && anotherNumberIsPossible(possibleNumbers4, possibleNumber1)) {
-      return true;
+  if (placedNumber !== undefined) {
+    // one of the first three cards has a number placed
+    // so check that all three cards allow this number (which includes the one placed, of course)
+    if (!possibleNumbers1.includes(placedNumber) || !possibleNumbers2.includes(placedNumber) || !possibleNumbers3.includes(placedNumber)) {
+      // cannot be a full house as the first three cards cannot all be this placed number
+      return false;
+    }
+  }
+
+  // we are now going to iterate over each number in the first card, then each suit of the first three cards, looking for a single possible three of a kind using placed and still available cards
+  // card 1 numbers
+  for (let i1n = 0; i1n < possibleNumbers1.length; i1n += 1) {
+    const possibleNumberThreeOfAKind = possibleNumbers1[i1n];
+
+    // first a quick check that this number is a card option in cards in 2 and 3, and a different number possible in card option for card 4
+    if (possibleNumbers2.includes(possibleNumberThreeOfAKind)
+      && possibleNumbers3.includes(possibleNumberThreeOfAKind)
+      && anotherNumberIsPossible(possibleNumbers4, possibleNumberThreeOfAKind)) {
+      // card 1 suits
+      for (let i1s = 0; i1s < possibleSuits1.length; i1s += 1) {
+        const possibleSuit1 = possibleSuits1[i1s];
+        const possibleSuit1Index = convertSuitToSuitOptionsIndex(possibleSuit1);
+
+        // card 2 suits
+        for (let i2s = 0; i2s < possibleSuits2.length; i2s += 1) {
+          const possibleSuit2 = possibleSuits2[i2s];
+          const possibleSuit2Index = convertSuitToSuitOptionsIndex(possibleSuit2);
+
+          // only interested in suits that are 'lower' (which means index is higher)
+          if (possibleSuit2Index > possibleSuit1Index) {
+            // card 3 suits
+            for (let i3s = 0; i3s < possibleSuits3.length; i3s += 1) {
+              const possibleSuit3 = possibleSuits3[i3s];
+              const possibleSuit3Index = convertSuitToSuitOptionsIndex(possibleSuit3);
+
+              // only interested in suits that are 'lower' (which means index is higher)
+              if (possibleSuit3Index > possibleSuit2Index) {
+                // okay, found three valid suits and this number in the first three card options
+                // now check that each is either placed or still in cardsStillAvailable
+                // TODO: for now ignore the fact that a card can be in cardsStillAvailable but its number could be placed in another hand, which could mean a three of a kind is not possible here
+
+                // logic to check card 1
+                const card1Placed = possibleNumbers1.length === 1 && possibleSuits1.length === 1;
+                const card1InCardsStillAvailable = getNumbersFromSuitCardsAvailable(cardsStillAvailable[possibleSuit1Index]).includes(possibleNumberThreeOfAKind);
+                const card1Okay = card1Placed || card1InCardsStillAvailable;
+
+                // logic to check card 2
+                const card2Placed = possibleNumbers2.length === 1 && possibleSuits2.length === 1;
+                const card2InCardsStillAvailable = getNumbersFromSuitCardsAvailable(cardsStillAvailable[possibleSuit2Index]).includes(possibleNumberThreeOfAKind);
+                const card2Okay = card2Placed || card2InCardsStillAvailable;
+
+                // logic to check card 3
+                const card3Placed = possibleNumbers3.length === 1 && possibleSuits3.length === 1;
+                const card3InCardsStillAvailable = getNumbersFromSuitCardsAvailable(cardsStillAvailable[possibleSuit3Index]).includes(possibleNumberThreeOfAKind);
+                const card3Okay = card3Placed || card3InCardsStillAvailable;
+
+                if (card1Okay && card2Okay && card3Okay) {
+                  // okay - possible three of a kind found
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1714,7 +1783,7 @@ export const canHandOptionsBeHandType = (handOptions, handType, cardsStillAvaila
   }
 
   if (handType === HAND_TYPE_THREE_OF_A_KIND) {
-    return possibleHandOptionsCanBeThreeOfAKind(handOptions);
+    return possibleHandOptionsCanBeThreeOfAKind(handOptions, cardsStillAvailable);
   }
 
   if (handType === HAND_TYPE_TWO_PAIR) {
