@@ -132,6 +132,7 @@ import {
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
@@ -167,6 +168,11 @@ import {
   NUMBER_8,
   NUMBER_10,
   NUMBER_Q,
+  CARD_1,
+  CARD_2,
+  CARD_3,
+  CARD_4,
+  CARD_5,
 } from './constants';
 
 // import logIfDevEnv from './logIfDevEnv';
@@ -2272,6 +2278,59 @@ export const getClueCardsSameSuitThreeNotAvailableHints = (solutionHandsIndex1, 
   return hints;
 };
 
+// --------------------------------------------- //
+// HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE //
+// --------------------------------------------- //
+
+// create HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE
+export const createHintClueCardsSameSuitSixNotAvailable = (suit, solutionOptionsIndex, handOptionsIndex, clue1, clue2) => ({
+  hintType: HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE,
+  suit,
+  solutionOptionsIndex,
+  handOptionsIndex,
+  clue1,
+  clue2,
+});
+
+// create HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE hint to remove any suits which don't have enough available to fill these six slots (first is straight flush/flush)
+export const getClueCardsSameSuitSixNotAvailableHints = (solutionHandsIndexFlush, solutionHandsIndexCard, handOptionsIndexCard, cardsAvailable, solutionOptions, clue1, clue2) => {
+  const hints = [];
+
+  // we can just look at the first card of the for the straight flush/flush, as all cards in that hand will have the same suits set
+  const cardOptions1 = solutionOptions[solutionHandsIndexFlush][CARD_1];
+
+  // we can assume here that HINT_CLUE_CARDS_SAME_SUIT has already been applied, so all six sets of suits are the same
+  const suits = getSuitsFromCardOptions(cardOptions1);
+
+  // we have to check that the suit hasn't been placed - if it has, then all six cards have their suit set, and so nothing for us to do
+  if (suits.length === 1) {
+    return [];
+  }
+
+  // for all possible suits still available at these six positions
+  suits.forEach((suit) => {
+    // how many of this suit are in cards available
+    const suitAvailableCount = countSuitAvailable(suit, cardsAvailable);
+
+    // how many cards in solutionOptions have this suit placed
+    const suitPlacedCount = countSuitPlacedInSolutionOptions(suit, solutionOptions);
+
+    // so we need at least 6 available after suitPlacedCount has been removed, for this suit to be available for all six cards
+    // note: if one of the 6 has been placed then other hints will have set all cards to be the same suit - so we are looking for 6 available at this point
+    if (suitAvailableCount - suitPlacedCount < 6) {
+      // at least 6 not available - so remove this suit from all six cards
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexFlush, CARD_1, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexFlush, CARD_2, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexFlush, CARD_3, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexFlush, CARD_4, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexFlush, CARD_5, clue1, clue2));
+      hints.push(createHintClueCardsSameSuitSixNotAvailable(suit, solutionHandsIndexCard, handOptionsIndexCard, clue1, clue2));
+    }
+  });
+
+  return hints;
+};
+
 // ----------------------------- //
 // HINT_CLUE_CARDS_NOT_SAME_SUIT //
 // ----------------------------- //
@@ -3612,7 +3671,7 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
         }
       }
 
-      // now look to see if there is a HAND_OF_TYPE clue that relates to this, to check we have enough cards of that number to fullfil both clues
+      // now look to see if there is a HAND_OF_TYPE clue that relates to this, to check we have enough cards of that number to fulfill both clues
       for (let j = 0; j < clues.length; j += 1) {
         const clue2 = clues[j];
         const { clueType: clueType2 } = clue2;
@@ -3621,6 +3680,7 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
             handType: handTypeClue2,
             solutionHandsIndex: solutionHandsIndexClue2,
           } = clue2;
+
           // first consider the case where 4 cards are needed for the same number into a three of a kind
           if (handTypeClue2 === HAND_TYPE_FULL_HOUSE || handTypeClue2 === HAND_TYPE_THREE_OF_A_KIND) {
             // if same number clue matches card 1, card 2 or card 3 of the hand type hand, then we need to check 4 cards are available
@@ -3786,6 +3846,39 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
             const clueCardsSameSuitThreeNotAvailableHints = getClueCardsSameSuitThreeNotAvailableHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndexClue21, handOptionsIndexClue21, cardsAvailable, solutionOptions, clue, clue2);
             if (clueCardsSameSuitThreeNotAvailableHints.length) {
               return clueCardsSameSuitThreeNotAvailableHints;
+            }
+          }
+        }
+      }
+
+      // now look to see if there is a HAND_OF_TYPE clue that relates to this, to check we have enough cards of that number to fulfill both clues
+      for (let j = 0; j < clues.length; j += 1) {
+        const clue2 = clues[j];
+        const { clueType: clueType2 } = clue2;
+        if (clueType2 === CLUE_HAND_OF_TYPE) {
+          const {
+            handType: handTypeClue2,
+            solutionHandsIndex: solutionHandsIndexClue2,
+          } = clue2;
+
+          // consider the case where 6 cards are needed for the same suit in a straight flush or flush
+          if (handTypeClue2 === HAND_TYPE_STRAIGHT_FLUSH || handTypeClue2 === HAND_TYPE_FLUSH) {
+            // if same suit clue matches then straight flush/flush hand, then we need to check 6 cards are available
+            // remember the hand/card of the same suit clue that matches the straight flush/flush hand can be either of the two cards in the same suit clue
+            const part1Matches = (solutionHandsIndex1 === solutionHandsIndexClue2);
+            if (part1Matches) {
+              const clueCardsSameSuitSixNotAvailableHints = getClueCardsSameSuitSixNotAvailableHints(solutionHandsIndexClue2, solutionHandsIndex2, handOptionsIndex2, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameSuitSixNotAvailableHints.length) {
+                return clueCardsSameSuitSixNotAvailableHints;
+              }
+            }
+
+            const part2Matches = (solutionHandsIndex2 === solutionHandsIndexClue2);
+            if (part2Matches) {
+              const clueCardsSameSuitSixNotAvailableHints = getClueCardsSameSuitSixNotAvailableHints(solutionHandsIndexClue2, solutionHandsIndex1, handOptionsIndex1, cardsAvailable, solutionOptions, clue, clue2);
+              if (clueCardsSameSuitSixNotAvailableHints.length) {
+                return clueCardsSameSuitSixNotAvailableHints;
+              }
             }
           }
         }

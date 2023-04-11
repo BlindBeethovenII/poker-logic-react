@@ -803,13 +803,6 @@ export const solutionHands14 = [
     createCard(SUIT_SPADES, NUMBER_6),
   ],
   [
-    createCard(SUIT_CLUBS, NUMBER_Q),
-    createCard(SUIT_CLUBS, NUMBER_J),
-    createCard(SUIT_CLUBS, NUMBER_9),
-    createCard(SUIT_CLUBS, NUMBER_8),
-    createCard(SUIT_CLUBS, NUMBER_5),
-  ],
-  [
     createCard(SUIT_HEARTS, NUMBER_10),
     createCard(SUIT_DIAMONDS, NUMBER_10),
     createCard(SUIT_CLUBS, NUMBER_10),
@@ -821,7 +814,14 @@ export const solutionHands14 = [
     createCard(SUIT_HEARTS, NUMBER_Q),
     createCard(SUIT_HEARTS, NUMBER_9),
     createCard(SUIT_DIAMONDS, NUMBER_7),
-    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_CLUBS, NUMBER_4),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_Q),
+    createCard(SUIT_CLUBS, NUMBER_J),
+    createCard(SUIT_CLUBS, NUMBER_9),
+    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_HEARTS, NUMBER_5),
   ],
 ];
 
@@ -832,7 +832,7 @@ export const solution14 = {
 
 export const clues14 = [
   createClueHandOfType(calcHandType(solutionHands14[HAND_1]), HAND_1),
-  createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
+  // createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
 
-  createClueCardsSameSuit(HAND_2, CARD_3, HAND_3, CARD_3),
+  createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
 ];

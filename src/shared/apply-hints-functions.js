@@ -51,6 +51,7 @@ import {
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_CLUE_BLACK_SUIT,
@@ -689,6 +690,21 @@ export const applyClueCardsSameSuitThreeNotAvailableHint = (solutionOptions, hin
   return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
 };
 
+export const applyClueCardsSameSuitSixNotAvailableHint = (solutionOptions, hint) => {
+  const {
+    suit,
+    solutionOptionsIndex,
+    handOptionsIndex,
+    clue1,
+    clue2,
+  } = hint;
+
+  // eslint-disable-next-line max-len
+  logIfDevEnv(`applying HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE for suit ${suit} to solutionOptionsIndex ${solutionOptionsIndex} and handOptionsIndex ${handOptionsIndex} [Clue 1: ${clueToString(clue1)}] [Clue 2: ${clueToString(clue2)}]`);
+
+  return toggleSuitOptionInSolutionOptions(convertSuitToSuitOptionsIndex(suit), solutionOptionsIndex, handOptionsIndex, solutionOptions);
+};
+
 export const applyClueCardsNotSameSuitHint = (solutionOptions, hint) => {
   const {
     suit,
@@ -1202,6 +1218,9 @@ export const applyHint = (solutionOptions, hint) => {
 
     case HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE:
       return applyClueCardsSameSuitThreeNotAvailableHint(solutionOptions, hint);
+
+    case HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE:
+      return applyClueCardsSameSuitSixNotAvailableHint(solutionOptions, hint);
 
     case HINT_CLUE_CARDS_NOT_SAME_SUIT:
       return applyClueCardsNotSameSuitHint(solutionOptions, hint);
