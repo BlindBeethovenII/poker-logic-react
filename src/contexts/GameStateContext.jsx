@@ -70,7 +70,7 @@ import {
   clues13,
   solution14,
   clues14,
-} from '../shared/test-hands';
+} from '../shared/hard-coded-hands';
 
 import {
   SOLUTION_OPTIONS_STATE_OK,

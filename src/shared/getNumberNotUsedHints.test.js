@@ -7,12 +7,12 @@ import {
 
 import { NUMBER_2 } from './constants';
 
-import { solutionHands1 } from './test-hands';
+import { testSolutionHands1 } from './test-hands';
 
 describe('getNumberNotUsedHints', () => {
   it('will return an array of hints for the numbers not used in the given hard-coded solution for the given full solutionOptions', () => {
     // we can compute what we expect by using getNumbersNotUsedInSolution() and the fact we are giving a full solution options
-    const numbersNotUsed = getNumbersNotUsedInSolution(solutionHands1, NUMBER_2);
+    const numbersNotUsed = getNumbersNotUsedInSolution(testSolutionHands1, NUMBER_2);
     const result = [];
     numbersNotUsed.forEach((number) => {
       // there will be one for each solution options index
@@ -24,6 +24,6 @@ describe('getNumberNotUsedHints', () => {
       });
     });
 
-    expect(getNumberNotUsedHints(createSolutionOptions(), solutionHands1, NUMBER_2)).toEqual(result);
+    expect(getNumberNotUsedHints(createSolutionOptions(), testSolutionHands1, NUMBER_2)).toEqual(result);
   });
 });
