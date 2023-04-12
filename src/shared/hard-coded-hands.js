@@ -334,7 +334,7 @@ export const clues5 = [
 
   createClueSuit(SUIT_CLUBS, HAND_4, CARD_2),
 
-  createClueRedSuit(HAND_3, CARD_3),
+  // createClueRedSuit(HAND_3, CARD_3),
 
   createClueCardEven(HAND_3, CARD_4),
 
@@ -343,7 +343,7 @@ export const clues5 = [
   createClueCardsSameSuit(HAND_1, CARD_1, HAND_4, CARD_5),
   createClueCardsSameSuit(HAND_1, CARD_1, HAND_3, CARD_5),
 
-  createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
+  // createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
 ];
 
 // -------------------------- //
