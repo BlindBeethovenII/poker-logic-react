@@ -11,6 +11,7 @@ import {
   CLUE_NOT_NUMBER,
   CLUE_CARDS_SAME_NUMBER,
   CLUE_CARDS_NOT_SAME_NUMBER,
+  CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -152,6 +153,16 @@ export const clueToString = (clue, doNotShowDeduced) => {
       handOptionsIndex2,
     } = clue;
     return `Hand ${solutionHandsIndex1 + 1} Card ${handOptionsIndex1 + 1} is not the same number as Hand ${solutionHandsIndex2 + 1} Card ${handOptionsIndex2 + 1}`;
+  }
+
+  if (clueType === CLUE_CARDS_NUMBER_HIGHER_THAN) {
+    const {
+      solutionHandsIndex1,
+      handOptionsIndex1,
+      solutionHandsIndex2,
+      handOptionsIndex2,
+    } = clue;
+    return `Hand ${solutionHandsIndex1 + 1} Card ${handOptionsIndex1 + 1} is higher than Hand ${solutionHandsIndex2 + 1} Card ${handOptionsIndex2 + 1} (A is higher than K)`;
   }
 
   if (clueType === CLUE_CARDS_SAME_SUIT) {

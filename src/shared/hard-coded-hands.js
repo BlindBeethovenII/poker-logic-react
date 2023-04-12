@@ -12,6 +12,7 @@ import {
   createClueNotNumber,
   createClueCardsSameNumber,
   createClueCardsNotSameNumber,
+  createClueCardsNumberHigherThan,
   createClueCardsSameSuit,
   createClueCardsNotSameSuit,
   createClueRedSuit,
@@ -836,4 +837,6 @@ export const clues14 = [
   // createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
 
   createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
+
+  createClueCardsNumberHigherThan(HAND_3, CARD_1, HAND_1, CARD_1),
 ];

@@ -77,6 +77,7 @@ import {
   CLUE_NOT_NUMBER,
   CLUE_CARDS_SAME_NUMBER,
   CLUE_CARDS_NOT_SAME_NUMBER,
+  CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -1913,6 +1914,30 @@ export const getClueHandHighestNumberHints = (number, solutionHandsIndex, soluti
       });
     });
   }
+
+  return hints;
+};
+
+// if any numbers in the first card are lower than the lowest number of the second card create a HINT_CLUE_NOT_NUMBER hint to remove that number from the first card
+export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
+  const hints = [];
+
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+
+  // find the lowest number in card 2 (must return a value otherwise solutionsOptions is not valid)
+  const card2LowestNumber = getMinNumberInCardOptions(cardOptions2);
+
+  // now look through all card 1 remaining numbers, and if any are lower than this create a HINT_CLUE_NOT_NUMBER to remove that number from card 1
+  NUMBERS.forEach((numberToCheck) => {
+    // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A can never be a lower number than card 2's lowest number
+    if (numberToCheck !== NUMBER_A && numberToCheck <= card2LowestNumber && getNumberOptionsValueInCardOptions(cardOptions1, numberToCheck)) {
+      hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex1, handOptionsIndex1, clue));
+    }
+  });
+
+  HERE
+  // TODO look the other way around??
 
   return hints;
 };
@@ -3787,6 +3812,20 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
       const clueCardsNotSameNumberHints = getClueCardsNotSameNumberHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
       if (clueCardsNotSameNumberHints.length) {
         return clueCardsNotSameNumberHints;
+      }
+    }
+
+    // clue: CLUE_CARDS_NUMBER_HIGHER_THAN
+    if (clueType === CLUE_CARDS_NUMBER_HIGHER_THAN) {
+      const {
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsNumberHigherThanHints = getClueCardsNumberHigherThanHints(solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsNumberHigherThanHints.length) {
+        return clueCardsNumberHigherThanHints;
       }
     }
 

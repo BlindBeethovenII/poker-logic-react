@@ -9,6 +9,7 @@ import {
   CLUE_NOT_NUMBER,
   CLUE_CARDS_SAME_NUMBER,
   CLUE_CARDS_NOT_SAME_NUMBER,
+  CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -116,6 +117,17 @@ export const createClueCardsSameNumber = (solutionHandsIndex1, handOptionsIndex1
 // -------------------------- //
 export const createClueCardsNotSameNumber = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
   clueType: CLUE_CARDS_NOT_SAME_NUMBER,
+  solutionHandsIndex1,
+  handOptionsIndex1,
+  solutionHandsIndex2,
+  handOptionsIndex2,
+});
+
+// ------------------------------ //
+// CLUE_CARDS_NUMBER_HIGHER_THAN //
+// ------------------------------ //
+export const createClueCardsNumberHigherThan = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
+  clueType: CLUE_CARDS_NUMBER_HIGHER_THAN,
   solutionHandsIndex1,
   handOptionsIndex1,
   solutionHandsIndex2,
