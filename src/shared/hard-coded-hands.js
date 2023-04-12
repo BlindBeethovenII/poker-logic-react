@@ -839,4 +839,5 @@ export const clues14 = [
   createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
 
   createClueCardsNumberHigherThan(HAND_3, CARD_1, HAND_1, CARD_1),
+  createClueCardsNumberHigherThan(HAND_4, CARD_1, HAND_2, CARD_1),
 ];

@@ -1928,7 +1928,7 @@ export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptio
   // find the lowest number in card 2 (must return a value otherwise solutionsOptions is not valid)
   const card2LowestNumber = getMinNumberInCardOptions(cardOptions2);
 
-  // now look through all card 1 remaining numbers, and if any are lower than this create a HINT_CLUE_NOT_NUMBER to remove that number from card 1
+  // now look through all card 1 remaining numbers, and if any are lower or equal than this create a HINT_CLUE_NOT_NUMBER to remove that number from card 1
   NUMBERS.forEach((numberToCheck) => {
     // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A can never be a lower number than card 2's lowest number
     if (numberToCheck !== NUMBER_A && numberToCheck <= card2LowestNumber && getNumberOptionsValueInCardOptions(cardOptions1, numberToCheck)) {
@@ -1936,8 +1936,18 @@ export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptio
     }
   });
 
-  HERE
-  // TODO look the other way around??
+  // now do the other way around - thbis clue says that card 2 is lower than card 1
+
+  // find the lowest number in card 2 (must return a value otherwise solutionsOptions is not valid)
+  const card1HighestNumber = getMaxNumberInCardOptions(cardOptions1);
+
+  // now look through all card 2 remaining numbers, and if any are higher or equal than this create a HINT_CLUE_NOT_NUMBER to remove that number from card 2
+  NUMBERS.forEach((numberToCheck) => {
+    // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A is always higher or equal to card 1's highest number
+    if ((numberToCheck === NUMBER_A || numberToCheck >= card1HighestNumber) && getNumberOptionsValueInCardOptions(cardOptions2, numberToCheck)) {
+      hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  });
 
   return hints;
 };
