@@ -13,6 +13,7 @@ import {
   createClueCardsSameNumber,
   createClueCardsNotSameNumber,
   createClueCardsNumberHigherThan,
+  createClueCardsNumberLowerThan,
   createClueCardsSameSuit,
   createClueCardsNotSameSuit,
   createClueRedSuit,
@@ -840,4 +841,7 @@ export const clues14 = [
 
   createClueCardsNumberHigherThan(HAND_3, CARD_1, HAND_1, CARD_1),
   createClueCardsNumberHigherThan(HAND_4, CARD_1, HAND_2, CARD_1),
+
+  createClueCardsNumberLowerThan(HAND_4, CARD_5, HAND_2, CARD_4),
+  createClueCardsNumberLowerThan(HAND_3, CARD_5, HAND_4, CARD_5),
 ];
