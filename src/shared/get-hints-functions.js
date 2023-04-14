@@ -52,6 +52,8 @@ import {
   createCard,
   cardNumberGE,
   cardNumberLE,
+  subtractNFromCardNumber,
+  addNToCardNumber,
   getStraights,
 } from './card-functions';
 
@@ -79,6 +81,7 @@ import {
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_NUMBER_LOWER_THAN,
+  CLUE_CARDS_NUMBER_N_HIGHER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -170,6 +173,7 @@ import {
   NUMBER_8,
   NUMBER_10,
   NUMBER_Q,
+  NUMBER_NONE,
   CARD_1,
   CARD_2,
   CARD_3,
@@ -1919,7 +1923,7 @@ export const getClueHandHighestNumberHints = (number, solutionHandsIndex, soluti
   return hints;
 };
 
-// if any numbers in the first card are lower than the lowest number of the second card create a HINT_CLUE_NOT_NUMBER hint to remove that number from the first card
+// if any numbers in the first card are lower than the lowest number of the second card create a HINT_CLUE_NOT_NUMBER hint to remove that number from the first card - and vice versa
 export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
   const hints = [];
 
@@ -1937,7 +1941,7 @@ export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptio
     }
   });
 
-  // now do the other way around - thbis clue says that card 2 is lower than card 1
+  // now do the other way around - this clue says that card 2 is lower than card 1
 
   // find the lowest number in card 2 (must return a value otherwise solutionsOptions is not valid)
   const card1HighestNumber = getMaxNumberInCardOptions(cardOptions1);
@@ -1946,6 +1950,36 @@ export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptio
   NUMBERS.forEach((numberToCheck) => {
     // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A is always higher or equal to card 1's highest number
     if ((numberToCheck === NUMBER_A || numberToCheck >= card1HighestNumber) && getNumberOptionsValueInCardOptions(cardOptions2, numberToCheck)) {
+      hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex2, handOptionsIndex2, clue));
+    }
+  });
+
+  return hints;
+};
+
+// if any number in the first card does not have that number - nHigher in the second create a HINT_CLUE_NOT_NUMBER hint to remove that number from the first card
+// if any number in the second card does not have that number + nHigher in the first create a HINT_CLUE_NOT_NUMBER hint to remove that number from the second card
+export const getClueCardsNumberNHigherThanHints = (nHigher, solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue) => {
+  const hints = [];
+
+  const card1Options = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const card1Numbers = getNumbersFromCardOptions(card1Options);
+  const card2Options = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+  const card2Numbers = getNumbersFromCardOptions(card2Options);
+
+  // now look through all card 1 numbers, if card 2 doesn't have the number nHigher lower than this number create a HINT_CLUE_NOT_NUMBER to remove that number from card 1
+  card1Numbers.forEach((numberToCheck) => {
+    const card2Number = subtractNFromCardNumber(nHigher, numberToCheck);
+    // NOTE: This can never be NUMBER_A so we don't have to worry about that here
+    if (card2Number !== NUMBER_NONE && !getNumberOptionsValueInCardOptions(card2Options, card2Number)) {
+      hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex1, handOptionsIndex1, clue));
+    }
+  });
+
+  // now look through all card 2 numbers, if card 1 doesn't have the number nHigher higher than this number create a HINT_CLUE_NOT_NUMBER to remove that number from card 2
+  card2Numbers.forEach((numberToCheck) => {
+    const card1Number = addNToCardNumber(nHigher, numberToCheck);
+    if (card1Number !== NUMBER_NONE && !getNumberOptionsValueInCardOptions(card1Options, card1Number)) {
       hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex2, handOptionsIndex2, clue));
     }
   });
@@ -3851,6 +3885,21 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
       const clueCardsNumberHigherThanHints = getClueCardsNumberHigherThanHints(solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex1, handOptionsIndex1, solutionOptions, clue);
       if (clueCardsNumberHigherThanHints.length) {
         return clueCardsNumberHigherThanHints;
+      }
+    }
+
+    // clue: CLUE_CARDS_NUMBER_N_HIGHER_THAN
+    if (clueType === CLUE_CARDS_NUMBER_N_HIGHER_THAN) {
+      const {
+        number,
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsNumberNHigherThanHints = getClueCardsNumberNHigherThanHints(number, solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsNumberNHigherThanHints.length) {
+        return clueCardsNumberNHigherThanHints;
       }
     }
 

@@ -23,6 +23,7 @@ import {
   NUMBER_3,
   NUMBER_2,
   NUMBER_A,
+  NUMBER_NONE,
   SUIT_CLUBS,
   SUIT_DIAMONDS,
   SUIT_HEARTS,
@@ -1204,6 +1205,33 @@ export const cardNumberLE = (n1, n2) => {
   const n1Converted = n1 === NUMBER_A ? 14 : n1;
   const n2Converted = n2 === NUMBER_A ? 14 : n2;
   return n1Converted <= n2Converted;
+};
+
+// subtract a number from a card number, taking NUMBER_A card number as 14, returning NUMBER_NONE if the result is not a valid card number)
+// NOTE: We assume n > 0 here, so the answer will never be NUMBER_A
+export const subtractNFromCardNumber = (n, cardNumber) => {
+  const cardNumberConverted = cardNumber === NUMBER_A ? 14 : cardNumber;
+  const newCardNumber = cardNumberConverted - n;
+  if (newCardNumber < 2) {
+    // not a valid card number (as 14 is the NUMBER_A here)
+    return NUMBER_NONE;
+  }
+  return newCardNumber;
+};
+
+// add a number from a card number, taking NUMBER_A card number as 14, returning NUMBER_NONE if the result is not a valid card number
+// NOTE: We assume n > 0 here
+export const addNToCardNumber = (n, cardNumber) => {
+  const cardNumberConverted = cardNumber === NUMBER_A ? 14 : cardNumber;
+  const newCardNumber = cardNumberConverted + n;
+  if (newCardNumber > 14) {
+    // not a valid card number
+    return NUMBER_NONE;
+  }
+  if (newCardNumber === 14) {
+    return NUMBER_A;
+  }
+  return newCardNumber;
 };
 
 // return an array of all possible straights for the given array of cards

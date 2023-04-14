@@ -11,6 +11,7 @@ import {
   CLUE_CARDS_NOT_SAME_NUMBER,
   CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_NUMBER_LOWER_THAN,
+  CLUE_CARDS_NUMBER_N_HIGHER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -140,6 +141,18 @@ export const createClueCardsNumberHigherThan = (solutionHandsIndex1, handOptions
 // ------------------------------ //
 export const createClueCardsNumberLowerThan = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
   clueType: CLUE_CARDS_NUMBER_LOWER_THAN,
+  solutionHandsIndex1,
+  handOptionsIndex1,
+  solutionHandsIndex2,
+  handOptionsIndex2,
+});
+
+// ------------------------------- //
+// CLUE_CARDS_NUMBER_N_HIGHER_THAN //
+// ------------------------------- //
+export const createClueCardsNumberNHigherThan = (number, solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2) => ({
+  clueType: CLUE_CARDS_NUMBER_N_HIGHER_THAN,
+  number,
   solutionHandsIndex1,
   handOptionsIndex1,
   solutionHandsIndex2,
