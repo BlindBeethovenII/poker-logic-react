@@ -82,6 +82,7 @@ import {
   CLUE_CARDS_NUMBER_HIGHER_THAN,
   CLUE_CARDS_NUMBER_LOWER_THAN,
   CLUE_CARDS_NUMBER_N_HIGHER_THAN,
+  CLUE_CARDS_NUMBER_N_LOWER_THAN,
   CLUE_CARDS_SAME_SUIT,
   CLUE_CARDS_NOT_SAME_SUIT,
   CLUE_RED_SUIT,
@@ -3901,6 +3902,21 @@ export const getHints = (solutionOptions, solution, theClues, cardsAvailable, ba
         handOptionsIndex2,
       } = clue;
       const clueCardsNumberNHigherThanHints = getClueCardsNumberNHigherThanHints(number, solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionOptions, clue);
+      if (clueCardsNumberNHigherThanHints.length) {
+        return clueCardsNumberNHigherThanHints;
+      }
+    }
+
+    // clue: CLUE_CARDS_NUMBER_N_LOWER_THAN
+    if (clueType === CLUE_CARDS_NUMBER_N_LOWER_THAN) {
+      const {
+        number,
+        solutionHandsIndex1,
+        handOptionsIndex1,
+        solutionHandsIndex2,
+        handOptionsIndex2,
+      } = clue;
+      const clueCardsNumberNHigherThanHints = getClueCardsNumberNHigherThanHints(number, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex1, handOptionsIndex1, solutionOptions, clue);
       if (clueCardsNumberNHigherThanHints.length) {
         return clueCardsNumberNHigherThanHints;
       }
