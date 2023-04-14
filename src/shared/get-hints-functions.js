@@ -1943,13 +1943,16 @@ export const getClueCardsNumberHigherThanHints = (solutionHandsIndex1, handOptio
 
   // now do the other way around - this clue says that card 2 is lower than card 1
 
-  // find the lowest number in card 2 (must return a value otherwise solutionsOptions is not valid)
+  // find the highest number in card 1 (must return a value otherwise solutionsOptions is not valid)
   const card1HighestNumber = getMaxNumberInCardOptions(cardOptions1);
 
   // now look through all card 2 remaining numbers, and if any are higher or equal than this create a HINT_CLUE_NOT_NUMBER to remove that number from card 2
   NUMBERS.forEach((numberToCheck) => {
     // Note: NUMBER_A constant is 1 but for this A is considered greater than a K, so A is always higher or equal to card 1's highest number
-    if ((numberToCheck === NUMBER_A || numberToCheck >= card1HighestNumber) && getNumberOptionsValueInCardOptions(cardOptions2, numberToCheck)) {
+    if (numberToCheck === NUMBER_A && getNumberOptionsValueInCardOptions(cardOptions2, numberToCheck)) {
+      hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex2, handOptionsIndex2, clue));
+    } else if (numberToCheck >= card1HighestNumber && card1HighestNumber !== NUMBER_A && getNumberOptionsValueInCardOptions(cardOptions2, numberToCheck)) {
+      // nothing can be higher than card 1's A
       hints.push(createHintClueNotNumber(numberToCheck, solutionHandsIndex2, handOptionsIndex2, clue));
     }
   });

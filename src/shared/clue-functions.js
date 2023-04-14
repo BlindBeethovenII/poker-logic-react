@@ -31,6 +31,7 @@ import {
   createClueCardsNotSameNumber,
   createClueCardsNumberHigherThan,
   createClueCardsNumberLowerThan,
+  createClueCardsNumberNHigherThan,
   createClueCardsSameSuit,
   createClueCardsNotSameSuit,
   createClueRedSuit,
@@ -499,6 +500,31 @@ export const createCluesForSolutionHands = (solution) => {
       // remember A is a 1 but always considered the highest card
       if ((card1.number < card2.number && card1.number !== NUMBER_A) || (card2.number === NUMBER_A && card1.number !== NUMBER_A)) {
         clues.push(createClueCardsNumberLowerThan(solutionHandsIndex1, solutionHandIndex1, solutionHandsIndex2, solutionHandIndex2));
+      }
+    }
+  }
+
+  // TODO change approach here later
+  // create some random 'CARDS NUMBER N HIGHER THAN' clues
+  // iterate over all but the last hand
+  for (let solutionHandsIndex1 = 0; solutionHandsIndex1 < solutionHands.length - 1; solutionHandsIndex1 += 1) {
+    const solutionHand1 = solutionHands[solutionHandsIndex1];
+
+    // choose a random card from this hand
+    const solutionHandIndex1 = shuffle([0, 1, 2, 3, 4])[0];
+    const card1Number = solutionHand1[solutionHandIndex1].number;
+
+    // then iterate over the remaining hands
+    for (let solutionHandsIndex2 = solutionHandsIndex1 + 1; solutionHandsIndex2 < solutionHands.length; solutionHandsIndex2 += 1) {
+      const solutionHand2 = solutionHands[solutionHandsIndex2];
+
+      // choose a random card from this hand
+      const solutionHandIndex2 = shuffle([0, 1, 2, 3, 4])[0];
+      const card2Number = solutionHand2[solutionHandIndex2].number;
+
+      // if the first card's number is higher than the second card's number, and neither are aces (to make it easier) add a clue
+      if (card1Number > card2Number && card1Number !== NUMBER_A && card2Number !== NUMBER_A) {
+        clues.push(createClueCardsNumberNHigherThan(card1Number - card2Number, solutionHandsIndex1, solutionHandIndex1, solutionHandsIndex2, solutionHandIndex2));
       }
     }
   }
