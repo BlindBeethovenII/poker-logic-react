@@ -337,16 +337,12 @@ export const clues5 = [
 
   createClueSuit(SUIT_CLUBS, HAND_4, CARD_2),
 
-  // createClueRedSuit(HAND_3, CARD_3),
-
   createClueCardEven(HAND_3, CARD_4),
 
   createClueCardsSameSuit(HAND_2, CARD_2, HAND_4, CARD_5),
   createClueCardsSameSuit(HAND_2, CARD_2, HAND_4, CARD_4),
   createClueCardsSameSuit(HAND_1, CARD_1, HAND_4, CARD_5),
   createClueCardsSameSuit(HAND_1, CARD_1, HAND_3, CARD_5),
-
-  // createClueCardsSameNumber(HAND_1, CARD_4, HAND_4, CARD_1),
 ];
 
 // -------------------------- //
@@ -837,9 +833,11 @@ export const solution14 = {
 
 export const clues14 = [
   createClueHandOfType(calcHandType(solutionHands14[HAND_1]), HAND_1),
-  // createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
+  createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
 
   createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
+
+  createClueRedSuit(HAND_3, CARD_2),
 
   createClueCardsNumberHigherThan(HAND_3, CARD_1, HAND_1, CARD_1),
   createClueCardsNumberHigherThan(HAND_4, CARD_1, HAND_2, CARD_1),

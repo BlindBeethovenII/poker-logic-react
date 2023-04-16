@@ -45,6 +45,8 @@ import {
   clues12,
   solution13,
   clues13,
+  solution14,
+  clues14,
 } from './hard-coded-hands';
 
 // support function that duplicates reduction code that is embedded in GameStateContext
@@ -207,5 +209,15 @@ describe('hard-coded-hands solvable and non-reducable', () => {
     expect(isSolutionOptionsComplete(theCardsAvailable, applyAllHintsSolutionOptions)).toEqual(true);
 
     expect(isReducable(solution13, clues13)).toEqual(false);
+  });
+
+  it('solution14 and clues14', () => {
+    const theCardsAvailable = getCardsAvailable(solution14.solutionHands);
+
+    const applyAllHintsSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solution14.missingNumber), solution14, clues14, theCardsAvailable);
+
+    expect(isSolutionOptionsComplete(theCardsAvailable, applyAllHintsSolutionOptions)).toEqual(true);
+
+    expect(isReducable(solution14, clues14)).toEqual(false);
   });
 });
