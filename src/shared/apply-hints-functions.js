@@ -1274,7 +1274,7 @@ export const applyHint = (solutionOptions, hint) => {
       return applyAllSuitPlacedOnlyPlaceForNumberHint(solutionOptions, hint);
 
     default:
-      console.log(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
+      console.error(`ERROR: applyHint cannot cope with hintType ${hintType}!!!`);
       return solutionOptions;
   }
 };
