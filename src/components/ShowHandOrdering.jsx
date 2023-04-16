@@ -41,6 +41,7 @@ const BlackLabel = styled.h2`
 const ShowHandOrdering = () => {
   const { showSolution } = useContext(GameStateContext);
 
+  // don't show if the solution is showing, as the solution uses the same space
   if (showSolution) {
     return null;
   }

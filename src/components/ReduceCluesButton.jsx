@@ -21,7 +21,12 @@ const Button = styled.button`
 const ReduceCluesButton = (props) => {
   const { keepHandTypes } = props;
 
-  const { reduceClues, setShowSpinKitCircle } = useContext(GameStateContext);
+  const { reduceClues, setShowSpinKitCircle, showSolution } = useContext(GameStateContext);
+
+  // don't show if the solution is showing, as the solution uses the same space
+  if (showSolution) {
+    return null;
+  }
 
   let row = 5;
   let leftOffset = 4;

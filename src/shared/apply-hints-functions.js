@@ -1317,7 +1317,7 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
 
   while (lookForMore) {
     const hints = getHints(finalSolutionOptions, solution, clues, cardsAvailable, false);
-    console.log(`getHints returns ${JSON.stringify(hints)}`);
+    logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
 
     if (hints?.length) {
       // apply all these hints
