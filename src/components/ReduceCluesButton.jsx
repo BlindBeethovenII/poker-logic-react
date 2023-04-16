@@ -24,7 +24,7 @@ const ReduceCluesButton = (props) => {
   const { reduceClues, setShowSpinKitCircle } = useContext(GameStateContext);
 
   let row = 5;
-  let leftOffset = -20;
+  let leftOffset = 4;
   let topOffset = 4;
   let label = 'Reduce Clues';
   if (keepHandTypes) {
@@ -34,7 +34,7 @@ const ReduceCluesButton = (props) => {
     label = 'Reduce Clues not HandType';
   }
 
-  const left = colToLeft(5) + leftOffset;
+  const left = colToLeft(8) + leftOffset;
   const top = rowToTop(row) + topOffset;
 
   const divstyle = {

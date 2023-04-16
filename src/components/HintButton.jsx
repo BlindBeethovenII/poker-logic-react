@@ -27,7 +27,7 @@ const HintButton = (props) => {
   let label = '';
   let clickFunction = () => {};
   if (getHint) {
-    row = 4;
+    row = 3.95;
     label = 'Get Next Hint';
     clickFunction = findNextHint;
   }
