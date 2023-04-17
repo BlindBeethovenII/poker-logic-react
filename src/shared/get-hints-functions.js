@@ -2370,19 +2370,28 @@ export const createHintClueCardsSameSuitSixNotAvailable = (suit, solutionOptions
 export const getClueCardsSameSuitSixNotAvailableHints = (solutionHandsIndexFlush, solutionHandsIndexCard, handOptionsIndexCard, cardsAvailable, solutionOptions, clue1, clue2) => {
   const hints = [];
 
-  // we can just look at the first card of the for the straight flush/flush, as all cards in that hand will have the same suits set
+  // we first check that none of these cards has their suit already placed
   const cardOptions1 = solutionOptions[solutionHandsIndexFlush][CARD_1];
+  const cardOptions2 = solutionOptions[solutionHandsIndexFlush][CARD_2];
+  const cardOptions3 = solutionOptions[solutionHandsIndexFlush][CARD_3];
+  const cardOptions4 = solutionOptions[solutionHandsIndexFlush][CARD_4];
+  const cardOptions5 = solutionOptions[solutionHandsIndexFlush][CARD_5];
+  const cardOptions6 = solutionOptions[solutionHandsIndexCard][handOptionsIndexCard];
 
-  // we can assume here that HINT_CLUE_CARDS_SAME_SUIT has already been applied, so all six sets of suits are the same
-  const suits = getSuitsFromCardOptions(cardOptions1);
+  const suits1 = getSuitsFromCardOptions(cardOptions1);
+  const suits2 = getSuitsFromCardOptions(cardOptions2);
+  const suits3 = getSuitsFromCardOptions(cardOptions3);
+  const suits4 = getSuitsFromCardOptions(cardOptions4);
+  const suits5 = getSuitsFromCardOptions(cardOptions5);
+  const suits6 = getSuitsFromCardOptions(cardOptions6);
 
-  // we have to check that the suit hasn't been placed - if it has, then all six cards have their suit set, and so nothing for us to do
-  if (suits.length === 1) {
+  // if any suits have been placed then other hints will set them all to this suit
+  if (suits1.length === 1 || suits2.length === 1 || suits3.length === 1 || suits4.length === 1 || suits5.length === 1 || suits6.length === 1) {
     return [];
   }
 
-  // for all possible suits still available at these six positions
-  suits.forEach((suit) => {
+  // for all possible suits still available at the first positions (if other suits are available at other positions other clues will remove)
+  suits1.forEach((suit) => {
     // how many of this suit are in cards available
     const suitAvailableCount = countSuitAvailable(suit, cardsAvailable);
 

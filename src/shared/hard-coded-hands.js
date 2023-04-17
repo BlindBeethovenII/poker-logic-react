@@ -835,17 +835,18 @@ export const clues14 = [
   createClueHandOfType(calcHandType(solutionHands14[HAND_1]), HAND_1),
   createClueHandOfType(calcHandType(solutionHands14[HAND_2]), HAND_2),
 
-  createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
-
   createClueRedSuit(HAND_3, CARD_2),
+
+  createClueCardsSameSuit(HAND_1, CARD_5, HAND_2, CARD_5),
+  createClueCardsSameSuit(HAND_2, CARD_4, HAND_3, CARD_3),
 
   createClueCardsNumberHigherThan(HAND_3, CARD_1, HAND_1, CARD_1),
   createClueCardsNumberHigherThan(HAND_4, CARD_1, HAND_2, CARD_1),
 
-  createClueCardsNumberLowerThan(HAND_4, CARD_5, HAND_2, CARD_4),
   createClueCardsNumberLowerThan(HAND_3, CARD_5, HAND_4, CARD_5),
 
   createClueCardsNumberNHigherThan(2, HAND_3, CARD_3, HAND_2, CARD_4),
 
   createClueCardsNumberNLowerThan(1, HAND_4, CARD_2, HAND_3, CARD_2),
+  createClueCardsNumberNLowerThan(2, HAND_3, CARD_4, HAND_4, CARD_3),
 ];
