@@ -28,6 +28,11 @@ const ReduceCluesButton = (props) => {
     return null;
   }
 
+  // don't show if in production - this button is only used when I'm developing
+  if (process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
   let row = 5;
   let leftOffset = 4;
   let topOffset = 4;
