@@ -21,7 +21,7 @@ const Button = styled.button`
 const NewSolutionButton = (props) => {
   const { hardCoded } = props;
 
-  const { newSolution, nextHardCodedSolution } = useContext(GameStateContext);
+  const { newSolution, nextHardCodedSolution, setShowSpinKitCircle } = useContext(GameStateContext);
 
   const offset = hardCoded ? 1.8 : 0;
 
@@ -36,13 +36,19 @@ const NewSolutionButton = (props) => {
     height: '40px',
   };
 
+  const newSolutionWithTurnOffSpinner = () => {
+    newSolution();
+    setShowSpinKitCircle(false);
+  };
+
   const buttonText = hardCoded ? `Use Solution ${nextHardCodedSolution}` : 'New Random Solution';
 
   const callNewSolution = () => {
     if (hardCoded) {
       newSolution(nextHardCodedSolution);
     } else {
-      newSolution();
+      setShowSpinKitCircle(true);
+      setTimeout(newSolutionWithTurnOffSpinner, 500);
     }
   };
 

@@ -300,6 +300,81 @@ export const GameStateContextProvider = ({ children }) => {
     setShowClues(createInitialShowClues(newClues));
   };
 
+  // ------------ //
+  // reduce clues //
+  // ------------ //
+
+  // function to do the work of reduceClues so we don't call a hook from a book
+  // this function is given the state vars
+  const reduceCluesFunction = (keepHandTypes, cluesArg, solutionArg) => {
+    // creating my own objects here
+    const theCardsAvailable = getCardsAvailable(solutionArg.solutionHands);
+
+    // first check that the puzzle can be solved with the current clues
+    const firstCheckSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solutionArg.missingNumber), solutionArg, cluesArg, theCardsAvailable);
+    if (!isSolutionOptionsComplete(theCardsAvailable, firstCheckSolutionOptions)) {
+      console.error('reduceClues: initial clues do not solve the puzzle');
+      return null;
+    }
+
+    // need to remember if we remove any clues
+    let removedAnyClues = false;
+
+    // sort the clues into the defined order for reducing
+    // Note: no longer using this approach, as it always removes the same sorts of clues - will make this a user option eventually
+    // let finalClues = sortCluesReducing(clues);
+
+    let finalClues = shuffle(cluesArg);
+
+    // work through the clues, removing one at a time, to see if still can solve without that clue
+    let nextIndex = 0;
+    while (nextIndex < finalClues.length) {
+      const clue = finalClues[nextIndex];
+      const { clueType } = clue;
+
+      // need to remember if we removed this clue
+      let thisClueRemoved = false;
+
+      // only consider clues that are shown to the user
+      // only consider 'HAND OF TYPE' clues if not instructed to keep them
+      if (showDeducedClue(clue, finalClues) && (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes)) {
+        // the new clues without that one
+        const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
+        // remember to add in the deduced clues (which applies if we've removed a HAND_TYPE clue that can now be deduced)
+        const newSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solutionArg.missingNumber), solutionArg, addInDeducedClues(newClues), theCardsAvailable);
+        if (isSolutionOptionsComplete(theCardsAvailable, newSolutionOptions)) {
+          logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, nextIndex)}`);
+          finalClues = newClues;
+          thisClueRemoved = true;
+          removedAnyClues = true;
+        }
+      }
+
+      if (!thisClueRemoved) {
+        // current clue could not be removed, so move to the next one
+        nextIndex += 1;
+      }
+    }
+
+    if (removedAnyClues) {
+      // sort the new clues for showing, remember to add in the deduced clues, and return for caller to set
+      return sortCluesShowing(addInDeducedClues(finalClues));
+    }
+
+    // if we get to here no we could not find any clues to remove
+    logIfDevEnv('reduceClues: could not find a clue to remove');
+    return null;
+  };
+
+  // see if any clues can be removed and the puzzle can still be solved
+  const reduceClues = useCallback((keepHandTypes) => {
+    // call the function that does all the work, optionally returning the new clues to set
+    const reducedClues = reduceCluesFunction(keepHandTypes, clues, solution);
+    if (reducedClues) {
+      setCluesAndShowClues(reducedClues);
+    }
+  }, [clues, solution]);
+
   // ------------------------------------- //
   // solution and solution options setters //
   // ------------------------------------- //
@@ -315,6 +390,7 @@ export const GameStateContextProvider = ({ children }) => {
     // a new solution
     let nextNewSolution = null;
     let nextClues = null;
+    let reduceTheClues = false;
     if (newSolutionIndex === 1) {
       nextNewSolution = solution1;
       nextClues = clues1;
@@ -389,9 +465,25 @@ export const GameStateContextProvider = ({ children }) => {
       nextNewSolution = createSolution();
       nextClues = createCluesForSolutionHands(nextNewSolution);
       setCurrentSolutionLabel('Random Solution');
+
+      // if we are in production we need to reduce the clues as well
+      if (process.env.NODE_ENV === 'production') {
+        reduceTheClues = true;
+      }
     }
     setSolution(nextNewSolution);
-    const nextCluesPlusDeduced = addInDeducedClues(nextClues);
+    let nextCluesPlusDeduced = addInDeducedClues(nextClues);
+
+    if (reduceTheClues) {
+      // we need to try and reduce the clues
+      // keepHandTypes is an old idea
+      const keepHandTypes = false;
+      const reducedClues = reduceCluesFunction(keepHandTypes, nextCluesPlusDeduced, nextNewSolution);
+      if (reducedClues) {
+        nextCluesPlusDeduced = reducedClues;
+      }
+    }
+
     setCluesAndShowClues(nextCluesPlusDeduced);
 
     // find and set the cards available for this solution
@@ -427,70 +519,6 @@ export const GameStateContextProvider = ({ children }) => {
       setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
     }
   }, [solutionOptions, solution, clues, cardsAvailable]);
-
-  // ------------ //
-  // reduce clues //
-  // ------------ //
-
-  // see if any clues can be removed and the puzzle can still be solved
-  const reduceClues = useCallback((keepHandTypes) => {
-    // creating my own objects here
-    const theCardsAvailable = getCardsAvailable(solution.solutionHands);
-
-    // first check that the puzzle can be solved with the current clues
-    const firstCheckSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solution.missingNumber), solution, clues, theCardsAvailable);
-    if (!isSolutionOptionsComplete(theCardsAvailable, firstCheckSolutionOptions)) {
-      console.error('reduceClues: initial clues do not solve the puzzle');
-      return;
-    }
-
-    // need to remember if we remove any clues
-    let removedAnyClues = false;
-
-    // sort the clues into the defined order for reducing
-    // Note: no longer using this approach, as it always removes the same sorts of clues - will make this a user option eventually
-    // let finalClues = sortCluesReducing(clues);
-
-    let finalClues = shuffle(clues);
-
-    // work through the clues, removing one at a time, to see if still can solve without that clue
-    let nextIndex = 0;
-    while (nextIndex < finalClues.length) {
-      const clue = finalClues[nextIndex];
-      const { clueType } = clue;
-
-      // need to remember if we removed this clue
-      let thisClueRemoved = false;
-
-      // only consider clues that are shown to the user
-      // only consider 'HAND OF TYPE' clues if not instructed to keep them
-      if (showDeducedClue(clue, finalClues) && (clueType !== CLUE_HAND_OF_TYPE || !keepHandTypes)) {
-        // the new clues without that one
-        const newClues = [...finalClues.slice(0, nextIndex), ...finalClues.slice(nextIndex + 1)];
-        // remember to add in the deduced clues (which applies if we've removed a HAND_TYPE clue that can now be deduced)
-        const newSolutionOptions = applyAllHintsToSolutionOptions(createSolutionOptions(solution.missingNumber), solution, addInDeducedClues(newClues), theCardsAvailable);
-        if (isSolutionOptionsComplete(theCardsAvailable, newSolutionOptions)) {
-          logIfDevEnv(`reduceClues: can remove clue ${clueToText(clue, nextIndex)}`);
-          finalClues = newClues;
-          thisClueRemoved = true;
-          removedAnyClues = true;
-        }
-      }
-
-      if (!thisClueRemoved) {
-        // current clue could not be removed, so move to the next one
-        nextIndex += 1;
-      }
-    }
-
-    if (removedAnyClues) {
-      // save the new clues, first sorting for showing
-      // remember to add in the deduced clues
-      setCluesAndShowClues(sortCluesShowing(addInDeducedClues(finalClues)));
-    } else {
-      logIfDevEnv('reduceClues: could not find a clue to remove');
-    }
-  }, [clues, solution]);
 
   // --------------------- //
   // apply the basic clues //
