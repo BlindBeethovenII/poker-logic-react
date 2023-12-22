@@ -2095,6 +2095,9 @@ export const createHintClueCardsSameNumberThreeNotAvailable = (number, solutionO
 export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, cardsAvailable, solutionOptions, clue1, clue2) => {
   const hints = [];
 
+  // Note: I originally thought that I would have to check the first handOption to check a number hadn't been placed as I thought the SAME_NUMBER hints would have been applied
+  // But the other two numbers could have been set by other hints - so checking all 3
+
   // check that a number hasn't been placed in the first handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
   const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
   const numbers1 = getNumbersFromCardOptions(cardOptions1);
@@ -2157,17 +2160,39 @@ export const createHintClueCardsSameNumberFourNotAvailable = (number, solutionOp
 export const getClueCardsSameNumberFourNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, solutionHandsIndex4, handOptionsIndex4, cardsAvailable, solutionOptions, clue1, clue2) => {
   const hints = [];
 
-  // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so all four sets of numbers are the same
-  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
-  const numbers = getNumbersFromCardOptions(cardOptions1);
+  // Note: I originally thought that I would have to check the first handOption to check a number hadn't been placed as I thought the SAME_NUMBER hints would have been applied
+  // But the other three numbers could have been set by other hints - so checking all 3
 
-  // we have to check that the number hasn't been placed - if it has, then all four cards have their number set, and so nothing for us to do
-  if (numbers.length === 1) {
+  // check that a number hasn't been placed in the first handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  if (numbers1.length === 1) {
     return [];
   }
 
-  // for all possible numbers still available at these four positions
-  numbers.forEach((number) => {
+  // check that a number hasn't been placed in the second handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+  if (numbers2.length === 1) {
+    return [];
+  }
+
+  // check that a number hasn't been placed in the third handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions3 = solutionOptions[solutionHandsIndex3][handOptionsIndex3];
+  const numbers3 = getNumbersFromCardOptions(cardOptions3);
+  if (numbers3.length === 1) {
+    return [];
+  }
+
+  // check that a number hasn't been placed in the fourth handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions4 = solutionOptions[solutionHandsIndex4][handOptionsIndex4];
+  const numbers4 = getNumbersFromCardOptions(cardOptions4);
+  if (numbers4.length === 1) {
+    return [];
+  }
+
+  // for all possible numbers still available at these four positions (can just use the first numbers, because at some point the others will be aligned)
+  numbers1.forEach((number) => {
     // how many of this number are in cards available
     const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
 
