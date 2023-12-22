@@ -23,6 +23,11 @@ const HintButton = (props) => {
 
   const { findNextHint, findAndApplyNextHint, findAndApplyAllHints } = useContext(GameStateContext);
 
+  // don't show the apply all hints button in production - this button is only used when I'm developing
+  if (applyAll && process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
   let row = 0;
   let label = '';
   let clickFunction = () => {};
