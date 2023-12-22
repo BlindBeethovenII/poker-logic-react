@@ -5,16 +5,7 @@
 import { createCard } from './card-functions';
 
 import {
-  createClueSuit,
-  createClueNumber,
   createClueCardsSameNumber,
-  createClueCardsNotSameSuit,
-  createClueRedSuit,
-  createClueCardOdd,
-  createClueHandNotNumber,
-  createClueHandHasSuitAndNumber,
-  createClueHandLowestNumber,
-  createClueHandHighestNumber,
 } from './create-clue-functions';
 
 import {
@@ -35,14 +26,10 @@ import {
   SUIT_HEARTS,
   SUIT_SPADES,
   HAND_1,
-  HAND_2,
   HAND_3,
   HAND_4,
-  CARD_1,
   CARD_2,
   CARD_3,
-  CARD_4,
-  CARD_5,
 } from './constants';
 
 // ----------- //

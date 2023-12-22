@@ -2095,17 +2095,29 @@ export const createHintClueCardsSameNumberThreeNotAvailable = (number, solutionO
 export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1, handOptionsIndex1, solutionHandsIndex2, handOptionsIndex2, solutionHandsIndex3, handOptionsIndex3, cardsAvailable, solutionOptions, clue1, clue2) => {
   const hints = [];
 
-  // we can assume here that HINT_CLUE_CARDS_SAME_NUMBER has already been applied, so all three sets of numbers are the same
+  // check that a number hasn't been placed in the first handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
   const cardOptions1 = solutionOptions[solutionHandsIndex1][handOptionsIndex1];
-  const numbers = getNumbersFromCardOptions(cardOptions1);
-
-  // we have to check that the number hasn't been placed - if it has, then all three cards have their number set, and so nothing for us to do
-  if (numbers.length === 1) {
+  const numbers1 = getNumbersFromCardOptions(cardOptions1);
+  if (numbers1.length === 1) {
     return [];
   }
 
-  // for all possible numbers still available at these three positions
-  numbers.forEach((number) => {
+  // check that a number hasn't been placed in the second handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions2 = solutionOptions[solutionHandsIndex2][handOptionsIndex2];
+  const numbers2 = getNumbersFromCardOptions(cardOptions2);
+  if (numbers2.length === 1) {
+    return [];
+  }
+
+  // check that a number hasn't been placed in the third handOption - if it has then HINT_CLUE_CARDS_SAME_NUMBER will set the others, and so nothing for us to do
+  const cardOptions3 = solutionOptions[solutionHandsIndex3][handOptionsIndex3];
+  const numbers3 = getNumbersFromCardOptions(cardOptions3);
+  if (numbers3.length === 1) {
+    return [];
+  }
+
+  // for all possible numbers still available at these three positions (can just use the first numbers, because at some point the others will be aligned)
+  numbers1.forEach((number) => {
     // how many of this number are in cards available
     const numberAvailableCount = countNumberAvailable(number, cardsAvailable);
 
@@ -2118,6 +2130,8 @@ export const getClueCardsSameNumberThreeNotAvailableHints = (solutionHandsIndex1
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex1, handOptionsIndex1, clue1, clue2));
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex2, handOptionsIndex2, clue1, clue2));
       hints.push(createHintClueCardsSameNumberThreeNotAvailable(number, solutionHandsIndex3, handOptionsIndex3, clue1, clue2));
+
+      // console.error(`getClueCardsSameNumberThreeNotAvailableHints: removing number ${number} solutionOptions is`, solutionOptions);
     }
   });
 

@@ -6,6 +6,8 @@ import {
 
 import { testSolution2, testClues2 } from './test-hands';
 
+// TODO - This is not a real test yet!
+
 describe('getHints', () => {
   it('will return HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE', () => {
     // need the solution options that will generate this hint
@@ -17,7 +19,7 @@ describe('getHints', () => {
         },
         {
           suitOptions: [true, true, true, true],
-          numberOptions: [true, false, true, true, true, false, true, false, true, true, true, false, false],
+          numberOptions: [false, false, false, false, false, false, false, false, true, false, true, false, false],
         },
         {
           suitOptions: [true, true, true, true],
@@ -65,7 +67,7 @@ describe('getHints', () => {
         },
         {
           suitOptions: [true, true, true, true],
-          numberOptions: [true, false, true, true, true, false, true, false, true, true, true, false, false],
+          numberOptions: [false, false, false, false, false, false, false, false, true, false, true, false, false],
         },
         {
           suitOptions: [true, true, true, true],
@@ -87,7 +89,7 @@ describe('getHints', () => {
         },
         {
           suitOptions: [true, true, true, true],
-          numberOptions: [true, false, true, true, true, false, true, false, true, true, true, false, false],
+          numberOptions: [false, false, false, false, false, false, false, false, true, false, true, false, false],
         },
         {
           suitOptions: [true, true, true, true],
