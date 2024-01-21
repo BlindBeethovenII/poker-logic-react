@@ -126,6 +126,9 @@ export const GameStateContextProvider = ({ children }) => {
   // show the spinkit circle
   const [showSpinKitCircle, setShowSpinKitCircle] = useState(false);
 
+  // hints
+  const [nextHint, setNextHint] = useState(undefined);
+
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
   // --------------------------------------------------------------------- //
@@ -502,6 +505,8 @@ export const GameStateContextProvider = ({ children }) => {
   const findNextHint = useCallback(() => {
     const hints = getHints(solutionOptions, solution, clues, cardsAvailable, false);
     logIfDevEnv(`getHints returns ${JSON.stringify(hints)}`);
+
+    setNextHint(hints);
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
   // find and apply the next hint
@@ -510,6 +515,8 @@ export const GameStateContextProvider = ({ children }) => {
     if (newSolutionOptions) {
       setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
     }
+
+    setNextHint(undefined);
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
   // find and apply all hints
@@ -518,6 +525,8 @@ export const GameStateContextProvider = ({ children }) => {
     if (newSolutionOptions) {
       setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
     }
+
+    setNextHint(undefined);
   }, [solutionOptions, solution, clues, cardsAvailable]);
 
   // --------------------- //
@@ -635,6 +644,9 @@ export const GameStateContextProvider = ({ children }) => {
     // spinKitCircle stuff
     showSpinKitCircle,
     setShowSpinKitCircle,
+
+    // next hint stuff
+    nextHint,
   }), [
     showWin,
     solution,
@@ -668,6 +680,7 @@ export const GameStateContextProvider = ({ children }) => {
     showHiddenClues,
     toggleShowHiddenClues,
     showSpinKitCircle,
+    nextHint,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;
