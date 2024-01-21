@@ -20,10 +20,10 @@ const divstyle = {
   left: `${left}px`,
   top: `${top}px`,
   width: '340px',
-  height: '40px',
+  height: '260px',
   textAlign: 'centre',
-  pointerEvents: 'none',
   zIndex: 0,
+  overflow: 'auto',
 };
 
 const WhiteLabel = styled.h2`
