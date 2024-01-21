@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop, cardNumberToString } from '../shared/card-functions';
 
-import { clueToString, suitToTextSingular } from '../shared/to-text-functions';
+import { clueToString, suitToTextSingular, numbersToAlternativeString } from '../shared/to-text-functions';
 
 import {
   HINT_CLUE_NOT_NUMBER,
   HINT_CLUE_SUIT_AND_NUMBER,
   HINT_NUMBER_NOT_USED,
+  HINT_THREE_OF_A_KIND_NUMBERS,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -45,6 +46,24 @@ const BlackLabel = styled.h2`
   padding: 0em 1em 0em 1em;
   pointer-events: none;
 `;
+
+// helper function to convert numbers array to key
+const numbersToKey = (numbers) => {
+  // start with the first one, and add "-<number>" for each additional one
+
+  // check we have something
+  if (!numbers || !numbers.length) {
+    return '';
+  }
+
+  let result = numbers[0];
+
+  for (let i = 1; i < numbers.length; i += 1) {
+    result = `${result}-${numbers[i]}`;
+  }
+
+  return result;
+};
 
 const ShowNextHint = () => {
   const { nextHint, showSolution } = useContext(GameStateContext);
@@ -123,6 +142,19 @@ const ShowNextHint = () => {
       } = nextHint[i];
       const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_THREE_OF_A_KIND_NUMBERS) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        numbers,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${numbersToKey(numbers)}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${numbersToAlternativeString(numbers)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else {

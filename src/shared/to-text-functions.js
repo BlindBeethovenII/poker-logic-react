@@ -314,3 +314,29 @@ export const clueToString = (clue, doNotShowDeduced) => {
 };
 
 export const clueToText = (clue, clueIndex) => `Clue ${clueIndex + 1}: ${clueToString(clue)}`;
+
+// return the English for the given numbers array as list of alternatives
+// for eample [4] returns "4", [4,6] results "4 or 6"; [4,6,8] returns "4, 6 or 8"
+export const numbersToAlternativeString = (numbers) => {
+  // check we have something
+  if (!numbers || !numbers.length) {
+    return '';
+  }
+
+  let result = `${cardNumberToString(numbers[0])}`;
+
+  // easy if only one in the array
+  if (numbers.length === 1) {
+    return result;
+  }
+
+  // now add on all but the last as ", number"
+  for (let i = 1; i < numbers.length - 1; i += 1) {
+    result = `${result}, ${cardNumberToString(numbers[i])}`;
+  }
+
+  // and put the last one on
+  result = `${result} or ${cardNumberToString(numbers[numbers.length - 1])}`;
+
+  return result;
+};
