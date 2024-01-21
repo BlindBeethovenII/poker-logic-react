@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop, cardNumberToString } from '../shared/card-functions';
 
-import { clueToString } from '../shared/to-text-functions';
+import { clueToString, suitToTextSingular } from '../shared/to-text-functions';
 
 import {
   HINT_CLUE_NOT_NUMBER,
+  HINT_CLUE_SUIT_AND_NUMBER,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -95,6 +96,20 @@ const ShowNextHint = () => {
       } = nextHint[i];
       const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)} (Clue: ${clueToString(clue)})`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_CLUE_SUIT_AND_NUMBER) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suit,
+        number,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}-${number}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)} ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else {

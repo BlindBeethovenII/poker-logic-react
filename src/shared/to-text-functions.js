@@ -75,7 +75,7 @@ const handTypeToText = (handType) => {
   }
 };
 
-const suitToTextSingular = (suit) => {
+export const suitToTextSingular = (suit) => {
   switch (suit) {
     case SUIT_SPADES:
       return 'Spade';
