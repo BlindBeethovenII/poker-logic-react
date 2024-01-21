@@ -41,7 +41,7 @@ const NewSolutionButton = (props) => {
     setShowSpinKitCircle(false);
   };
 
-  const buttonText = hardCoded ? `Use Solution ${nextHardCodedSolution}` : 'New Random Solution';
+  const buttonText = hardCoded ? `Use Puzzle ${nextHardCodedSolution}` : 'New Random Puzzle';
 
   const callNewSolution = () => {
     if (hardCoded) {

@@ -121,7 +121,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [nextHardCodedSolution, setNextHardCodedSolution] = useState(2);
 
   // which solution we are looking at
-  const [currentSolutionLabel, setCurrentSolutionLabel] = useState('Hard-coded Solution 1');
+  const [currentSolutionLabel, setCurrentSolutionLabel] = useState('Hard-coded Puzzle 1');
 
   // show the spinkit circle
   const [showSpinKitCircle, setShowSpinKitCircle] = useState(false);
@@ -394,77 +394,77 @@ export const GameStateContextProvider = ({ children }) => {
     if (newSolutionIndex === 1) {
       nextNewSolution = solution1;
       nextClues = clues1;
-      setCurrentSolutionLabel('Hard-coded Solution 1');
+      setCurrentSolutionLabel('Hard-coded Puzzle 1');
       setNextHardCodedSolution(2);
     } else if (newSolutionIndex === 2) {
       nextNewSolution = solution2;
       nextClues = clues2;
-      setCurrentSolutionLabel('Hard-coded Solution 2');
+      setCurrentSolutionLabel('Hard-coded Puzzle 2');
       setNextHardCodedSolution(3);
     } else if (newSolutionIndex === 3) {
       nextNewSolution = solution3;
       nextClues = clues3;
-      setCurrentSolutionLabel('Hard-coded Solution 3');
+      setCurrentSolutionLabel('Hard-coded Puzzle 3');
       setNextHardCodedSolution(4);
     } else if (newSolutionIndex === 4) {
       nextNewSolution = solution4;
       nextClues = clues4;
-      setCurrentSolutionLabel('Hard-coded Solution 4');
+      setCurrentSolutionLabel('Hard-coded Puzzle 4');
       setNextHardCodedSolution(5);
     } else if (newSolutionIndex === 5) {
       nextNewSolution = solution5;
       nextClues = clues5;
-      setCurrentSolutionLabel('Hard-coded Solution 5');
+      setCurrentSolutionLabel('Hard-coded Puzzle 5');
       setNextHardCodedSolution(6);
     } else if (newSolutionIndex === 6) {
       nextNewSolution = solution6;
       nextClues = clues6;
-      setCurrentSolutionLabel('Hard-coded Solution 6');
+      setCurrentSolutionLabel('Hard-coded Puzzle 6');
       setNextHardCodedSolution(7);
     } else if (newSolutionIndex === 7) {
       nextNewSolution = solution7;
       nextClues = clues7;
-      setCurrentSolutionLabel('Hard-coded Solution 7');
+      setCurrentSolutionLabel('Hard-coded Puzzle 7');
       setNextHardCodedSolution(8);
     } else if (newSolutionIndex === 8) {
       nextNewSolution = solution8;
       nextClues = clues8;
-      setCurrentSolutionLabel('Hard-coded Solution 8');
+      setCurrentSolutionLabel('Hard-coded Puzzle 8');
       setNextHardCodedSolution(9);
     } else if (newSolutionIndex === 9) {
       nextNewSolution = solution9;
       nextClues = clues9;
-      setCurrentSolutionLabel('Hard-coded Solution 9');
+      setCurrentSolutionLabel('Hard-coded Puzzle 9');
       setNextHardCodedSolution(10);
     } else if (newSolutionIndex === 10) {
       nextNewSolution = solution10;
       nextClues = clues10;
-      setCurrentSolutionLabel('Hard-coded Solution 10');
+      setCurrentSolutionLabel('Hard-coded Puzzle 10');
       setNextHardCodedSolution(11);
     } else if (newSolutionIndex === 11) {
       nextNewSolution = solution11;
       nextClues = clues11;
-      setCurrentSolutionLabel('Hard-coded Solution 11');
+      setCurrentSolutionLabel('Hard-coded Puzzle 11');
       setNextHardCodedSolution(12);
     } else if (newSolutionIndex === 12) {
       nextNewSolution = solution12;
       nextClues = clues12;
-      setCurrentSolutionLabel('Hard-coded Solution 12');
+      setCurrentSolutionLabel('Hard-coded Puzzle 12');
       setNextHardCodedSolution(13);
     } else if (newSolutionIndex === 13) {
       nextNewSolution = solution13;
       nextClues = clues13;
-      setCurrentSolutionLabel('Hard-coded Solution 13');
+      setCurrentSolutionLabel('Hard-coded Puzzle 13');
       setNextHardCodedSolution(14);
     } else if (newSolutionIndex === 14) {
       nextNewSolution = solution14;
       nextClues = clues14;
-      setCurrentSolutionLabel('Hard-coded Solution 14');
+      setCurrentSolutionLabel('Hard-coded Puzzle 14');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();
       nextClues = createCluesForSolutionHands(nextNewSolution);
-      setCurrentSolutionLabel('Random Solution');
+      setCurrentSolutionLabel('Random Puzzle');
 
       // if we are in production we need to reduce the clues as well
       if (process.env.NODE_ENV === 'production') {

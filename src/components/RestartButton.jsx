@@ -37,7 +37,7 @@ const RestartButton = () => {
 
   return (
     <div style={divstyle}>
-      <Button onClick={() => resetSolutionOptions(solution, cardsAvailable, clues)}>Restart this Solution</Button>
+      <Button onClick={() => resetSolutionOptions(solution, cardsAvailable, clues)}>Restart this Puzzle</Button>
     </div>
   );
 };
