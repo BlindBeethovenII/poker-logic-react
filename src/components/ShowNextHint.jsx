@@ -38,6 +38,7 @@ import {
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_FOUR_OF_A_KIND_NUMBERS,
   HINT_CLUE_BLACK_SUIT,
+  HINT_NO_STRAIGHT_IN_NUMBER,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -264,6 +265,7 @@ const ShowNextHint = () => {
     case HINT_CLUE_CARDS_SAME_NUMBER:
     case HINT_NO_STRAIGHT_FLUSH_IN_NUMBER:
     case HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL:
+    case HINT_NO_STRAIGHT_IN_NUMBER:
       // number, clue, negative
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
