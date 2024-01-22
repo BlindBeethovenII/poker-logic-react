@@ -48,6 +48,7 @@ import {
   SUIT_HEARTS,
   SUIT_DIAMONDS,
   SUIT_CLUBS,
+  NUMBER_A,
 } from './constants';
 
 const handTypeToText = (handType) => {
@@ -315,13 +316,40 @@ export const clueToString = (clue, doNotShowDeduced) => {
 
 export const clueToText = (clue, clueIndex) => `Clue ${clueIndex + 1}: ${clueToString(clue)}`;
 
+// the sort compare function for sorting card numbers as we see them on the screen A, K, Q, ... 2
+const screenNumberCompare = (n1, n2) => {
+  // we don't get repeats, but include a simple test just in case
+  if (n1 === n2) {
+    return 0;
+  }
+
+  if (n1 === NUMBER_A) {
+    // we want A at the beginning
+    return -1;
+  }
+
+  if (n2 === NUMBER_A) {
+    // we want A at the beginning
+    return 1;
+  }
+
+  // else do the number compare
+  return n2 - n1;
+};
+
 // return the English for the given numbers array as list of alternatives
-// for eample [4] returns "4", [4,6] results "4 or 6"; [4,6,8] returns "4, 6 or 8"
-export const numbersToAlternativeString = (numbers) => {
+// for eample [4] returns "4", [4,6] results "6 or 4"; [1,4,6,8] returns "A, 8, 6 or 4"
+export const numbersToAlternativeString = (numbersParam) => {
   // check we have something
-  if (!numbers || !numbers.length) {
+  if (!numbersParam || !numbersParam.length) {
     return '';
   }
+
+  // copy the numbers param as the array.sort() sorts in place
+  const numbers = [...numbersParam];
+
+  // we want the English to be in the same order that we see card numbers on the screen
+  numbers.sort(screenNumberCompare);
 
   let result = `${cardNumberToString(numbers[0])}`;
 

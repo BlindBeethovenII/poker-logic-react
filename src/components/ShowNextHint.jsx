@@ -18,6 +18,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS,
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
   HINT_THREE_OF_A_KIND_SUITS,
+  HINT_PAIR_NUMBERS,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -152,6 +153,19 @@ const ShowNextHint = () => {
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_THREE_OF_A_KIND_NUMBERS) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        numbers,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${arrayToKey(numbers)}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${numbersToAlternativeString(numbers)} (Clue: ${clueToString(clue)})`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_PAIR_NUMBERS) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
