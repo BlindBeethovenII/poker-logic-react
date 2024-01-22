@@ -29,6 +29,8 @@ import {
   HINT_NO_STRAIGHT_FLUSH_IN_NUMBER,
   HINT_SORT_RULE_NUMBERS,
   HINT_FLUSH_POSSIBLE_SUITS,
+  HINT_ALL_OF_NUMBER_PLACED_SUITS,
+  HINT_ALL_OF_SUIT_PLACED,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -138,6 +140,18 @@ const ShowNextHint = () => {
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suit,
+        solutionOptionsIndex,
+        handOptionsIndex,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_ALL_OF_SUIT_PLACED) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
