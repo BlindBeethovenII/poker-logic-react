@@ -25,6 +25,7 @@ import {
   HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_ALL_OF_NUMBER_PLACED,
   HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
+  HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -197,6 +198,18 @@ const ShowNextHint = () => {
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_ALL_OF_NUMBER_PLACED) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        number,
+        solutionOptionsIndex,
+        handOptionsIndex,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
