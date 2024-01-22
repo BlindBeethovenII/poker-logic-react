@@ -31,6 +31,7 @@ import {
   HINT_FLUSH_POSSIBLE_SUITS,
   HINT_ALL_OF_SUIT_PLACED,
   HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
+  HINT_SAME_COUNT_LEFT_NUMBER,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -252,6 +253,18 @@ const ShowNextHint = () => {
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        number,
+        solutionOptionsIndex,
+        handOptionsIndex,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_SAME_COUNT_LEFT_NUMBER) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
