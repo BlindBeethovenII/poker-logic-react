@@ -386,6 +386,7 @@ export const GameStateContextProvider = ({ children }) => {
   const resetSolutionOptions = useCallback((theSolution, theCardsAvailable, theClues) => {
     setSolutionOptions(createSolutionOptions(theSolution.missingNumber), theSolution.solutionHands, theCardsAvailable);
     setShowClues(createInitialShowClues(theClues));
+    setNextHint(undefined);
   }, []);
 
   // get a new solution
