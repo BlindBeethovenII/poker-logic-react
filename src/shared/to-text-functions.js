@@ -340,3 +340,29 @@ export const numbersToAlternativeString = (numbers) => {
 
   return result;
 };
+
+// return the English for the given suits array as list of alternatives
+// for eample ["S"] returns "S", ["S","H"] results "S or H"; ["S","H","D"] returns "S, H or D"
+export const suitsToAlternativeString = (suits) => {
+  // check we have something
+  if (!suits || !suits.length) {
+    return '';
+  }
+
+  let result = `${suitToTextSingular(suits[0])}`;
+
+  // easy if only one in the array
+  if (suits.length === 1) {
+    return result;
+  }
+
+  // now add on all but the last as ", number"
+  for (let i = 1; i < suits.length - 1; i += 1) {
+    result = `${result}, ${suitToTextSingular(suits[i])}`;
+  }
+
+  // and put the last one on
+  result = `${result} or ${suitToTextSingular(suits[suits.length - 1])}`;
+
+  return result;
+};

@@ -4,7 +4,12 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop, cardNumberToString } from '../shared/card-functions';
 
-import { clueToString, suitToTextSingular, numbersToAlternativeString } from '../shared/to-text-functions';
+import {
+  clueToString,
+  suitToTextSingular,
+  numbersToAlternativeString,
+  suitsToAlternativeString,
+} from '../shared/to-text-functions';
 
 import {
   HINT_CLUE_NOT_NUMBER,
@@ -12,6 +17,7 @@ import {
   HINT_NUMBER_NOT_USED,
   HINT_THREE_OF_A_KIND_NUMBERS,
   HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE,
+  HINT_THREE_OF_A_KIND_SUITS,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -48,19 +54,19 @@ const BlackLabel = styled.h2`
   pointer-events: none;
 `;
 
-// helper function to convert numbers array to key
-const numbersToKey = (numbers) => {
-  // start with the first one, and add "-<number>" for each additional one
+// helper function to convert array of values to a key
+const arrayToKey = (array) => {
+  // start with the first one, and add "-<v>" for each additional one
 
   // check we have something
-  if (!numbers || !numbers.length) {
+  if (!array || !array.length) {
     return '';
   }
 
-  let result = numbers[0];
+  let result = array[0];
 
-  for (let i = 1; i < numbers.length; i += 1) {
-    result = `${result}-${numbers[i]}`;
+  for (let i = 1; i < array.length; i += 1) {
+    result = `${result}-${array[i]}`;
   }
 
   return result;
@@ -154,8 +160,21 @@ const ShowNextHint = () => {
         handOptionsIndex,
         clue,
       } = nextHint[i];
-      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${numbersToKey(numbers)}`;
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${arrayToKey(numbers)}`;
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${numbersToAlternativeString(numbers)} (Clue: ${clueToString(clue)})`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_THREE_OF_A_KIND_SUITS) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suits,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${arrayToKey(suits)}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${suitsToAlternativeString(suits)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE) {
