@@ -39,6 +39,7 @@ import {
   HINT_FOUR_OF_A_KIND_NUMBERS,
   HINT_CLUE_BLACK_SUIT,
   HINT_NO_STRAIGHT_IN_NUMBER,
+  HINT_STRAIGHT_NUMBER_KNOWN,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -281,6 +282,7 @@ const ShowNextHint = () => {
       break;
 
     case HINT_CLUE_NUMBER:
+    case HINT_STRAIGHT_NUMBER_KNOWN:
       // number, clue, positive
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
