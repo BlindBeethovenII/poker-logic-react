@@ -647,6 +647,7 @@ export const GameStateContextProvider = ({ children }) => {
 
     // next hint stuff
     nextHint,
+    setNextHint,
   }), [
     showWin,
     solution,

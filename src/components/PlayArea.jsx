@@ -26,6 +26,7 @@ import Clues from './Clues';
 import CompleteIncorrectMark from './CompleteIncorrectMark';
 import SpinKitCircle from './SpinKitCircle';
 import ShowNextHint from './ShowNextHint';
+import ClearNextHintButton from './ClearNextHintButton';
 
 import {
   SUIT_SPADES,
@@ -159,6 +160,7 @@ const PlayArea = () => {
       <CompleteIncorrectMark />
       <SpinKitCircle />
       <ShowNextHint />
+      <ClearNextHintButton />
     </div>
   );
 };

@@ -126,6 +126,9 @@ const ShowNextHint = () => {
 
   const blackLabels = [];
 
+  // TODO - Could change the following to a switch, where hint constants are grouped together that take the use the same info
+  //      - e.g. suit, solutionOptionsIndex, handOptionsIndex, clue - and if the statement is "is the" or "is not the"
+
   if (firstHintType === HINT_CLUE_SUIT_AND_NUMBER) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
