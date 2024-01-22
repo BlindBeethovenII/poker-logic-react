@@ -37,6 +37,7 @@ import {
   HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_FOUR_OF_A_KIND_SUIT,
   HINT_FOUR_OF_A_KIND_NUMBERS,
+  HINT_CLUE_BLACK_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -134,6 +135,20 @@ const ShowNextHint = () => {
   // Having a switch to grouped together hints that take the use the same info and if it is positive (keep) or negative (delete) the values
   // each case converts each hint to a black label
   switch (firstHintType) {
+    case HINT_CLUE_BLACK_SUIT:
+      // clue
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          solutionOptionsIndex,
+          handOptionsIndex,
+          clue,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} (Clue: ${clueToString(clue)})`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
     case HINT_CLUE_SUIT_AND_NUMBER:
       // suit, number, clue, positive
       for (let i = 0; i < nextHint.length; i += 1) {
