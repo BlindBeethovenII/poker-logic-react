@@ -24,6 +24,7 @@ import {
   HINT_CLUE_CARDS_SAME_NUMBER_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_NUMBER,
   HINT_ALL_OF_NUMBER_PLACED,
+  HINT_NO_STRAIGHT_FLUSH_IN_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -142,6 +143,19 @@ const ShowNextHint = () => {
       } = nextHint[i];
       const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_NO_STRAIGHT_FLUSH_IN_SUIT) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suit,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_THREE_OF_A_KIND_SUITS) {
