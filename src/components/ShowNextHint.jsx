@@ -20,6 +20,7 @@ import {
   HINT_THREE_OF_A_KIND_SUITS,
   HINT_PAIR_NUMBERS,
   HINT_PAIR_SUITS,
+  HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -114,7 +115,33 @@ const ShowNextHint = () => {
 
   const blackLabels = [];
 
-  if (firstHintType === HINT_CLUE_NOT_NUMBER) {
+  if (firstHintType === HINT_CLUE_SUIT_AND_NUMBER) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suit,
+        number,
+        solutionOptionsIndex,
+        handOptionsIndex,
+        clue,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}-${number}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)} ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE) {
+    // convert each hint to a black label
+    for (let i = 0; i < nextHint.length; i += 1) {
+      const {
+        suit,
+        solutionOptionsIndex,
+        handOptionsIndex,
+      } = nextHint[i];
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+    }
+  } else if (firstHintType === HINT_CLUE_NOT_NUMBER) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
@@ -127,18 +154,17 @@ const ShowNextHint = () => {
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
-  } else if (firstHintType === HINT_CLUE_SUIT_AND_NUMBER) {
+  } else if (firstHintType === HINT_CLUE_CARDS_SAME_NUMBER_TWO_NOT_AVAILABLE) {
     // convert each hint to a black label
     for (let i = 0; i < nextHint.length; i += 1) {
       const {
-        suit,
         number,
         solutionOptionsIndex,
         handOptionsIndex,
         clue,
       } = nextHint[i];
-      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}-${number}`;
-      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)} ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
+      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
+      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)} (Clue: ${clueToString(clue)})`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else if (firstHintType === HINT_NUMBER_NOT_USED) {
@@ -203,18 +229,6 @@ const ShowNextHint = () => {
       } = nextHint[i];
       const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${arrayToKey(suits)}`;
       const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${suitsToAlternativeString(suits)} (Clue: ${clueToString(clue)})`;
-      blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
-    }
-  } else if (firstHintType === HINT_ALL_NUMBERS_OF_SUIT_NOT_POSSIBLE) {
-    // convert each hint to a black label
-    for (let i = 0; i < nextHint.length; i += 1) {
-      const {
-        suit,
-        solutionOptionsIndex,
-        handOptionsIndex,
-      } = nextHint[i];
-      const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
-      const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
       blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
     }
   } else {
