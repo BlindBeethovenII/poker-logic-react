@@ -32,6 +32,7 @@ import {
   HINT_ALL_OF_SUIT_PLACED,
   HINT_ALL_SUIT_PLACED_ONLY_PLACE_FOR_NUMBER,
   HINT_SAME_COUNT_LEFT_NUMBER,
+  HINT_CLUE_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -171,6 +172,21 @@ const ShowNextHint = () => {
         } = nextHint[i];
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_CLUE_SUIT:
+      // suit, clue, positive
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          suit,
+          solutionOptionsIndex,
+          handOptionsIndex,
+          clue,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
