@@ -46,6 +46,7 @@ import {
   HINT_CLUE_CARD_EVEN,
   HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE,
+  HINT_FLUSH_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -208,6 +209,7 @@ const ShowNextHint = () => {
 
     case HINT_CLUE_SUIT:
     case HINT_FOUR_OF_A_KIND_SUIT:
+    case HINT_FLUSH_SUIT:
       // suit, clue, positive
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
