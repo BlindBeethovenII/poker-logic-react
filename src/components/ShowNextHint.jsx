@@ -49,6 +49,7 @@ import {
   HINT_FLUSH_SUIT,
   HINT_SAME_COUNT_LEFT_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
+  HINT_CLUE_CARDS_NOT_SAME_NUMBER,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -312,6 +313,7 @@ const ShowNextHint = () => {
     case HINT_NO_STRAIGHT_FLUSH_IN_NUMBER:
     case HINT_PAIR_NUMBERS_NUMBER_NOT_IN_ALL:
     case HINT_NO_STRAIGHT_IN_NUMBER:
+    case HINT_CLUE_CARDS_NOT_SAME_NUMBER:
       // number, clue, negative
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
