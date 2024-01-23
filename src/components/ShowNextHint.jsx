@@ -47,6 +47,7 @@ import {
   HINT_CLUE_CARDS_SAME_SUIT_THREE_NOT_AVAILABLE,
   HINT_CLUE_CARDS_SAME_NUMBER_FOUR_NOT_AVAILABLE,
   HINT_FLUSH_SUIT,
+  HINT_SAME_COUNT_LEFT_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -186,6 +187,20 @@ const ShowNextHint = () => {
         } = nextHint[i];
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)}`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_SAME_COUNT_LEFT_SUIT:
+      // suit, no clue, positive
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          suit,
+          solutionOptionsIndex,
+          handOptionsIndex,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)}`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
