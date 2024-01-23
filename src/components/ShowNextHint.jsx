@@ -53,6 +53,7 @@ import {
   HINT_CLUE_NOT_SUIT,
   HINT_CLUE_RED_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
+  HINT_CLUE_CARD_ODD,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -153,6 +154,7 @@ const ShowNextHint = () => {
     case HINT_CLUE_BLACK_SUIT:
     case HINT_CLUE_RED_SUIT:
     case HINT_CLUE_CARD_EVEN:
+    case HINT_CLUE_CARD_ODD:
       // clue
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
