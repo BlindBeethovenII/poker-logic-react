@@ -50,6 +50,7 @@ import {
   HINT_SAME_COUNT_LEFT_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE,
   HINT_CLUE_CARDS_NOT_SAME_NUMBER,
+  HINT_CLUE_NOT_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -211,6 +212,7 @@ const ShowNextHint = () => {
     case HINT_CLUE_CARDS_SAME_SUIT:
     case HINT_CLUE_CARDS_NOT_SAME_SUIT:
     case HINT_CLUE_CARDS_SAME_SUIT_TWO_NOT_AVAILABLE:
+    case HINT_CLUE_NOT_SUIT:
       // suit, clue, negative
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
