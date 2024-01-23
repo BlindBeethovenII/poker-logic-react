@@ -42,6 +42,7 @@ import {
   HINT_STRAIGHT_NUMBER_KNOWN,
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
+  HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -213,6 +214,22 @@ const ShowNextHint = () => {
         } = nextHint[i];
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE:
+      // suit, clue1, clue2, negative
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          suit,
+          solutionOptionsIndex,
+          handOptionsIndex,
+          clue1,
+          clue2,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${suitToTextSingular(suit)} (Clue 1: ${clueToString(clue1)}, Clue 2: ${clueToString(clue2)})`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
