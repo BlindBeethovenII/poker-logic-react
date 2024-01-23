@@ -43,6 +43,7 @@ import {
   HINT_CLUE_CARDS_SAME_SUIT,
   HINT_CLUE_CARDS_NOT_SAME_SUIT,
   HINT_CLUE_CARDS_SAME_SUIT_SIX_NOT_AVAILABLE,
+  HINT_CLUE_CARD_EVEN,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -141,6 +142,7 @@ const ShowNextHint = () => {
   // each case converts each hint to a black label
   switch (firstHintType) {
     case HINT_CLUE_BLACK_SUIT:
+    case HINT_CLUE_CARD_EVEN:
       // clue
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
