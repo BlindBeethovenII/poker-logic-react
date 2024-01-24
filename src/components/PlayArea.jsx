@@ -27,6 +27,7 @@ import CompleteIncorrectMark from './CompleteIncorrectMark';
 import SpinKitCircle from './SpinKitCircle';
 import ShowNextHint from './ShowNextHint';
 import ClearNextHintButton from './ClearNextHintButton';
+import DeveloperButton from './DeveloperButton';
 
 import {
   SUIT_SPADES,
@@ -161,6 +162,7 @@ const PlayArea = () => {
       <SpinKitCircle />
       <ShowNextHint />
       <ClearNextHintButton />
+      <DeveloperButton />
     </div>
   );
 };

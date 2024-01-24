@@ -584,6 +584,15 @@ export const GameStateContextProvider = ({ children }) => {
     setShowHiddenClues(!showHiddenClues);
   }, [showHiddenClues]);
 
+  // -------------- //
+  // dev only stuff //
+  // -------------- //
+  const runDeveloperCode = useCallback(() => {
+    for (let i = 0; i < 1000; i += 1) {
+      newSolution();
+    }
+  }, [newSolution]);
+
   // ----------- //
   // the context //
   // ----------- //
@@ -649,6 +658,9 @@ export const GameStateContextProvider = ({ children }) => {
     // next hint stuff
     nextHint,
     setNextHint,
+
+    // developer stuff
+    runDeveloperCode,
   }), [
     showWin,
     solution,
@@ -683,6 +695,7 @@ export const GameStateContextProvider = ({ children }) => {
     toggleShowHiddenClues,
     showSpinKitCircle,
     nextHint,
+    runDeveloperCode,
   ]);
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;
