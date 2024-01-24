@@ -62,6 +62,7 @@ import {
   HINT_ALL_OF_NUMBER_PLACED_SUITS,
   HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT,
+  HINT_PAIR_NUMBERS_ALL_SAME_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -275,6 +276,7 @@ const ShowNextHint = () => {
     case HINT_FOUR_OF_A_KIND_SUIT:
     case HINT_FLUSH_SUIT:
     case HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT:
+    case HINT_PAIR_NUMBERS_ALL_SAME_SUIT:
       // suit, clue, positive
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
