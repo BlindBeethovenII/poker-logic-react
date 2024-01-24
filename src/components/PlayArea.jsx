@@ -17,7 +17,9 @@ import SolutionOptions from './SolutionOptions';
 import RestartButton from './RestartButton';
 import NewSolutionButton from './NewSolutionButton';
 import CurrentSolutionLabel from './CurrentSolutionLabel';
-import HintButton from './HintButton';
+import GetNextHintButton from './GetNextHintButton';
+import ApplyNextHintButton from './ApplyNextHintButton';
+import ApplyAllHintsButton from './ApplyAllHintsButton';
 import ReduceCluesButton from './ReduceCluesButton';
 import HideShowSolutionButton from './HideShowSolutionButton';
 import OtherCluesButton from './OtherCluesButton';
@@ -151,9 +153,9 @@ const PlayArea = () => {
       <NewSolutionButton />
       <NewSolutionButton hardCoded />
       <CurrentSolutionLabel />
-      <HintButton getHint />
-      <HintButton applyOne />
-      <HintButton applyAll />
+      <GetNextHintButton />
+      <ApplyNextHintButton />
+      <ApplyAllHintsButton />
       <ReduceCluesButton />
       <HideShowSolutionButton />
       <OtherCluesButton />
