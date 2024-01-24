@@ -58,6 +58,7 @@ import {
   HINT_PLACED_CARD_REMOVE_SUIT,
   HINT_PLACED_CARD_REMOVE_NUMBER,
   HINT_NUMBER_USED_UP,
+  HINT_ALL_OF_SUIT_PLACED_NUMBERS,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -184,6 +185,21 @@ const ShowNextHint = () => {
         } = nextHint[i];
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}-${number}`;
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is the ${cardNumberToString(number)} ${suitToTextSingular(suit)} (Clue: ${clueToString(clue)})`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_ALL_OF_SUIT_PLACED_NUMBERS:
+      // suit, numbers, no clue, positive
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          suit,
+          numbers,
+          solutionOptionsIndex,
+          handOptionsIndex,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}-${arrayToKey(numbers)}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${numbersToAlternativeString(numbers)} ${suitToTextSingular(suit)})`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
