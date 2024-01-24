@@ -17,7 +17,7 @@ const Button = styled.button`
 `;
 
 const DeveloperButton = () => {
-  const { runDeveloperCode, showSolution } = useContext(GameStateContext);
+  const { runDeveloperCode, setShowSpinKitCircle, showSolution } = useContext(GameStateContext);
 
   // don't show if the solution is showing, as the solution uses the same space
   if (showSolution) {
@@ -40,13 +40,19 @@ const DeveloperButton = () => {
     height: '40px',
   };
 
-  const callRunDeveloperCode = () => {
+  const runDeveloperCodeWithSpinner2 = () => {
     runDeveloperCode();
+    setShowSpinKitCircle(false);
+  };
+
+  const runDeveloperCodeWithSpinner = () => {
+    setShowSpinKitCircle(true);
+    setTimeout(runDeveloperCodeWithSpinner2, 500);
   };
 
   return (
     <div style={divstyle}>
-      <Button onClick={callRunDeveloperCode}>Run Dev Code</Button>
+      <Button onClick={runDeveloperCodeWithSpinner}>Run Dev Code</Button>
     </div>
   );
 };

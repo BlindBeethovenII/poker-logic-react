@@ -891,7 +891,6 @@ export const solution15 = {
   missingNumber: NUMBER_3,
 };
 
-// eslint-disable-next-line max-len
 export const clues15 = [
   createClueHandOfType(calcHandType(solutionHands15[HAND_2]), HAND_2),
 
