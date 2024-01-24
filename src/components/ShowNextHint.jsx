@@ -57,6 +57,7 @@ import {
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
   HINT_PLACED_CARD_REMOVE_SUIT,
   HINT_PLACED_CARD_REMOVE_NUMBER,
+  HINT_NUMBER_USED_UP,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -303,6 +304,7 @@ const ShowNextHint = () => {
       break;
 
     case HINT_NUMBER_NOT_USED:
+    case HINT_NUMBER_USED_UP:
     case HINT_ALL_OF_NUMBER_PLACED:
     case HINT_ALL_SUITS_OF_NUMBER_NOT_POSSIBLE:
       // number, no clue, negative
