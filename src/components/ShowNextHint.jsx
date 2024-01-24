@@ -59,6 +59,7 @@ import {
   HINT_PLACED_CARD_REMOVE_NUMBER,
   HINT_NUMBER_USED_UP,
   HINT_ALL_OF_SUIT_PLACED_NUMBERS,
+  HINT_ALL_OF_NUMBER_PLACED_SUITS,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -363,6 +364,21 @@ const ShowNextHint = () => {
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}`;
         // eslint-disable-next-line max-len
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not the ${cardNumberToString(number)} because of placed card ${cardNumberToString(placedCard.number)} ${suitToTextSingular(placedCard.suit)}`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_ALL_OF_NUMBER_PLACED_SUITS:
+      // number, suits, no clue, positive
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          number,
+          suits,
+          solutionOptionsIndex,
+          handOptionsIndex,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${number}-${arrayToKey(suits)}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} can only be a ${suitsToAlternativeString(suits)} ${cardNumberToString(number)}`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
