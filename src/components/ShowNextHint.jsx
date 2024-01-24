@@ -55,6 +55,7 @@ import {
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_CLUE_CARD_ODD,
   HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
+  HINT_PLACED_CARD_REMOVE_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -210,6 +211,21 @@ const ShowNextHint = () => {
         } = nextHint[i];
         const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
         const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is a ${suitToTextSingular(suit)}`;
+        blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
+      }
+      break;
+
+    case HINT_PLACED_CARD_REMOVE_SUIT:
+      // suit, placedCard, no clue, negative
+      for (let i = 0; i < nextHint.length; i += 1) {
+        const {
+          suit,
+          placedCard,
+          solutionOptionsIndex,
+          handOptionsIndex,
+        } = nextHint[i];
+        const key = `hint-${solutionOptionsIndex}-${handOptionsIndex}-${suit}`;
+        const hintText = `Hand ${solutionOptionsIndex + 1} Card ${handOptionsIndex + 1} is not a ${suitToTextSingular(suit)} because placed card ${placedCard.id}`;
         blackLabels.push(<BlackLabel key={key}>{hintText}</BlackLabel>);
       }
       break;
