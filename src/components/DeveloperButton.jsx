@@ -29,8 +29,8 @@ const DeveloperButton = () => {
     return null;
   }
 
-  const left = colToLeft(11.4);
-  const top = rowToTop(5) + 4;
+  const left = colToLeft(11.7);
+  const top = rowToTop(7) + 4;
 
   const divstyle = {
     position: 'absolute',

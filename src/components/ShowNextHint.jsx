@@ -75,7 +75,7 @@ const divstyle = {
   left: `${left}px`,
   top: `${top}px`,
   width: '340px',
-  height: '260px',
+  height: '320px',
   textAlign: 'centre',
   zIndex: 0,
   overflow: 'auto',

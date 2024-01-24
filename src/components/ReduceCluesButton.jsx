@@ -33,7 +33,7 @@ const ReduceCluesButton = (props) => {
     return null;
   }
 
-  let row = 5;
+  let row = 7;
   let leftOffset = 4;
   let topOffset = 4;
   let label = 'Reduce Clues';

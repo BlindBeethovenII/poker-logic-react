@@ -29,8 +29,8 @@ const ClearNextHintButton = () => {
     return null;
   }
 
-  const left = colToLeft(9.8) + 4;
-  const top = rowToTop(5) + 4;
+  const left = colToLeft(6) + 26;
+  const top = rowToTop(6) - 4;
 
   const divstyle = {
     position: 'absolute',

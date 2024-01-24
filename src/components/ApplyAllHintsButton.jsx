@@ -25,7 +25,7 @@ const ApplyAllHintsButton = () => {
   }
 
   const left = colToLeft(6) + 24;
-  const top = rowToTop(6) - 4;
+  const top = rowToTop(7) - 4;
 
   const divstyle = {
     position: 'absolute',
