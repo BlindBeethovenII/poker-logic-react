@@ -70,6 +70,8 @@ import {
   clues13,
   solution14,
   clues14,
+  solution15,
+  clues15,
 } from '../shared/hard-coded-hands';
 
 import {
@@ -464,6 +466,11 @@ export const GameStateContextProvider = ({ children }) => {
       nextNewSolution = solution14;
       nextClues = clues14;
       setCurrentSolutionLabel('Hard-coded Puzzle 14');
+      setNextHardCodedSolution(15);
+    } else if (newSolutionIndex === 15) {
+      nextNewSolution = solution15;
+      nextClues = clues15;
+      setCurrentSolutionLabel('Hard-coded Puzzle 15');
       setNextHardCodedSolution(1);
     } else {
       nextNewSolution = createSolution();

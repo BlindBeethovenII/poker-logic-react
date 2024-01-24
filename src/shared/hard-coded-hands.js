@@ -850,3 +850,73 @@ export const clues14 = [
   createClueCardsNumberNLowerThan(1, HAND_4, CARD_2, HAND_3, CARD_2),
   createClueCardsNumberNLowerThan(2, HAND_3, CARD_4, HAND_4, CARD_3),
 ];
+
+// --------------------------- //
+// hard-coded solution hand 15 //
+// --------------------------- //
+
+export const solutionHands15 = [
+  [
+    createCard(SUIT_SPADES, NUMBER_8),
+    createCard(SUIT_HEARTS, NUMBER_8),
+    createCard(SUIT_DIAMONDS, NUMBER_8),
+    createCard(SUIT_CLUBS, NUMBER_8),
+    createCard(SUIT_SPADES, NUMBER_4),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_J),
+    createCard(SUIT_DIAMONDS, NUMBER_J),
+    createCard(SUIT_DIAMONDS, NUMBER_5),
+    createCard(SUIT_CLUBS, NUMBER_5),
+    createCard(SUIT_DIAMONDS, NUMBER_9),
+  ],
+  [
+    createCard(SUIT_HEARTS, NUMBER_4),
+    createCard(SUIT_DIAMONDS, NUMBER_4),
+    createCard(SUIT_HEARTS, NUMBER_Q),
+    createCard(SUIT_SPADES, NUMBER_7),
+    createCard(SUIT_DIAMONDS, NUMBER_6),
+  ],
+  [
+    createCard(SUIT_CLUBS, NUMBER_K),
+    createCard(SUIT_CLUBS, NUMBER_Q),
+    createCard(SUIT_SPADES, NUMBER_J),
+    createCard(SUIT_HEARTS, NUMBER_7),
+    createCard(SUIT_CLUBS, NUMBER_4),
+  ],
+];
+
+export const solution15 = {
+  solutionHands: solutionHands15,
+  missingNumber: NUMBER_3,
+};
+
+// eslint-disable-next-line max-len
+export const clues15 = [
+  createClueHandOfType(calcHandType(solutionHands15[HAND_2]), HAND_2),
+
+  createClueHandHasSuitAndNumber(SUIT_HEARTS, NUMBER_4, HAND_3),
+  createClueHandHasSuitAndNumber(SUIT_HEARTS, NUMBER_7, HAND_4),
+
+  createClueHandNotSuitAndNumber(SUIT_SPADES, NUMBER_J, HAND_2),
+
+  createClueSuit(SUIT_HEARTS, HAND_1, CARD_2),
+
+  createClueHandNotSuit(SUIT_CLUBS, HAND_3),
+
+  createClueNumber(NUMBER_4, HAND_1, CARD_5),
+
+  createClueHandHasNumber(NUMBER_4, HAND_4),
+
+  createClueCardsSameSuit(HAND_2, CARD_2, HAND_3, CARD_2),
+  createClueCardsSameSuit(HAND_1, CARD_4, HAND_4, CARD_5),
+
+  createClueCardsSameNumber(HAND_3, CARD_4, HAND_4, CARD_4),
+  createClueCardsSameNumber(HAND_2, CARD_1, HAND_4, CARD_3),
+  createClueCardsSameNumber(HAND_1, CARD_5, HAND_3, CARD_1),
+
+  createClueCardsNumberNHigherThan(1, HAND_1, CARD_4, HAND_3, CARD_4),
+
+  createClueCardsNumberNLowerThan(2, HAND_2, CARD_2, HAND_4, CARD_1),
+  createClueCardsNumberNLowerThan(4, HAND_1, CARD_1, HAND_3, CARD_3),
+];

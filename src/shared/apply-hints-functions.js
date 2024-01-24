@@ -1344,6 +1344,57 @@ export const applyAllHintsToSolutionOptions = (solutionOptions, solution, clues,
   if (hintsApplied) {
     logIfDevEnv(`hints used: ${Array.from(hintsUsed)}`);
     logIfDevEnv(`hints not used: ${Array.from(hintsUnused)}`);
+
+    // TODO REMOVE
+    // tmp code to find the hints we have not converted to English yet
+    if (hintsUsed.has(HINT_PLACED_CARD_REMOVE_SUIT)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_PLACED_CARD_REMOVE_SUIT}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_PLACED_CARD_REMOVE_NUMBER)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_PLACED_CARD_REMOVE_NUMBER}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_NUMBER_USED_UP)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_NUMBER_USED_UP}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_ALL_OF_SUIT_PLACED_NUMBERS)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_ALL_OF_SUIT_PLACED_NUMBERS}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_ALL_OF_NUMBER_PLACED_SUITS)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_ALL_OF_NUMBER_PLACED_SUITS}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_THREE_OF_A_KIND_NUMBERS_RESTRICTED_BY_SUIT}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_THREE_OF_A_KIND_NUMBERS_ALL_SAME_SUIT}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
+    if (hintsUsed.has(HINT_PAIR_NUMBERS_ALL_SAME_SUIT)) {
+      logIfDevEnv(`FOUND HINT: ${HINT_PAIR_NUMBERS_ALL_SAME_SUIT}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(solution)}`);
+      logIfDevEnv(`FOUND: ${JSON.stringify(clues)}`);
+    }
+
     return finalSolutionOptions;
   }
 

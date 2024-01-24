@@ -54,6 +54,7 @@ import {
   HINT_CLUE_RED_SUIT,
   HINT_THREE_OF_A_KIND_NUMBERS_NUMBER_NOT_IN_ALL,
   HINT_CLUE_CARD_ODD,
+  HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT,
 } from '../shared/constants';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -387,6 +388,7 @@ const ShowNextHint = () => {
     case HINT_THREE_OF_A_KIND_NUMBERS:
     case HINT_PAIR_NUMBERS:
     case HINT_FOUR_OF_A_KIND_NUMBERS:
+    case HINT_PAIR_NUMBERS_RESTRICTED_BY_SUIT:
       // numbers, clue, positive
       for (let i = 0; i < nextHint.length; i += 1) {
         const {
