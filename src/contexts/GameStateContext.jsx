@@ -200,6 +200,36 @@ export const GameStateContextProvider = ({ children }) => {
     setUserActionsIndex(userActionsIndex - 1);
   }, [userActionsIndex, solution, cardsAvailable, clues]);
 
+  // redo the user action at the userActionsIndex, moving the userActionsIndex forward one
+  const redoUserAction = useCallback(() => {
+    // first check we have an user action to redo (the RedoButton should have been invisible in this case - but checking anyway)
+    if (userActionsIndex >= userActions.length - 1) {
+      // nothing we can do
+      return;
+    }
+
+    // TODO - FOR NOW WE ASSUME ALL USER ACTIONS ARE APPLY_NEXT_HINT - NEEDS SERIOUS REWORK
+    // apply next hint
+    const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable, false);
+
+    // this should always provide a solutionOptions
+    if (!newSolutionOptions) {
+      console.error('redoUserAction: applyNextHintsToSolutionOptions() did not return a valid solutionOptions');
+      return;
+    }
+
+    // destruct the solution
+    const { solutionHands } = solution;
+
+    setSolutionOptions(newSolutionOptions, solutionHands, cardsAvailable);
+
+    // clear out the hint, it won't apply to the new state
+    setNextHint(undefined);
+
+    // move to the next user action
+    setUserActionsIndex(userActionsIndex + 1);
+  }, [userActionsIndex, userActions, solution, cardsAvailable, clues, solutionOptions]);
+
   // -------------------- //
   // card options setters //
   // -------------------- //
@@ -730,6 +760,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActionsIndex,
     addUserAction,
     undoUserAction,
+    redoUserAction,
 
     // developer stuff
     runDeveloperCode,
@@ -771,6 +802,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActionsIndex,
     addUserAction,
     undoUserAction,
+    redoUserAction,
     runDeveloperCode,
   ]);
 

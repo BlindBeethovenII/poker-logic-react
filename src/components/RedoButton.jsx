@@ -28,7 +28,7 @@ const Button = styled.button`
 `;
 
 const RedoButton = () => {
-  const { userActionsIndex, userActions, toggleShowHiddenClues } = useContext(GameStateContext);
+  const { userActionsIndex, userActions, redoUserAction } = useContext(GameStateContext);
 
   // this button is only needed the length of the userActions array is greater than one more than userActionsIndex
   if (userActions.length - userActionsIndex < 2) {
@@ -38,7 +38,7 @@ const RedoButton = () => {
 
   return (
     <div style={divstyle}>
-      <Button onClick={toggleShowHiddenClues}>Redo</Button>
+      <Button onClick={redoUserAction}>Redo</Button>
     </div>
   );
 };
