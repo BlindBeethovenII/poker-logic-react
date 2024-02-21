@@ -28,14 +28,10 @@ const Button = styled.button`
 `;
 
 const RedoButton = () => {
-  const { toggleShowHiddenClues, showHiddenClues, showClues } = useContext(GameStateContext);
+  const { userActionsIndex, userActions, toggleShowHiddenClues } = useContext(GameStateContext);
 
-  // this button is only needed when at least one clue is in the other clues
-  let lookingFor = false;
-  if (showHiddenClues) {
-    lookingFor = true;
-  }
-  if (!showClues.includes(lookingFor)) {
+  // this button is only needed the length of the userActions array is greater than one more than userActionsIndex
+  if (userActions.length - userActionsIndex < 2) {
     // we are not needed
     return false;
   }

@@ -131,6 +131,10 @@ export const GameStateContextProvider = ({ children }) => {
   // hints
   const [nextHint, setNextHint] = useState(undefined);
 
+  // user actions
+  const [userActions, setUserActions] = useState([]);
+  const [userActionsIndex, setUserActionsIndex] = useState(-1);
+
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
   // --------------------------------------------------------------------- //
@@ -389,6 +393,8 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(createSolutionOptions(theSolution.missingNumber), theSolution.solutionHands, theCardsAvailable);
     setShowClues(createInitialShowClues(theClues));
     setNextHint(undefined);
+    setUserActions([]);
+    setUserActionsIndex(-1);
   }, []);
 
   // get a new solution
@@ -666,6 +672,10 @@ export const GameStateContextProvider = ({ children }) => {
     nextHint,
     setNextHint,
 
+    // user actions stuff,
+    userActions,
+    userActionsIndex,
+
     // developer stuff
     runDeveloperCode,
   }), [
@@ -702,6 +712,8 @@ export const GameStateContextProvider = ({ children }) => {
     toggleShowHiddenClues,
     showSpinKitCircle,
     nextHint,
+    userActions,
+    userActionsIndex,
     runDeveloperCode,
   ]);
 
