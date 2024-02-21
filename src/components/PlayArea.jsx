@@ -30,6 +30,8 @@ import SpinKitCircle from './SpinKitCircle';
 import ShowNextHint from './ShowNextHint';
 import ClearNextHintButton from './ClearNextHintButton';
 import DeveloperButton from './DeveloperButton';
+import UndoButton from './UndoButton';
+import RedoButton from './RedoButton';
 
 import {
   SUIT_SPADES,
@@ -165,6 +167,8 @@ const PlayArea = () => {
       <ShowNextHint />
       <ClearNextHintButton />
       <DeveloperButton />
+      <UndoButton />
+      <RedoButton />
     </div>
   );
 };
