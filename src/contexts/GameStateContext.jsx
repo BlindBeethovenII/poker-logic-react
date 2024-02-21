@@ -157,12 +157,48 @@ export const GameStateContextProvider = ({ children }) => {
   // --------------------- //
 
   const addUserAction = useCallback((userAction) => {
-    // add this userAction to the end of the current
-    setUserActions([...userActions, userAction]);
+    // we need to keep the userActions up to userActionsIndex and then add this userAction to the end
+    setUserActions([...userActions.slice(0, userActionsIndex + 1), userAction]);
 
     // and increase the index
     setUserActionsIndex(userActionsIndex + 1);
   }, [userActions, userActionsIndex]);
+
+  // undo the user action at the userActionsIndex, moving the userActionsIndex back one
+  const undoUserAction = useCallback(() => {
+    // first check we have an user action to undo (the UndoButton should have been invisible in this case - but checking anyway)
+    if (userActionsIndex < 0) {
+      // nothing we can do
+      return;
+    }
+
+    // destruct the solution
+    const { missingNumber, solutionHands } = solution;
+
+    // start with a new solution options
+    let newSolutionOptions = createSolutionOptions(missingNumber);
+
+    // TODO - FOR NOW WE ASSUME ALL USER ACTIONS ARE APPLY_NEXT_HINT - NEEDS SERIOUS REWORK
+    // do all the actions but not the last one, based on our current user actions index
+    for (let i = 0; i < userActionsIndex; i += 1) {
+      // apply next hint
+      newSolutionOptions = applyNextHintsToSolutionOptions(newSolutionOptions, solution, clues, cardsAvailable, false);
+
+      // this should always provide a solutionOptions
+      if (!newSolutionOptions) {
+        console.error('undoUserAction: applyNextHintsToSolutionOptions() did not return a valid solutionOptions');
+        return;
+      }
+    }
+
+    setSolutionOptions(newSolutionOptions, solutionHands, cardsAvailable);
+
+    // clear out the hint, it won't apply to the new state
+    setNextHint(undefined);
+
+    // and decrease the index
+    setUserActionsIndex(userActionsIndex - 1);
+  }, [userActionsIndex, solution, cardsAvailable, clues]);
 
   // -------------------- //
   // card options setters //
@@ -402,7 +438,7 @@ export const GameStateContextProvider = ({ children }) => {
   // solution and solution options setters //
   // ------------------------------------- //
 
-  // reset solution options - now needs to take missingNumber - so doesn't need to use useCallback
+  // reset solution options
   const resetSolutionOptions = useCallback((theSolution, theCardsAvailable, theClues) => {
     setSolutionOptions(createSolutionOptions(theSolution.missingNumber), theSolution.solutionHands, theCardsAvailable);
     setShowClues(createInitialShowClues(theClues));
@@ -693,6 +729,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActions,
     userActionsIndex,
     addUserAction,
+    undoUserAction,
 
     // developer stuff
     runDeveloperCode,
@@ -733,6 +770,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActions,
     userActionsIndex,
     addUserAction,
+    undoUserAction,
     runDeveloperCode,
   ]);
 

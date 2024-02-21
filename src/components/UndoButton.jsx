@@ -28,7 +28,7 @@ const Button = styled.button`
 `;
 
 const UndoButton = () => {
-  const { userActionsIndex, toggleShowHiddenClues } = useContext(GameStateContext);
+  const { userActionsIndex, undoUserAction } = useContext(GameStateContext);
 
   // this button is only needed if there is at least one action we can undo
   if (userActionsIndex < 0) {
@@ -38,7 +38,7 @@ const UndoButton = () => {
 
   return (
     <div style={divstyle}>
-      <Button onClick={toggleShowHiddenClues}>Undo</Button>
+      <Button onClick={undoUserAction}>Undo</Button>
     </div>
   );
 };
