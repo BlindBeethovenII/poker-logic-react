@@ -39,6 +39,8 @@ import {
 
 import { addInDeducedClues } from '../shared/get-deduced-clues-functions';
 
+import { createUserActionApplyNextHint } from '../shared/user-action-functions';
+
 import { clueToText } from '../shared/to-text-functions';
 
 import {
@@ -149,6 +151,18 @@ export const GameStateContextProvider = ({ children }) => {
     }
     setSolutionOptionsState(newSolutionOptionsState);
   };
+
+  // --------------------- //
+  // user action functions //
+  // --------------------- //
+
+  const addUserAction = useCallback((userAction) => {
+    // add this userAction to the end of the current
+    setUserActions([...userActions, userAction]);
+
+    // and increase the index
+    setUserActionsIndex(userActionsIndex + 1);
+  }, [userActions, userActionsIndex]);
 
   // -------------------- //
   // card options setters //
@@ -528,10 +542,13 @@ export const GameStateContextProvider = ({ children }) => {
     const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable, false);
     if (newSolutionOptions) {
       setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+
+      // remember the user action just done
+      addUserAction(createUserActionApplyNextHint());
     }
 
     setNextHint(undefined);
-  }, [solutionOptions, solution, clues, cardsAvailable]);
+  }, [solutionOptions, solution, clues, cardsAvailable, addUserAction]);
 
   // find and apply all hints
   const findAndApplyAllHints = useCallback(() => {
@@ -675,6 +692,7 @@ export const GameStateContextProvider = ({ children }) => {
     // user actions stuff,
     userActions,
     userActionsIndex,
+    addUserAction,
 
     // developer stuff
     runDeveloperCode,
@@ -714,6 +732,7 @@ export const GameStateContextProvider = ({ children }) => {
     nextHint,
     userActions,
     userActionsIndex,
+    addUserAction,
     runDeveloperCode,
   ]);
 
