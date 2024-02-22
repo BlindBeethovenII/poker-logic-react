@@ -164,10 +164,17 @@ export const GameStateContextProvider = ({ children }) => {
     setUserActionsIndex(userActionsIndex + 1);
   }, [userActions, userActionsIndex]);
 
-  // undo the user action at the userActionsIndex, moving the userActionsIndex back one
-  const undoUserAction = useCallback(() => {
-    // first check we have an user action to undo (the UndoButton should have been invisible in this case - but checking anyway)
-    if (userActionsIndex < 0) {
+  // undo or redo the user action at the userActionsIndex, based on given param
+  // making a single function as the apply user action code is the same between the undoUserAction() and redoUserAction() function - and hard to put in another file
+  const undoRedoUserAction = useCallback((undoUserAction) => {
+    // if undo UserAction, first check we have an user action to undo (the UndoButton should have been invisible in this case - but checking anyway)
+    if (undoUserAction && userActionsIndex < 0) {
+      // nothing we can do
+      return;
+    }
+
+    // if redo UserAction, first check we have an user action to redo (the RedoButton should have been invisible in this case - but checking anyway)
+    if (!undoUserAction && userActionsIndex >= userActions.length - 1) {
       // nothing we can do
       return;
     }
@@ -181,8 +188,11 @@ export const GameStateContextProvider = ({ children }) => {
     // and initial showClues
     const newShowClues = createInitialShowClues(clues);
 
+    // to use the same code, we work out the end index for the for loop
+    const endIndex = undoUserAction ? userActionsIndex : userActionsIndex + 2;
+
     // do all the actions but not the last one, based on our current user actions index
-    for (let i = 0; i < userActionsIndex; i += 1) {
+    for (let i = 0; i < endIndex; i += 1) {
       const userAction = userActions[i];
       const { userActionType, clueIndex } = userAction;
       switch (userActionType) {
@@ -214,39 +224,14 @@ export const GameStateContextProvider = ({ children }) => {
     // clear out the hint, it won't apply to the new state
     setNextHint(undefined);
 
-    // and decrease the index
-    setUserActionsIndex(userActionsIndex - 1);
+    // if undo UserAction decrease the index
+    if (undoUserAction) {
+      setUserActionsIndex(userActionsIndex - 1);
+    } else {
+      // for redo UserAction, move to the next user action
+      setUserActionsIndex(userActionsIndex + 1);
+    }
   }, [userActionsIndex, solution, cardsAvailable, clues, userActions]);
-
-  // redo the user action at the userActionsIndex, moving the userActionsIndex forward one
-  const redoUserAction = useCallback(() => {
-    // first check we have an user action to redo (the RedoButton should have been invisible in this case - but checking anyway)
-    if (userActionsIndex >= userActions.length - 1) {
-      // nothing we can do
-      return;
-    }
-
-    // TODO - FOR NOW WE ASSUME ALL USER ACTIONS ARE APPLY_NEXT_HINT - NEEDS SERIOUS REWORK
-    // apply next hint
-    const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable, false);
-
-    // this should always provide a solutionOptions
-    if (!newSolutionOptions) {
-      console.error('redoUserAction: applyNextHintsToSolutionOptions() did not return a valid solutionOptions');
-      return;
-    }
-
-    // destruct the solution
-    const { solutionHands } = solution;
-
-    setSolutionOptions(newSolutionOptions, solutionHands, cardsAvailable);
-
-    // clear out the hint, it won't apply to the new state
-    setNextHint(undefined);
-
-    // move to the next user action
-    setUserActionsIndex(userActionsIndex + 1);
-  }, [userActionsIndex, userActions, solution, cardsAvailable, clues, solutionOptions]);
 
   // -------------------- //
   // card options setters //
@@ -774,8 +759,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActions,
     userActionsIndex,
     addUserAction,
-    undoUserAction,
-    redoUserAction,
+    undoRedoUserAction,
 
     // developer stuff
     runDeveloperCode,
@@ -816,8 +800,7 @@ export const GameStateContextProvider = ({ children }) => {
     userActions,
     userActionsIndex,
     addUserAction,
-    undoUserAction,
-    redoUserAction,
+    undoRedoUserAction,
     runDeveloperCode,
   ]);
 

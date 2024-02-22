@@ -28,7 +28,7 @@ const Button = styled.button`
 `;
 
 const RedoButton = () => {
-  const { userActionsIndex, userActions, redoUserAction } = useContext(GameStateContext);
+  const { userActionsIndex, userActions, undoRedoUserAction } = useContext(GameStateContext);
 
   // this button is only needed the length of the userActions array is greater than one more than userActionsIndex
   if (userActions.length - userActionsIndex < 2) {
@@ -36,9 +36,14 @@ const RedoButton = () => {
     return false;
   }
 
+  const callUndoRedoUserAction = () => {
+    // we are a redo userAction
+    undoRedoUserAction(false);
+  };
+
   return (
     <div style={divstyle}>
-      <Button onClick={redoUserAction}>Redo</Button>
+      <Button onClick={callUndoRedoUserAction}>Redo</Button>
     </div>
   );
 };
