@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
+import { createUserActionApplyNextHint } from '../shared/user-action-functions';
+
 import GameStateContext from '../contexts/GameStateContext';
 
 const Button = styled.button`
@@ -17,7 +19,7 @@ const Button = styled.button`
 `;
 
 const ApplyNextHintButton = () => {
-  const { findAndApplyNextHint, nextHint } = useContext(GameStateContext);
+  const { findAndApplyNextHint, nextHint, addUserAction } = useContext(GameStateContext);
 
   // only show the nextHint is defined
   if (nextHint === undefined) {
@@ -35,9 +37,16 @@ const ApplyNextHintButton = () => {
     height: '40px',
   };
 
+  const applyNextHint = () => {
+    findAndApplyNextHint();
+
+    // remember the user action just done
+    addUserAction(createUserActionApplyNextHint());
+  };
+
   return (
     <div style={divstyle}>
-      <Button onClick={findAndApplyNextHint}>Apply Next Hint</Button>
+      <Button onClick={applyNextHint}>Apply Next Hint</Button>
     </div>
   );
 };

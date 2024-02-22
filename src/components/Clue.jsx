@@ -6,6 +6,8 @@ import styled from 'styled-components';
 
 import { colToLeft, rowToTop } from '../shared/card-functions';
 
+import { createUserActionToggleShowClue } from '../shared/user-action-functions';
+
 import GameStateContext from '../contexts/GameStateContext';
 
 const Button = styled.button`
@@ -22,7 +24,7 @@ const Button = styled.button`
 const Clue = (props) => {
   const { clueText, clueIndex, clueShowIndex } = props;
 
-  const { toggleShowClue } = useContext(GameStateContext);
+  const { toggleShowClue, addUserAction } = useContext(GameStateContext);
 
   const left = colToLeft(0.9);
   const top = rowToTop(4 + clueShowIndex * 0.3);
@@ -41,6 +43,9 @@ const Clue = (props) => {
     e.preventDefault();
 
     toggleShowClue(clueIndex);
+
+    // remember this userAction
+    addUserAction(createUserActionToggleShowClue(clueIndex));
   };
 
   return (

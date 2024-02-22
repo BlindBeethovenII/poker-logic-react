@@ -39,8 +39,6 @@ import {
 
 import { addInDeducedClues } from '../shared/get-deduced-clues-functions';
 
-import { createUserActionApplyNextHint } from '../shared/user-action-functions';
-
 import { clueToText } from '../shared/to-text-functions';
 
 import {
@@ -82,6 +80,8 @@ import {
   SOLUTION_OPTIONS_STATE_DONE,
   CLUE_HAND_OF_TYPE,
   CLUES_BASIC,
+  USER_ACTION_APPLY_NEXT_HINT,
+  USER_ACTION_TOGGLE_SHOW_CLUE,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -178,27 +178,45 @@ export const GameStateContextProvider = ({ children }) => {
     // start with a new solution options
     let newSolutionOptions = createSolutionOptions(missingNumber);
 
-    // TODO - FOR NOW WE ASSUME ALL USER ACTIONS ARE APPLY_NEXT_HINT - NEEDS SERIOUS REWORK
+    // and initial showClues
+    const newShowClues = createInitialShowClues(clues);
+
     // do all the actions but not the last one, based on our current user actions index
     for (let i = 0; i < userActionsIndex; i += 1) {
-      // apply next hint
-      newSolutionOptions = applyNextHintsToSolutionOptions(newSolutionOptions, solution, clues, cardsAvailable, false);
+      const userAction = userActions[i];
+      const { userActionType, clueIndex } = userAction;
+      switch (userActionType) {
+        case USER_ACTION_APPLY_NEXT_HINT:
+          // apply next hint
+          newSolutionOptions = applyNextHintsToSolutionOptions(newSolutionOptions, solution, clues, cardsAvailable, false);
 
-      // this should always provide a solutionOptions
-      if (!newSolutionOptions) {
-        console.error('undoUserAction: applyNextHintsToSolutionOptions() did not return a valid solutionOptions');
-        return;
+          // this should always provide a solutionOptions
+          if (!newSolutionOptions) {
+            console.error('undoUserAction: applyNextHintsToSolutionOptions() did not return a valid solutionOptions');
+          }
+
+          break;
+
+        case USER_ACTION_TOGGLE_SHOW_CLUE:
+          // toggle the show clue
+          newShowClues[clueIndex] = !newShowClues[clueIndex];
+          break;
+
+        default:
+          console.error(`ERROR: undoUserAction cannot cope with userActionType ${userActionType}!!!`);
       }
     }
 
+    // remember any changes we have just applied
     setSolutionOptions(newSolutionOptions, solutionHands, cardsAvailable);
+    setShowClues(newShowClues);
 
     // clear out the hint, it won't apply to the new state
     setNextHint(undefined);
 
     // and decrease the index
     setUserActionsIndex(userActionsIndex - 1);
-  }, [userActionsIndex, solution, cardsAvailable, clues]);
+  }, [userActionsIndex, solution, cardsAvailable, clues, userActions]);
 
   // redo the user action at the userActionsIndex, moving the userActionsIndex forward one
   const redoUserAction = useCallback(() => {
@@ -608,13 +626,10 @@ export const GameStateContextProvider = ({ children }) => {
     const newSolutionOptions = applyNextHintsToSolutionOptions(solutionOptions, solution, clues, cardsAvailable, false);
     if (newSolutionOptions) {
       setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
-
-      // remember the user action just done
-      addUserAction(createUserActionApplyNextHint());
     }
 
     setNextHint(undefined);
-  }, [solutionOptions, solution, clues, cardsAvailable, addUserAction]);
+  }, [solutionOptions, solution, clues, cardsAvailable]);
 
   // find and apply all hints
   const findAndApplyAllHints = useCallback(() => {
