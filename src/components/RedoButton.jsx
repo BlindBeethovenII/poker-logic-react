@@ -7,7 +7,7 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 import GameStateContext from '../contexts/GameStateContext';
 
 const left = colToLeft(-0.2);
-const top = rowToTop(6.4);
+const top = rowToTop(6.3);
 
 const divstyle = {
   position: 'absolute',
@@ -41,9 +41,11 @@ const RedoButton = () => {
     undoRedoUserAction(false);
   };
 
+  const redoLabel = `Redo (${userActions.length - userActionsIndex - 1})`;
+
   return (
     <div style={divstyle}>
-      <Button onClick={callUndoRedoUserAction}>Redo</Button>
+      <Button onClick={callUndoRedoUserAction}>{redoLabel}</Button>
     </div>
   );
 };
