@@ -82,6 +82,7 @@ import {
   CLUES_BASIC,
   USER_ACTION_APPLY_NEXT_HINT,
   USER_ACTION_TOGGLE_SHOW_CLUE,
+  USER_ACTION_SET_SUIT_OPTION_ONLY,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -194,7 +195,14 @@ export const GameStateContextProvider = ({ children }) => {
     // do all the actions but not the last one, based on our current user actions index
     for (let i = 0; i < endIndex; i += 1) {
       const userAction = userActions[i];
-      const { userActionType, clueIndex } = userAction;
+      const {
+        userActionType,
+        clueIndex,
+        suitOptionsIndex,
+        solutionOptionsIndex,
+        handOptionsIndex,
+      } = userAction;
+
       switch (userActionType) {
         case USER_ACTION_APPLY_NEXT_HINT:
           // apply next hint
@@ -210,6 +218,12 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_TOGGLE_SHOW_CLUE:
           // toggle the show clue
           newShowClues[clueIndex] = !newShowClues[clueIndex];
+          break;
+
+        case USER_ACTION_SET_SUIT_OPTION_ONLY:
+          // set suit option only
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
           break;
 
         default:

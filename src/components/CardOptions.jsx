@@ -24,6 +24,8 @@ import {
   NUMBERS_SORTED,
 } from '../shared/constants';
 
+import { createUserActionSetSuitOptionOnly } from '../shared/user-action-functions';
+
 import logIfDevEnv from '../shared/logIfDevEnv';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -44,6 +46,7 @@ const CardOptions = (props) => {
     toggleNumberOption,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
+    addUserAction,
   } = useContext(GameStateContext);
 
   // form our id based on our hand option index
@@ -166,6 +169,9 @@ const CardOptions = (props) => {
       } else {
         // just set for this card
         setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+
+        // remember this userAction
+        addUserAction(createUserActionSetSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex));
       }
     };
 
