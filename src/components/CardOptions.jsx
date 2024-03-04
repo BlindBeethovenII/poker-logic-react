@@ -24,7 +24,7 @@ import {
   NUMBERS_SORTED,
 } from '../shared/constants';
 
-import { createUserActionSetSuitOptionOnly } from '../shared/user-action-functions';
+import { createUserActionSetSuitOptionOnly, createUserActionSetSuitOptionOnlyToCardsInHand } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
 
@@ -166,6 +166,9 @@ const CardOptions = (props) => {
       // if the shift key is down, then set for all cards in this hand
       if (e.shiftKey || e.ctrlKey) {
         setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
+
+        // remember this userAction
+        addUserAction(createUserActionSetSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex));
       } else {
         // just set for this card
         setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);

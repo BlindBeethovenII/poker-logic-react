@@ -83,6 +83,7 @@ import {
   USER_ACTION_APPLY_NEXT_HINT,
   USER_ACTION_TOGGLE_SHOW_CLUE,
   USER_ACTION_SET_SUIT_OPTION_ONLY,
+  USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -223,6 +224,16 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_SET_SUIT_OPTION_ONLY:
           // set suit option only
           newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND:
+          // set suit option only to cards in hand
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions);
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
+          newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
 
           break;
 
