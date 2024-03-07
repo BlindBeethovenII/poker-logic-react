@@ -9,6 +9,7 @@ import {
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
+  USER_ACTION_RESET_NUMBER_OPTIONS,
 } from './constants';
 
 // create USER_ACTION_APPLY_NEXT_HINT
@@ -63,6 +64,13 @@ export const createUserActionToggleSuitOption = (suitOptionsIndex, solutionOptio
 export const createUserActionSetNumberOptionOnly = (number, solutionOptionsIndex, handOptionsIndex) => ({
   userActionType: USER_ACTION_SET_NUMBER_OPTION_ONLY,
   number,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// create USER_ACTION_RESET_NUMBER_OPTIONS
+export const createUserActionResetNumberOptions = (solutionOptionsIndex, handOptionsIndex) => ({
+  userActionType: USER_ACTION_RESET_NUMBER_OPTIONS,
   solutionOptionsIndex,
   handOptionsIndex,
 });

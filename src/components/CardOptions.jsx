@@ -31,6 +31,7 @@ import {
   createUserActionTurnOffSuitInHandIfOnAndNotPlaced,
   createUserActionToggleSuitOption,
   createUserActionSetNumberOptionOnly,
+  createUserActionResetNumberOptions,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -196,6 +197,7 @@ const CardOptions = (props) => {
       if (isSingleSuitOption) {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
 
+        // remember this userAction
         addUserAction(createUserActionResetSuitOptions(solutionOptionsIndex, handOptionsIndex));
       } else if (e.shiftKey || e.ctrlKey) {
         // the shift key is down turn off suit in each card in this hand for which the suit is on an not placed
@@ -375,6 +377,9 @@ const CardOptions = (props) => {
           // if this is the single number option, then toggle means make all options available again
           if (isSingleNumberOption) {
             resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
+
+            // remember this userAction
+            addUserAction(createUserActionResetNumberOptions(solutionOptionsIndex, handOptionsIndex));
           } else {
             // toggle just this card's number
             logIfDevEnv(`onContextMenuNumber ${number} calling toggleNumberOption`);
