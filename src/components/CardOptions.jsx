@@ -28,6 +28,7 @@ import {
   createUserActionSetSuitOptionOnly,
   createUserActionSetSuitOptionOnlyToCardsInHand,
   createUserActionResetSuitOptions,
+  createUserActionTurnOffSuitInHandIfOnAndNotPlaced,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -195,8 +196,11 @@ const CardOptions = (props) => {
 
         addUserAction(createUserActionResetSuitOptions(solutionOptionsIndex, handOptionsIndex));
       } else if (e.shiftKey || e.ctrlKey) {
-        // the shift key is down to toggle suit for all cards in this hand
+        // the shift key is down turn off suit in each card in this hand for which the suit is on an not placed
         turnOffSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex);
+
+        // remember this userAction
+        addUserAction(createUserActionTurnOffSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex));
       } else {
         // toggle corresponding suit index
         toggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);

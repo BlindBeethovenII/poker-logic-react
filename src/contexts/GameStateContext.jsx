@@ -85,6 +85,7 @@ import {
   USER_ACTION_SET_SUIT_OPTION_ONLY,
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   USER_ACTION_RESET_SUIT_OPTIONS,
+  USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -205,6 +206,16 @@ export const GameStateContextProvider = ({ children }) => {
         handOptionsIndex,
       } = userAction;
 
+      // for some user action types we need the card options for each card in the hand
+      let cardOptions1;
+      let cardOptions2;
+      let cardOptions3;
+      let cardOptions4;
+      let cardOptions5;
+      if (userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED) {
+        [cardOptions1, cardOptions2, cardOptions3, cardOptions4, cardOptions5] = newSolutionOptions[solutionOptionsIndex];
+      }
+
       switch (userActionType) {
         case USER_ACTION_APPLY_NEXT_HINT:
           // apply next hint
@@ -241,6 +252,35 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_RESET_SUIT_OPTIONS:
           // reset suit options
           newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED:
+          // turn off the given suit to all cards in this hand for any cards for which their suit is on and not placed yet
+          // TODO - better to common this code with the above same code
+          // card 1
+          if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex) && countSuitsInCardOptions(cardOptions1) > 1) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
+          }
+
+          // card 2
+          if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex) && countSuitsInCardOptions(cardOptions2) > 1) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions);
+          }
+
+          if (getSuitOptionsValueInCardOptions(cardOptions3, suitOptionsIndex) && countSuitsInCardOptions(cardOptions3) > 1) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
+          }
+
+          // card 4
+          if (getSuitOptionsValueInCardOptions(cardOptions4, suitOptionsIndex) && countSuitsInCardOptions(cardOptions4) > 1) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
+          }
+
+          // card 5
+          if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
+            newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+          }
 
           break;
 
