@@ -86,6 +86,7 @@ import {
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   USER_ACTION_RESET_SUIT_OPTIONS,
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
+  USER_ACTION_TOGGLE_SUIT_OPTION,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -281,6 +282,12 @@ export const GameStateContextProvider = ({ children }) => {
           if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
           }
+
+          break;
+
+        case USER_ACTION_TOGGLE_SUIT_OPTION:
+          // toggle suit option
+          newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
 
           break;
 

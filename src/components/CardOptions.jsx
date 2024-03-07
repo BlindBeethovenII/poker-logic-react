@@ -29,6 +29,7 @@ import {
   createUserActionSetSuitOptionOnlyToCardsInHand,
   createUserActionResetSuitOptions,
   createUserActionTurnOffSuitInHandIfOnAndNotPlaced,
+  createUserActionToggleSuitOption,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -204,6 +205,9 @@ const CardOptions = (props) => {
       } else {
         // toggle corresponding suit index
         toggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
+
+        // remember this userAction
+        addUserAction(createUserActionToggleSuitOption(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex));
       }
     };
 

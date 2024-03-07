@@ -7,6 +7,7 @@ import {
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   USER_ACTION_RESET_SUIT_OPTIONS,
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
+  USER_ACTION_TOGGLE_SUIT_OPTION,
 } from './constants';
 
 // create USER_ACTION_APPLY_NEXT_HINT
@@ -47,4 +48,12 @@ export const createUserActionTurnOffSuitInHandIfOnAndNotPlaced = (suitOptionsInd
   userActionType: USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   suitOptionsIndex,
   solutionOptionsIndex,
+});
+
+// create USER_ACTION_TOGGLE_SUIT_OPTION
+export const createUserActionToggleSuitOption = (suitOptionsIndex, solutionOptionsIndex, handOptionsIndex) => ({
+  userActionType: USER_ACTION_TOGGLE_SUIT_OPTION,
+  suitOptionsIndex,
+  solutionOptionsIndex,
+  handOptionsIndex,
 });
