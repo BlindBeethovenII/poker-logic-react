@@ -88,6 +88,7 @@ import {
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
+  USER_ACTION_RESET_NUMBER_OPTIONS,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -296,6 +297,12 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_SET_NUMBER_OPTION_ONLY:
           // set number option only
           newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_RESET_NUMBER_OPTIONS:
+          // reset number options
+          newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, newSolutionOptions, missingNumber);
 
           break;
 
