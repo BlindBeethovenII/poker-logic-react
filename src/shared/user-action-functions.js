@@ -10,6 +10,7 @@ import {
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
   USER_ACTION_RESET_NUMBER_OPTIONS,
+  USER_ACTION_TOGGLE_NUMBER_OPTION,
 } from './constants';
 
 // create USER_ACTION_APPLY_NEXT_HINT
@@ -71,6 +72,14 @@ export const createUserActionSetNumberOptionOnly = (number, solutionOptionsIndex
 // create USER_ACTION_RESET_NUMBER_OPTIONS
 export const createUserActionResetNumberOptions = (solutionOptionsIndex, handOptionsIndex) => ({
   userActionType: USER_ACTION_RESET_NUMBER_OPTIONS,
+  solutionOptionsIndex,
+  handOptionsIndex,
+});
+
+// create USER_ACTION_TOGGLE_NUMBER_OPTION
+export const createUserActionToggleNumberOption = (number, solutionOptionsIndex, handOptionsIndex) => ({
+  userActionType: USER_ACTION_TOGGLE_NUMBER_OPTION,
+  number,
   solutionOptionsIndex,
   handOptionsIndex,
 });

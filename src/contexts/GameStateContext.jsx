@@ -89,6 +89,7 @@ import {
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
   USER_ACTION_RESET_NUMBER_OPTIONS,
+  USER_ACTION_TOGGLE_NUMBER_OPTION,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -303,6 +304,12 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_RESET_NUMBER_OPTIONS:
           // reset number options
           newSolutionOptions = resetNumberOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, newSolutionOptions, missingNumber);
+
+          break;
+
+        case USER_ACTION_TOGGLE_NUMBER_OPTION:
+          // toggle number option
+          newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
 
           break;
 

@@ -32,6 +32,7 @@ import {
   createUserActionToggleSuitOption,
   createUserActionSetNumberOptionOnly,
   createUserActionResetNumberOptions,
+  createUserActionToggleNumberOption,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -384,6 +385,9 @@ const CardOptions = (props) => {
             // toggle just this card's number
             logIfDevEnv(`onContextMenuNumber ${number} calling toggleNumberOption`);
             toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+
+            // remember this userAction
+            addUserAction(createUserActionToggleNumberOption(number, solutionOptionsIndex, handOptionsIndex));
           }
         }
       };
