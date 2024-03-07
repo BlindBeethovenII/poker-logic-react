@@ -30,6 +30,7 @@ import {
   createUserActionResetSuitOptions,
   createUserActionTurnOffSuitInHandIfOnAndNotPlaced,
   createUserActionToggleSuitOption,
+  createUserActionSetNumberOptionOnly,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -317,6 +318,9 @@ const CardOptions = (props) => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
         setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
+
+        // remember this userAction
+        addUserAction(createUserActionSetNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex));
       };
 
       // toggle the number option if the right button is selected

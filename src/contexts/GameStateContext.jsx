@@ -87,6 +87,7 @@ import {
   USER_ACTION_RESET_SUIT_OPTIONS,
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TOGGLE_SUIT_OPTION,
+  USER_ACTION_SET_NUMBER_OPTION_ONLY,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -205,6 +206,7 @@ export const GameStateContextProvider = ({ children }) => {
         suitOptionsIndex,
         solutionOptionsIndex,
         handOptionsIndex,
+        number,
       } = userAction;
 
       // for some user action types we need the card options for each card in the hand
@@ -288,6 +290,12 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_TOGGLE_SUIT_OPTION:
           // toggle suit option
           newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_SET_NUMBER_OPTION_ONLY:
+          // set number option only
+          newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
 
           break;
 
