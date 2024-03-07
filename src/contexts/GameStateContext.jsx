@@ -84,6 +84,7 @@ import {
   USER_ACTION_TOGGLE_SHOW_CLUE,
   USER_ACTION_SET_SUIT_OPTION_ONLY,
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
+  USER_ACTION_RESET_SUIT_OPTIONS,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -234,6 +235,12 @@ export const GameStateContextProvider = ({ children }) => {
           newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
           newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
           newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_RESET_SUIT_OPTIONS:
+          // reset suit options
+          newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
 
           break;
 

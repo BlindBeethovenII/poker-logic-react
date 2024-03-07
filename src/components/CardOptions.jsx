@@ -24,7 +24,11 @@ import {
   NUMBERS_SORTED,
 } from '../shared/constants';
 
-import { createUserActionSetSuitOptionOnly, createUserActionSetSuitOptionOnlyToCardsInHand } from '../shared/user-action-functions';
+import {
+  createUserActionSetSuitOptionOnly,
+  createUserActionSetSuitOptionOnlyToCardsInHand,
+  createUserActionResetSuitOptions,
+} from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
 
@@ -188,6 +192,8 @@ const CardOptions = (props) => {
       // if this is the single suit option, then toggle means make all options available again
       if (isSingleSuitOption) {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
+
+        addUserAction(createUserActionResetSuitOptions(solutionOptionsIndex, handOptionsIndex));
       } else if (e.shiftKey || e.ctrlKey) {
         // the shift key is down to toggle suit for all cards in this hand
         turnOffSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex);

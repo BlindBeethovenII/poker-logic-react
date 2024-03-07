@@ -5,6 +5,7 @@ import {
   USER_ACTION_TOGGLE_SHOW_CLUE,
   USER_ACTION_SET_SUIT_OPTION_ONLY,
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
+  USER_ACTION_RESET_SUIT_OPTIONS,
 } from './constants';
 
 // create USER_ACTION_APPLY_NEXT_HINT
@@ -31,4 +32,11 @@ export const createUserActionSetSuitOptionOnlyToCardsInHand = (suitOptionsIndex,
   userActionType: USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   suitOptionsIndex,
   solutionOptionsIndex,
+});
+
+// create USER_ACTION_RESET_SUIT_OPTIONS
+export const createUserActionResetSuitOptions = (solutionOptionsIndex, handOptionsIndex) => ({
+  userActionType: USER_ACTION_RESET_SUIT_OPTIONS,
+  solutionOptionsIndex,
+  handOptionsIndex,
 });
