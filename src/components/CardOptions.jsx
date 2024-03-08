@@ -337,6 +337,9 @@ const CardOptions = (props) => {
           // if this is the single number option, then toggle means make all options available again
           if (isSingleNumberOption) {
             resetNumberOptions(solutionOptionsIndex, handOptionsIndex);
+
+            // remember this userAction
+            addUserAction(createUserActionResetNumberOptions(solutionOptionsIndex, handOptionsIndex));
           } else if (e.shiftKey || e.ctrlKey) {
             // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
             turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
