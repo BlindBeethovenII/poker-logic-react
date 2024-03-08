@@ -374,6 +374,9 @@ const CardOptions = (props) => {
               // toggle just this card's number
               logIfDevEnv(`onMouseEnterNumber ${number} calling toggleNumberOption`);
               toggleNumberOption(number, solutionOptionsIndex, handOptionsIndex);
+
+              // remember this userAction
+              addUserAction(createUserActionToggleNumberOption(number, solutionOptionsIndex, handOptionsIndex));
             }
           }
         }
