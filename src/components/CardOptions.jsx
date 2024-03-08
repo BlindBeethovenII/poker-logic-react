@@ -33,6 +33,7 @@ import {
   createUserActionSetNumberOptionOnly,
   createUserActionResetNumberOptions,
   createUserActionToggleNumberOption,
+  createUserActionTurnOffNumberInHandIfOnAndNotPlaced,
 } from '../shared/user-action-functions';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -343,6 +344,9 @@ const CardOptions = (props) => {
           } else if (e.shiftKey || e.ctrlKey) {
             // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
             turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
+
+            // remember this userAction
+            addUserAction(createUserActionTurnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex));
           } else {
             // toggle just this card's number
             logIfDevEnv(`onMouseDownNumber ${number} calling toggleNumberOption`);

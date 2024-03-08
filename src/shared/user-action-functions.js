@@ -11,6 +11,7 @@ import {
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
   USER_ACTION_RESET_NUMBER_OPTIONS,
   USER_ACTION_TOGGLE_NUMBER_OPTION,
+  USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED,
 } from './constants';
 
 // create USER_ACTION_APPLY_NEXT_HINT
@@ -82,4 +83,11 @@ export const createUserActionToggleNumberOption = (number, solutionOptionsIndex,
   number,
   solutionOptionsIndex,
   handOptionsIndex,
+});
+
+// create USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED
+export const createUserActionTurnOffNumberInHandIfOnAndNotPlaced = (number, solutionOptionsIndex) => ({
+  userActionType: USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED,
+  number,
+  solutionOptionsIndex,
 });

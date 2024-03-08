@@ -90,6 +90,7 @@ import {
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
   USER_ACTION_RESET_NUMBER_OPTIONS,
   USER_ACTION_TOGGLE_NUMBER_OPTION,
+  USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED,
 } from '../shared/constants';
 
 import logIfDevEnv from '../shared/logIfDevEnv';
@@ -217,7 +218,7 @@ export const GameStateContextProvider = ({ children }) => {
       let cardOptions3;
       let cardOptions4;
       let cardOptions5;
-      if (userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED) {
+      if (userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED || userActionType === USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED) {
         [cardOptions1, cardOptions2, cardOptions3, cardOptions4, cardOptions5] = newSolutionOptions[solutionOptionsIndex];
       }
 
@@ -262,7 +263,6 @@ export const GameStateContextProvider = ({ children }) => {
 
         case USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED:
           // turn off the given suit to all cards in this hand for any cards for which their suit is on and not placed yet
-          // TODO - better to common this code with the above same code
           // card 1
           if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex) && countSuitsInCardOptions(cardOptions1) > 1) {
             newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
@@ -310,6 +310,35 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_TOGGLE_NUMBER_OPTION:
           // toggle number option
           newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED:
+          // turn off the given number to all cards in this hand for any cards for which their number is on and not placed yet
+          // card 1
+          if (getNumberOptionsValueInCardOptions(cardOptions1, number) && countNumbersInCardOptions(cardOptions1) > 1) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 0, newSolutionOptions);
+          }
+
+          // card 2
+          if (getNumberOptionsValueInCardOptions(cardOptions2, number) && countNumbersInCardOptions(cardOptions2) > 1) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions);
+          }
+
+          // card 3
+          if (getNumberOptionsValueInCardOptions(cardOptions3, number) && countNumbersInCardOptions(cardOptions3) > 1) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions);
+          }
+
+          // card 4
+          if (getNumberOptionsValueInCardOptions(cardOptions4, number) && countNumbersInCardOptions(cardOptions4) > 1) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions);
+          }
+
+          // card 5
+          if (getNumberOptionsValueInCardOptions(cardOptions5, number) && countNumbersInCardOptions(cardOptions5) > 1) {
+            newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions);
+          }
 
           break;
 
