@@ -367,6 +367,9 @@ const CardOptions = (props) => {
             if (e.shiftKey || e.ctrlKey) {
               // the shift key is down so turn off this number for all cards in this hand that are on and not yet placed
               turnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
+
+              // remember this userAction
+              addUserAction(createUserActionTurnOffNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex));
             } else {
               // toggle just this card's number
               logIfDevEnv(`onMouseEnterNumber ${number} calling toggleNumberOption`);
