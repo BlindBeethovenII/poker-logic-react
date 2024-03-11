@@ -146,6 +146,9 @@ export const GameStateContextProvider = ({ children }) => {
   const [userActions, setUserActions] = useState([]);
   const [userActionsIndex, setUserActionsIndex] = useState(-1);
 
+  // show the help pages
+  const [showHelp, setShowHelp] = useState(false);
+
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
   // --------------------------------------------------------------------- //
@@ -811,6 +814,13 @@ export const GameStateContextProvider = ({ children }) => {
   }, [showHiddenClues]);
 
   // -------------- //
+  // showHelp stuff //
+  // -------------- //
+  const toggleShowHelp = useCallback(() => {
+    setShowHelp(!showHelp);
+  }, [showHelp]);
+
+  // -------------- //
   // dev only stuff //
   // -------------- //
   const runDeveloperCode = useCallback(() => {
@@ -891,6 +901,10 @@ export const GameStateContextProvider = ({ children }) => {
     addUserAction,
     undoRedoUserAction,
 
+    // show help stuff
+    showHelp,
+    toggleShowHelp,
+
     // developer stuff
     runDeveloperCode,
   }), [
@@ -931,6 +945,8 @@ export const GameStateContextProvider = ({ children }) => {
     userActionsIndex,
     addUserAction,
     undoRedoUserAction,
+    showHelp,
+    toggleShowHelp,
     runDeveloperCode,
   ]);
 

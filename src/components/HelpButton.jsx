@@ -27,27 +27,16 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const UndoButton = () => {
-  const { userActionsIndex, undoRedoUserAction } = useContext(GameStateContext);
+const HelpButton = () => {
+  const { showHelp, toggleShowHelp } = useContext(GameStateContext);
 
-  // this button is only needed if there is at least one action we can undo
-  if (userActionsIndex < 0) {
-    // we are not needed
-    return false;
-  }
-
-  const callUndoRedoUserAction = () => {
-    // we are an undo userAction
-    undoRedoUserAction(true);
-  };
-
-  const helpLabel = 'Open Help';
+  const helpLabel = showHelp ? 'Close Help' : 'Open Help';
 
   return (
     <div style={divstyle}>
-      <Button onClick={callUndoRedoUserAction}>{helpLabel}</Button>
+      <Button onClick={toggleShowHelp}>{helpLabel}</Button>
     </div>
   );
 };
 
-export default UndoButton;
+export default HelpButton;
