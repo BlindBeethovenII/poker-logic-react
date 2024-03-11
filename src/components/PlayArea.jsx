@@ -110,7 +110,7 @@ const playbackgroundsvg = {
 };
 
 const PlayArea = () => {
-  const { solutionOptionsState } = useContext(GameStateContext);
+  const { solutionOptionsState, showHelp } = useContext(GameStateContext);
 
   let fillColour = 'rgb(85,107,47)';
   if (solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID) {
@@ -124,6 +124,18 @@ const PlayArea = () => {
     height: '622px',
     fill: fillColour,
   };
+
+  // if showing help - just show that
+  if (showHelp) {
+    return (
+      <div>
+        <svg style={playbackgroundsvg}>
+          <rect style={playbackgroundrect} />
+        </svg>
+        <HelpButton />
+      </div>
+    );
+  }
 
   return (
     <div>
