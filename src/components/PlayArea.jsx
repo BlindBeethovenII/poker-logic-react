@@ -32,6 +32,7 @@ import ClearNextHintButton from './ClearNextHintButton';
 import DeveloperButton from './DeveloperButton';
 import UndoButton from './UndoButton';
 import RedoButton from './RedoButton';
+import HelpButton from './HelpButton';
 
 import {
   SUIT_SPADES,
@@ -169,6 +170,7 @@ const PlayArea = () => {
       <DeveloperButton />
       <UndoButton />
       <RedoButton />
+      <HelpButton />
     </div>
   );
 };

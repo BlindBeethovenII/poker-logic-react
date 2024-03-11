@@ -7,7 +7,7 @@ import { colToLeft, rowToTop } from '../shared/card-functions';
 import GameStateContext from '../contexts/GameStateContext';
 
 const left = colToLeft(-0.2);
-const top = rowToTop(5.4);
+const top = rowToTop(6.3);
 
 const divstyle = {
   position: 'absolute',
@@ -27,27 +27,27 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const RedoButton = () => {
-  const { userActionsIndex, userActions, undoRedoUserAction } = useContext(GameStateContext);
+const UndoButton = () => {
+  const { userActionsIndex, undoRedoUserAction } = useContext(GameStateContext);
 
-  // this button is only needed the length of the userActions array is greater than one more than userActionsIndex
-  if (userActions.length - userActionsIndex < 2) {
+  // this button is only needed if there is at least one action we can undo
+  if (userActionsIndex < 0) {
     // we are not needed
     return false;
   }
 
   const callUndoRedoUserAction = () => {
-    // we are a redo userAction
-    undoRedoUserAction(false);
+    // we are an undo userAction
+    undoRedoUserAction(true);
   };
 
-  const redoLabel = `Redo (${userActions.length - userActionsIndex - 1})`;
+  const helpLabel = 'Open Help';
 
   return (
     <div style={divstyle}>
-      <Button onClick={callUndoRedoUserAction}>{redoLabel}</Button>
+      <Button onClick={callUndoRedoUserAction}>{helpLabel}</Button>
     </div>
   );
 };
 
-export default RedoButton;
+export default UndoButton;
