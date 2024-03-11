@@ -33,6 +33,7 @@ import DeveloperButton from './DeveloperButton';
 import UndoButton from './UndoButton';
 import RedoButton from './RedoButton';
 import HelpButton from './HelpButton';
+import HelpPageSlider from './HelpPageSlider';
 
 import {
   SUIT_SPADES,
@@ -132,6 +133,7 @@ const PlayArea = () => {
         <svg style={playbackgroundsvg}>
           <rect style={playbackgroundrect} />
         </svg>
+        <HelpPageSlider />
         <HelpButton />
       </div>
     );
