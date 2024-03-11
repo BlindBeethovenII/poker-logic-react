@@ -1,13 +1,17 @@
 {
   "files": {
-    "main.css": "/poker-logic-react/static/css/main.e6c13ad2.css",
-    "main.js": "/poker-logic-react/static/js/main.998c5ab6.js",
+    "main.css": "/poker-logic-react/static/css/main.f5971f07.css",
+    "main.js": "/poker-logic-react/static/js/main.8f224f9b.js",
+    "static/media/slick.svg": "/poker-logic-react/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/poker-logic-react/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/poker-logic-react/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/poker-logic-react/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/poker-logic-react/index.html",
-    "main.e6c13ad2.css.map": "/poker-logic-react/static/css/main.e6c13ad2.css.map",
-    "main.998c5ab6.js.map": "/poker-logic-react/static/js/main.998c5ab6.js.map"
+    "main.f5971f07.css.map": "/poker-logic-react/static/css/main.f5971f07.css.map",
+    "main.8f224f9b.js.map": "/poker-logic-react/static/js/main.8f224f9b.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.998c5ab6.js"
+    "static/css/main.f5971f07.css",
+    "static/js/main.8f224f9b.js"
   ]
 }
