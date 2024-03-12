@@ -146,8 +146,9 @@ export const GameStateContextProvider = ({ children }) => {
   const [userActions, setUserActions] = useState([]);
   const [userActionsIndex, setUserActionsIndex] = useState(-1);
 
-  // show the help pages
+  // help pages
   const [showHelp, setShowHelp] = useState(false);
+  const [currentHelpPage, setCurrentHelpPage] = useState(0);
 
   // --------------------------------------------------------------------- //
   // replacement setSolutionOptions that sets solutionOptionsState as well //
@@ -904,6 +905,8 @@ export const GameStateContextProvider = ({ children }) => {
     // show help stuff
     showHelp,
     toggleShowHelp,
+    currentHelpPage,
+    setCurrentHelpPage,
 
     // developer stuff
     runDeveloperCode,
@@ -947,6 +950,7 @@ export const GameStateContextProvider = ({ children }) => {
     undoRedoUserAction,
     showHelp,
     toggleShowHelp,
+    currentHelpPage,
     runDeveloperCode,
   ]);
 

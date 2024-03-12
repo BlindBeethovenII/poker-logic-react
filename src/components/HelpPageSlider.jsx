@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Slider from 'react-slick';
 
 import HelpPageIntro from './HelpPageIntro';
 import HelpPageCardsAvailable from './HelpPageCardsAvailable';
 import HelpPageCardOptions from './HelpPageCardOptions';
 
+import GameStateContext from '../contexts/GameStateContext';
+
 const HelpPageSlider = () => {
+  const { currentHelpPage, setCurrentHelpPage } = useContext(GameStateContext);
+
   const divstyle = {
     position: 'absolute',
     top: '4px',
@@ -14,9 +18,11 @@ const HelpPageSlider = () => {
     height: '622px',
   };
 
+  const afterChangeFunc = (current) => setCurrentHelpPage(current);
+
   return (
     <div style={divstyle}>
-      <Slider dots infinite={false} speed={500} slidesToShow={1} slidesToScroll={1}>
+      <Slider dots infinite={false} speed={500} slidesToShow={1} slidesToScroll={1} initialSlide={currentHelpPage} afterChange={afterChangeFunc}>
         <HelpPageIntro />
         <HelpPageCardsAvailable />
         <HelpPageCardOptions />
