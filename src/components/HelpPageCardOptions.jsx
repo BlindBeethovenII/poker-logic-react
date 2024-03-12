@@ -1,12 +1,13 @@
 import React from 'react';
 
 const HelpPageCardOptions = () => {
-  const divstyle = {
+  const centerstyle = {
+    textAlign: 'center',
   };
 
   return (
-    <div style={divstyle}>
-      <h3>Card Options Help</h3>
+    <div>
+      <h3 style={centerstyle}>Card Options Help</h3>
     </div>
   );
 };

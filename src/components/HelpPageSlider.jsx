@@ -2,6 +2,7 @@ import React from 'react';
 import Slider from 'react-slick';
 
 import HelpPageIntro from './HelpPageIntro';
+import HelpPageCardsAvailable from './HelpPageCardsAvailable';
 import HelpPageCardOptions from './HelpPageCardOptions';
 
 const HelpPageSlider = () => {
@@ -17,6 +18,7 @@ const HelpPageSlider = () => {
     <div style={divstyle}>
       <Slider dots infinite={false} speed={500} slidesToShow={1} slidesToScroll={1}>
         <HelpPageIntro />
+        <HelpPageCardsAvailable />
         <HelpPageCardOptions />
       </Slider>
     </div>
