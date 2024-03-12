@@ -1,6 +1,9 @@
 import React from 'react';
 import Slider from 'react-slick';
 
+import HelpPageIntro from './HelpPageIntro';
+import HelpPageCardOptions from './HelpPageCardOptions';
+
 const HelpPageSlider = () => {
   const divstyle = {
     position: 'absolute',
@@ -12,25 +15,9 @@ const HelpPageSlider = () => {
 
   return (
     <div style={divstyle}>
-      <Slider dots infinite speed={500} slidesToShow={1} slidesToScroll={1}>
-        <div>
-          <h3>Help Page 1</h3>
-        </div>
-        <div>
-          <h3>Help Page 2</h3>
-        </div>
-        <div>
-          <h3>Help Page 3</h3>
-        </div>
-        <div>
-          <h3>Help Page 4</h3>
-        </div>
-        <div>
-          <h3>Help Page 5</h3>
-        </div>
-        <div>
-          <h3>Help Page 6</h3>
-        </div>
+      <Slider dots infinite={false} speed={500} slidesToShow={1} slidesToScroll={1}>
+        <HelpPageIntro />
+        <HelpPageCardOptions />
       </Slider>
     </div>
   );
