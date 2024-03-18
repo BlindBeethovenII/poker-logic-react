@@ -9,6 +9,7 @@ import HelpPageClueTypes from './HelpPageClueTypes';
 import HelpPageCardOptions from './HelpPageCardOptions';
 import HelpPageHints from './HelpPageHints';
 import HelpPageGeneratingPuzzles from './HelpPageGeneratingPuzzles';
+import HelpPageUndoRedo from './HelpPageUndoRedo';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -36,6 +37,7 @@ const HelpPageSlider = () => {
         <HelpPageCardOptions />
         <HelpPageHints />
         <HelpPageGeneratingPuzzles />
+        <HelpPageUndoRedo />
       </Slider>
     </div>
   );
