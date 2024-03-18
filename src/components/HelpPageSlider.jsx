@@ -4,9 +4,10 @@ import Slider from 'react-slick';
 import HelpPageIntro from './HelpPageIntro';
 import HelpPageCardsAvailable from './HelpPageCardsAvailable';
 import HelpPageHandSorting from './HelpPageHandSorting';
-import HelpPageCardOptions from './HelpPageCardOptions';
 import HelpPageClues from './HelpPageClues';
 import HelpPageClueTypes from './HelpPageClueTypes';
+import HelpPageCardOptions from './HelpPageCardOptions';
+import HelpPageHints from './HelpPageHints';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -32,6 +33,7 @@ const HelpPageSlider = () => {
         <HelpPageClues />
         <HelpPageClueTypes />
         <HelpPageCardOptions />
+        <HelpPageHints />
       </Slider>
     </div>
   );
