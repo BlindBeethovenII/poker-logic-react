@@ -11,6 +11,7 @@ const HelpPageCardOptions = () => {
       <p>
         The top left of the play area shows all the remaining options for each card of each poker hand.
         By a process of deduction, using the clues and the cards available, you select or remove card options until the final puzzle solution is arrived at.
+        To line up the numbers of the card options in the UI, there is always one card number that is not included a puzzle. This missing number is random in each puzzle.
       </p>
       <p>A left click will select a card&apos;s suit or number.  A right click will remove that option for a card&apos;s suit or number.</p>
       <p>A right click is actually a toggle operation, so you can restore a suit or number option that way.</p>
