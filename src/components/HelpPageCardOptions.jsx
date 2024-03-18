@@ -7,7 +7,7 @@ const HelpPageCardOptions = () => {
 
   return (
     <div>
-      <h3 style={centerstyle}>Card Options Help</h3>
+      <h3 style={centerstyle}>Card Options</h3>
       <p>
         The top left of the play area shows all the remaining options for each card of each poker hand.
         By a process of deduction, using the clues and the cards available, you select or remove card options until the final puzzle solution is arrived at.
@@ -21,7 +21,11 @@ const HelpPageCardOptions = () => {
         Also, for example: if you know the hand is a Three of a Kind, and the first three cards are set to Jacks,
         then shift or control while right clicking on the Jack of the fourth card will also remove the Jack from the fifth card, but it will not remove the Jacks already set in the first three cards.
       </p>
-      <p>While the right button is down you can move around the number options and the right click action will be applied to each number encountered. This is simply a shortcut for making multiple right clicks.</p>
+      <p>
+        While the right button is down you can move around the number options and the right click action will be applied to each number encountered.
+        This is simply a shortcut for making multiple right clicks.
+        The shift or control key applies here as well.
+      </p>
     </div>
   );
 };
