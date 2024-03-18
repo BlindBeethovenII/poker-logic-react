@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 
 import HelpPageIntro from './HelpPageIntro';
 import HelpPageCardsAvailable from './HelpPageCardsAvailable';
+import HelpPageHandSorting from './HelpPageHandSorting';
 import HelpPageCardOptions from './HelpPageCardOptions';
 
 import GameStateContext from '../contexts/GameStateContext';
@@ -25,6 +26,7 @@ const HelpPageSlider = () => {
       <Slider dots infinite={false} speed={500} slidesToShow={1} slidesToScroll={1} initialSlide={currentHelpPage} afterChange={afterChangeFunc}>
         <HelpPageIntro />
         <HelpPageCardsAvailable />
+        <HelpPageHandSorting />
         <HelpPageCardOptions />
       </Slider>
     </div>
