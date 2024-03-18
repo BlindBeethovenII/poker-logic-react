@@ -10,6 +10,7 @@ import HelpPageCardOptions from './HelpPageCardOptions';
 import HelpPageHints from './HelpPageHints';
 import HelpPageGeneratingPuzzles from './HelpPageGeneratingPuzzles';
 import HelpPageUndoRedo from './HelpPageUndoRedo';
+import HelpPageTODOs from './HelpPageTODOs';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -38,6 +39,7 @@ const HelpPageSlider = () => {
         <HelpPageHints />
         <HelpPageGeneratingPuzzles />
         <HelpPageUndoRedo />
+        <HelpPageTODOs />
       </Slider>
     </div>
   );
