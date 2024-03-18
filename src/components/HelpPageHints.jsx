@@ -23,6 +23,7 @@ const HelpPageHints = () => {
         These clues are then whittled down to, what the application determines is, the fewest number of clues that can still solve the puzzle by using the hint system.
         Even then, sometimes you, as an intelligent human, can solve the puzzle without using all the clues. If that happens, you are using deductions not coded into the application.
       </p>
+      <h4>I hope to enhance the hint system to that it highlights the card options involved in the hint. This should make it easier to understand the hint being offered.</h4>
     </div>
   );
 };
