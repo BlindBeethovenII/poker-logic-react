@@ -5,6 +5,7 @@ import HelpPageIntro from './HelpPageIntro';
 import HelpPageCardsAvailable from './HelpPageCardsAvailable';
 import HelpPageHandSorting from './HelpPageHandSorting';
 import HelpPageCardOptions from './HelpPageCardOptions';
+import HelpPageClues from './HelpPageClues';
 
 import GameStateContext from '../contexts/GameStateContext';
 
@@ -27,6 +28,7 @@ const HelpPageSlider = () => {
         <HelpPageIntro />
         <HelpPageCardsAvailable />
         <HelpPageHandSorting />
+        <HelpPageClues />
         <HelpPageCardOptions />
       </Slider>
     </div>
