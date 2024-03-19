@@ -23,10 +23,9 @@ const HelpPageClueTypes = () => {
       <p>
         Some of the clues use the number value assigned to a card.
         For example, &quot;Hand 1 has all even numbers&quot;.
-        For these sorts of clues, an Ace is taken as 14 (hence even), a King 13 (hence odd), a Queen 12 (also even) and a Jack as 11 (also odd).
+        For these types of clues, an Ace is taken as 14 (hence even), a King 13 (hence odd), a Queen 12 (also even) and a Jack as 11 (also odd).
         All other cards are assigned their face value.
       </p>
-      <h4>TODO: Enhance this help page to explain each type fo clue.</h4>
     </div>
   );
 };

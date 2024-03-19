@@ -66,7 +66,7 @@ const handTypeToText = (handType) => {
     case HAND_TYPE_THREE_OF_A_KIND:
       return '3 of a Kind';
     case HAND_TYPE_TWO_PAIR:
-      return '2 Pairs';
+      return 'Two Pair';
     case HAND_TYPE_PAIR:
       return 'a Pair';
     case HAND_TYPE_HIGH_CARD:

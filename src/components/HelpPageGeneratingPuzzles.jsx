@@ -8,11 +8,11 @@ const HelpPageGeneratingPuzzles = () => {
   return (
     <div>
       <h3 style={centerstyle}>Generating Puzzles</h3>
-      <p>There are a number of hard-coded puzzles. These have been selected to include each type of clue is used. You may wish to start by solving these hard-coded puzzles first.</p>
+      <p>There are a number of hard-coded puzzles. These have been selected to demonstrate different types of clues. You may wish to start by solving these hard-coded puzzles first.</p>
       <p>
         You may also want to use the Show Solution button when you attempt your first few puzzles.
         This will allow you to peek at the solution as you attempt to work out the deductions required to solve the puzzle.
-        A peek while increase your confidence that you are on the right lines.
+        A peek may increase your confidence that you are on the right lines.
         Of course, when the play area turns red you know that you made a mistake. When you are more familiar with the puzzle, it is more fun to work out your mistake than to peek at the solution.
       </p>
       <p>Once you have solved all the hard-coded puzzles, you can generate a new random puzzle by using the New Random Puzzle button.</p>

@@ -16,8 +16,8 @@ const HelpPageClues = () => {
         If you right click on a clue that clue is moved to the list that is not seen.
         This is a way to &apos;hide&apos; the clues that you have already used and that you don&apos;t need to see anymore.
       </p>
-      <p>When you have moved one or more clues to the other list, then an Other Clues button appears so you can toggle which list of clues is shown.</p>
-      <h4>Note: This UI for the clues is not perfect.  Sometimes a long clue will appear over a button; and sometimes the list of clues goes beyond the play area. I intend to improve how clues are shown.</h4>
+      <p>When you have moved one or more clues to the other list, then an Other Clues button appears so you can toggle which list of clues is seen.</p>
+      <h4>Note: The clues UI is not perfect.  Sometimes a long clue will overlap with a button; and sometimes the list of clues goes beyond the play area. I intend to improve how clues are shown.</h4>
     </div>
   );
 };

@@ -17,7 +17,7 @@ const HelpPageIntro = () => {
       <p>I have always wanted to develop such a logic puzzle and this is my first attempt.</p>
       <p>The aim of Poker Logic is to work out the poker hand for each of the four players. When you have correctly done this the play area will turn gold.</p>
       <p>
-        These four players are currently just named as 1, 2, 3 and 4 and their hands are ordered.
+        Currently these four players are just named 1, 2, 3 and 4 and their hands are ordered.
         Player 1&apos;s hand always beats player 2&apos;s; player 2&apos;s hand always beats player 3&apos;s; and player 3&apos;s hand always beats player 4&apos;s.
       </p>
       <p>The ordering of the player&apos;s hands is hard-coded into each Poker Logic puzzle and so you will need to use this information to solve each puzzle.</p>
