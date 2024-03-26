@@ -114,7 +114,9 @@ const PlayArea = () => {
   const { solutionOptionsState, showHelp } = useContext(GameStateContext);
 
   let fillColour = 'rgb(85,107,47)';
-  if (solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID) {
+  if (showHelp) {
+    fillColour = 'rgb(248,244,240)';
+  } else if (solutionOptionsState === SOLUTION_OPTIONS_STATE_INVALID) {
     fillColour = 'red';
   } else if (solutionOptionsState === SOLUTION_OPTIONS_STATE_DONE) {
     fillColour = 'rgb(248,214,100)';
