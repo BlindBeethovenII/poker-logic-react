@@ -16,7 +16,7 @@ const HelpPageCardOptions = () => {
       <p>A left click will select a card&apos;s suit or number.  A right click will remove that option for a card&apos;s suit or number.</p>
       <p>A right click is actually a toggle operation, so you can restore a suit or number option that way.</p>
       <p>If you make a wrong selection or removal then the play area will turn red and the word &quot;OK&quot; will turn to &quot;INVALID&quot;. Just use the Undo button and try again.</p>
-      <p>Holding the shift or control key while making a right click on a card option will apply that action to all cards in the poker hand that do not already have the corresponding suit or number already set.</p>
+      <p>Holding the shift or control key while making a click on a card option will apply that action to all cards in the poker hand that do not already have the corresponding suit or number already set.</p>
       <p>For example: if you know a hand does not have a Heart in any of its cards, then hold the shift or control key while right clicking on a Heart in that hand and all the Hearts will toggle off.</p>
       <p>
         Also, for example: if you know the hand is a Three of a Kind, and the first three cards are set to Jacks,
