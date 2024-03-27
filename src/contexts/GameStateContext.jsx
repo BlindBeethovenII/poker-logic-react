@@ -91,6 +91,7 @@ import {
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
   USER_ACTION_RESET_NUMBER_OPTIONS,
   USER_ACTION_TOGGLE_NUMBER_OPTION,
+  USER_ACTION_TURN_ON_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED,
 } from '../shared/constants';
 
@@ -225,6 +226,7 @@ export const GameStateContextProvider = ({ children }) => {
       let cardOptions5;
       if (userActionType === USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED
         || userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED
+        || userActionType === USER_ACTION_TURN_ON_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED
         || userActionType === USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED) {
         [cardOptions1, cardOptions2, cardOptions3, cardOptions4, cardOptions5] = newSolutionOptions[solutionOptionsIndex];
       }
@@ -345,6 +347,35 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_TOGGLE_NUMBER_OPTION:
           // toggle number option
           newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_TURN_ON_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED:
+          // turn on the given number to all cards in this hand for any cards which does not have their number set yet, and for which this number is possible
+          // card 1
+          if (getNumberOptionsValueInCardOptions(cardOptions1, number) && countNumbersInCardOptions(cardOptions1) > 1) {
+            newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 0, newSolutionOptions);
+          }
+
+          // card 2
+          if (getNumberOptionsValueInCardOptions(cardOptions2, number) && countNumbersInCardOptions(cardOptions2) > 1) {
+            newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions);
+          }
+
+          // card 3
+          if (getNumberOptionsValueInCardOptions(cardOptions3, number) && countNumbersInCardOptions(cardOptions3) > 1) {
+            newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions);
+          }
+
+          // card 4
+          if (getNumberOptionsValueInCardOptions(cardOptions4, number) && countNumbersInCardOptions(cardOptions4) > 1) {
+            newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions);
+          }
+
+          // card 5
+          if (getNumberOptionsValueInCardOptions(cardOptions5, number) && countNumbersInCardOptions(cardOptions5) > 1) {
+            newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions);
+          }
 
           break;
 
@@ -546,6 +577,51 @@ export const GameStateContextProvider = ({ children }) => {
     const cardOptions5 = solutionOptions[solutionOptionsIndex][4];
     if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
       newSolutionOptions = toggleSuitOptionInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+      changeMade = true;
+    }
+
+    if (changeMade) {
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+    }
+  }, [solutionOptions, solution, cardsAvailable]);
+
+  // turn on the given number to all cards in this hand for any cards which does not have their number set yet, and for which this number is possible
+  const turnOnNumberInHandIfOnAndNotPlaced = useCallback((number, solutionOptionsIndex) => {
+    let newSolutionOptions = solutionOptions;
+    let changeMade = false;
+
+    // card 1
+    const cardOptions1 = solutionOptions[solutionOptionsIndex][0];
+    if (getNumberOptionsValueInCardOptions(cardOptions1, number) && countNumbersInCardOptions(cardOptions1) > 1) {
+      newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 0, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 2
+    const cardOptions2 = solutionOptions[solutionOptionsIndex][1];
+    if (getNumberOptionsValueInCardOptions(cardOptions2, number) && countNumbersInCardOptions(cardOptions2) > 1) {
+      newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 3
+    const cardOptions3 = solutionOptions[solutionOptionsIndex][2];
+    if (getNumberOptionsValueInCardOptions(cardOptions3, number) && countNumbersInCardOptions(cardOptions3) > 1) {
+      newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 4
+    const cardOptions4 = solutionOptions[solutionOptionsIndex][3];
+    if (getNumberOptionsValueInCardOptions(cardOptions4, number) && countNumbersInCardOptions(cardOptions4) > 1) {
+      newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 5
+    const cardOptions5 = solutionOptions[solutionOptionsIndex][4];
+    if (getNumberOptionsValueInCardOptions(cardOptions5, number) && countNumbersInCardOptions(cardOptions5) > 1) {
+      newSolutionOptions = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions);
       changeMade = true;
     }
 
@@ -946,6 +1022,7 @@ export const GameStateContextProvider = ({ children }) => {
     toggleNumberOption,
     turnOnSuitInHandIfOnAndNotPlaced,
     turnOffSuitInHandIfOnAndNotPlaced,
+    turnOnNumberInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,
@@ -1015,6 +1092,7 @@ export const GameStateContextProvider = ({ children }) => {
     toggleNumberOption,
     turnOnSuitInHandIfOnAndNotPlaced,
     turnOffSuitInHandIfOnAndNotPlaced,
+    turnOnNumberInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     resetSolutionOptions,

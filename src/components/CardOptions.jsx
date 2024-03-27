@@ -33,6 +33,7 @@ import {
   createUserActionSetNumberOptionOnly,
   createUserActionResetNumberOptions,
   createUserActionToggleNumberOption,
+  createUserActionTurnOnNumberInHandIfOnAndNotPlaced,
   createUserActionTurnOffNumberInHandIfOnAndNotPlaced,
 } from '../shared/user-action-functions';
 
@@ -53,8 +54,8 @@ const CardOptions = (props) => {
     turnOffSuitInHandIfOnAndNotPlaced,
     resetSuitOptions,
     setNumberOptionOnly,
-    setNumberOptionOnlyToCardsInHand,
     toggleNumberOption,
+    turnOnNumberInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
     addUserAction,
@@ -355,10 +356,10 @@ const CardOptions = (props) => {
 
         // if the shift key is down, then set for all cards in this hand
         if (e.shiftKey || e.ctrlKey) {
-          setNumberOptionOnlyToCardsInHand(number, solutionOptionsIndex);
+          turnOnNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex);
 
           // remember this userAction
-          // TODO addUserAction(createUserActionSetNumberOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex));
+          addUserAction(createUserActionTurnOnNumberInHandIfOnAndNotPlaced(number, solutionOptionsIndex));
         } else {
           // just set for this card
           setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
