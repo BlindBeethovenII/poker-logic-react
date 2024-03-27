@@ -173,6 +173,12 @@ const CardOptions = (props) => {
     // set this suit as the only selected suit
     const suitSelectThisOptionOnly = (e) => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
+
+      // if this suit is already selected, then do nothing
+      if (isSingleSuitOption) {
+        logIfDevEnv(`suitSelectThisOptionOnly ${suit} already selected, doing nothing`);
+        return;
+      }
       // if the shift key is down, then set for all cards in this hand
       if (e.shiftKey || e.ctrlKey) {
         setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
