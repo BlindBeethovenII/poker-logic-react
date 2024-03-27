@@ -268,7 +268,8 @@ const CardOptions = (props) => {
   // we now go through the numbers in the order we want to draw them in CardOptions, which is A,K,Q,J, ... 5,4,3,2, which is NUMBERS_SORTED
   NUMBERS_SORTED.forEach((number) => {
     if (number !== missingNumber) {
-      const faded = !numberOptions[number - 1];
+      const numberIsOption = numberOptions[number - 1];
+      const faded = !numberIsOption;
 
       // is this the single number option? remember the missingNumber option is always false
       const isSingleNumberOption = (numberOptionsCount === 1 && numberOptions[number - 1]);
@@ -339,9 +340,15 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
-        // if this suit is already selected, then do nothing
+        // if this number is already selected, then do nothing
         if (isSingleNumberOption) {
           logIfDevEnv(`numberSelectThisOptionOnly ${number} already selected, doing nothing`);
+          return;
+        }
+
+        // if this number option is not possible, then do nothing
+        if (!numberIsOption) {
+          logIfDevEnv(`numberSelectThisOptionOnly ${number} not possible, doing nothing`);
           return;
         }
 
