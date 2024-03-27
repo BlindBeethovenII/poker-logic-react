@@ -245,8 +245,8 @@ const CardOptions = (props) => {
       </div>
     );
 
-    if (numberOptionsCount === 1) {
-      // there is only one number
+    if (numberOptionsCount === 1 && isSingleSuitOption) {
+      // there is only one number option and only one suit option
       if (suitIsSingleOption) {
         // and we are the single suit option - so we are needed - but other suits are not
         components.push(suitDiv);
