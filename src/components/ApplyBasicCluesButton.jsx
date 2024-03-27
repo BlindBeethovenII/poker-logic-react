@@ -18,13 +18,13 @@ const divstyle = {
 };
 
 const Button = styled.button`
-  background: #761d38;
+  background: grey;
   color: white;
   font-size: 1em;
   margin: 1em;
   padding: 0.25em 1em;
-  border: 2px solid #761d38;
-  border-radius: 3px;
+  border: 3px solid black;
+  border-radius: 8px;
 `;
 
 const ApplyBasicCluesButton = () => {
