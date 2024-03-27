@@ -124,6 +124,7 @@ const CardOptions = (props) => {
   const suitOptionsCount = suitOptions.reduce(countAvailableOptionsReducer);
   const numberOptionsCount = numberOptions.reduce(countAvailableOptionsReducer);
   // console.log(`numberOptionsCount = ${numberOptionsCount}`);
+  const isSingleSuitOption = suitOptionsCount === 1;
 
   // now work through the suits and draw each, drawing faded if not selected
   for (let suitOptionsIndex = 0; suitOptionsIndex < 4; suitOptionsIndex += 1) {
@@ -132,10 +133,10 @@ const CardOptions = (props) => {
     const faded = !suitIsOption;
 
     // is this the single suit option?
-    const isSingleSuitOption = (suitOptionsCount === 1 && suitIsOption);
+    const suitIsSingleOption = (isSingleSuitOption && suitIsOption);
 
     // also care if we are the single suit option when there is only one number option left (remember missingNumber option always false)
-    const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 1;
+    const isSingleSuitAndNumberOption = suitIsSingleOption && numberOptionsCount === 1;
 
     let height = isSingleSuitAndNumberOption ? '42px' : '21px';
     if (suit === SUIT_SPADES) {
@@ -155,7 +156,7 @@ const CardOptions = (props) => {
 
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
 
-    // left offset depends on if there is just a single suit and numbe option left
+    // left offset depends on if there is just a single suit and number option left
     let leftOffset = internalCol * colInternalSize;
     if (isSingleSuitAndNumberOption) {
       leftOffset = 0;
@@ -173,10 +174,17 @@ const CardOptions = (props) => {
       logIfDevEnv(`suitSelectThisOptionOnly ${suit}`);
 
       // if this suit is already selected, then do nothing
-      if (isSingleSuitOption) {
+      if (suitIsSingleOption) {
         logIfDevEnv(`suitSelectThisOptionOnly ${suit} already selected, doing nothing`);
         return;
       }
+
+      // if this suit option is not possible, then do nothing
+      if (!suitIsOption) {
+        logIfDevEnv(`suitSelectThisOptionOnly ${suit} not possible, doing nothing`);
+        return;
+      }
+
       // if the shift key is down, then set for all cards in this hand
       if (e.shiftKey || e.ctrlKey) {
         setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
@@ -200,7 +208,7 @@ const CardOptions = (props) => {
       e.preventDefault();
 
       // if this is the single suit option, then toggle means make all options available again
-      if (isSingleSuitOption) {
+      if (suitIsSingleOption) {
         resetSuitOptions(solutionOptionsIndex, handOptionsIndex);
 
         // remember this userAction
@@ -237,8 +245,14 @@ const CardOptions = (props) => {
       </div>
     );
 
-    // only keep a component if the suit is an option, so we can click on it - this removes the ability to click on 'invisible' suit
-    if (suitIsOption) {
+    if (numberOptionsCount === 1) {
+      // there is only one number
+      if (suitIsSingleOption) {
+        // and we are the single suit option - so we are needed - but other suits are not
+        components.push(suitDiv);
+      }
+    } else {
+      // all suit options are needed in this case
       components.push(suitDiv);
     }
 
