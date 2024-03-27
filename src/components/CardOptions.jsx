@@ -128,10 +128,11 @@ const CardOptions = (props) => {
   // now work through the suits and draw each, drawing faded if not selected
   for (let suitOptionsIndex = 0; suitOptionsIndex < 4; suitOptionsIndex += 1) {
     const suit = cardSuitIndexToSuit(suitOptionsIndex);
-    const faded = !suitOptions[suitOptionsIndex];
+    const suitIsOption = suitOptions[suitOptionsIndex];
+    const faded = !suitIsOption;
 
     // is this the single suit option?
-    const isSingleSuitOption = (suitOptionsCount === 1 && suitOptions[suitOptionsIndex]);
+    const isSingleSuitOption = (suitOptionsCount === 1 && suitIsOption);
 
     // also care if we are the single suit option when there is only one number option left (remember missingNumber option always false)
     const isSingleSuitAndNumberOption = isSingleSuitOption && numberOptionsCount === 1;
@@ -154,13 +155,10 @@ const CardOptions = (props) => {
 
     const cardsuit = <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />;
 
-    // left offset depends on if we are the singleSuitOption, with the single suit option always in internal col index 3
-    // or if there is just a single suit and numbe option left
+    // left offset depends on if there is just a single suit and numbe option left
     let leftOffset = internalCol * colInternalSize;
     if (isSingleSuitAndNumberOption) {
       leftOffset = 0;
-    } else if (isSingleSuitOption) {
-      leftOffset = 3 * colInternalSize;
     }
 
     const suitDivStyle = {
@@ -239,8 +237,8 @@ const CardOptions = (props) => {
       </div>
     );
 
-    // only keep a component if more than one option, or this is the single suit option
-    if (suitOptionsCount > 1 || isSingleSuitOption) {
+    // only keep a component if the suit is an option, so we can click on it - this removes the ability to click on 'invisible' suit
+    if (suitIsOption) {
       components.push(suitDiv);
     }
 
