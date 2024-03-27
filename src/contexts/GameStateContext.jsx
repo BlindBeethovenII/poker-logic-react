@@ -85,6 +85,7 @@ import {
   USER_ACTION_SET_SUIT_OPTION_ONLY,
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   USER_ACTION_RESET_SUIT_OPTIONS,
+  USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
@@ -222,7 +223,9 @@ export const GameStateContextProvider = ({ children }) => {
       let cardOptions3;
       let cardOptions4;
       let cardOptions5;
-      if (userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED || userActionType === USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED) {
+      if (userActionType === USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED
+        || userActionType === USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED
+        || userActionType === USER_ACTION_TURN_OFF_NUMBER_IN_HAND_IF_ON_AND_NOT_PLACED) {
         [cardOptions1, cardOptions2, cardOptions3, cardOptions4, cardOptions5] = newSolutionOptions[solutionOptionsIndex];
       }
 
@@ -262,6 +265,34 @@ export const GameStateContextProvider = ({ children }) => {
         case USER_ACTION_RESET_SUIT_OPTIONS:
           // reset suit options
           newSolutionOptions = resetSuitOptionsInSolutionOptions(solutionOptionsIndex, handOptionsIndex, newSolutionOptions);
+
+          break;
+
+        case USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED:
+          // turn on the given suit to all cards in this hand for any cards which does not have their suit set yet, and for which this suit is possible
+          // card 1
+          if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex) && countSuitsInCardOptions(cardOptions1) > 1) {
+            newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
+          }
+
+          // card 2
+          if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex) && countSuitsInCardOptions(cardOptions2) > 1) {
+            newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions);
+          }
+
+          if (getSuitOptionsValueInCardOptions(cardOptions3, suitOptionsIndex) && countSuitsInCardOptions(cardOptions3) > 1) {
+            newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
+          }
+
+          // card 4
+          if (getSuitOptionsValueInCardOptions(cardOptions4, suitOptionsIndex) && countSuitsInCardOptions(cardOptions4) > 1) {
+            newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
+          }
+
+          // card 5
+          if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
+            newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+          }
 
           break;
 
@@ -415,10 +446,67 @@ export const GameStateContextProvider = ({ children }) => {
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
   }, [solutionOptions, solution, cardsAvailable]);
 
+  // set the given number to all cards in this hand
+  const setNumberOptionOnlyToCardsInHand = useCallback((number, solutionOptionsIndex) => {
+    const newSolutionOptions0 = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 0, solutionOptions);
+    const newSolutionOptions1 = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 1, newSolutionOptions0);
+    const newSolutionOptions2 = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 2, newSolutionOptions1);
+    const newSolutionOptions3 = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 3, newSolutionOptions2);
+    const newSolutionOptions4 = setNumberOptionOnlyInSolutionOptions(number, solutionOptionsIndex, 4, newSolutionOptions3);
+    setSolutionOptions(newSolutionOptions4, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
+
   // toggle the given number
   const toggleNumberOption = useCallback((number, solutionOptionsIndex, handOptionsIndex) => {
     const newSolutionOptions = toggleNumberOptionInSolutionOptions(number, solutionOptionsIndex, handOptionsIndex, solutionOptions);
     setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+  }, [solutionOptions, solution, cardsAvailable]);
+
+  // turn on the given suit to all cards in this hand for any cards which does not have their suit set yet, and for which this suit is possible
+  const turnOnSuitInHandIfOnAndNotPlaced = useCallback((suitOptionsIndex, solutionOptionsIndex) => {
+    let newSolutionOptions = solutionOptions;
+    let changeMade = false;
+
+    // TODO - could convert this to a loop of card option indexes 0, 1, 2, 3, 4
+
+    // card 1
+    const cardOptions1 = solutionOptions[solutionOptionsIndex][0];
+    if (getSuitOptionsValueInCardOptions(cardOptions1, suitOptionsIndex) && countSuitsInCardOptions(cardOptions1) > 1) {
+      newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 0, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 2
+    const cardOptions2 = solutionOptions[solutionOptionsIndex][1];
+    if (getSuitOptionsValueInCardOptions(cardOptions2, suitOptionsIndex) && countSuitsInCardOptions(cardOptions2) > 1) {
+      newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 1, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 3
+    const cardOptions3 = solutionOptions[solutionOptionsIndex][2];
+    if (getSuitOptionsValueInCardOptions(cardOptions3, suitOptionsIndex) && countSuitsInCardOptions(cardOptions3) > 1) {
+      newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 2, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 4
+    const cardOptions4 = solutionOptions[solutionOptionsIndex][3];
+    if (getSuitOptionsValueInCardOptions(cardOptions4, suitOptionsIndex) && countSuitsInCardOptions(cardOptions4) > 1) {
+      newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 3, newSolutionOptions);
+      changeMade = true;
+    }
+
+    // card 5
+    const cardOptions5 = solutionOptions[solutionOptionsIndex][4];
+    if (getSuitOptionsValueInCardOptions(cardOptions5, suitOptionsIndex) && countSuitsInCardOptions(cardOptions5) > 1) {
+      newSolutionOptions = setSuitOptionOnlyInSolutionOptions(suitOptionsIndex, solutionOptionsIndex, 4, newSolutionOptions);
+      changeMade = true;
+    }
+
+    if (changeMade) {
+      setSolutionOptions(newSolutionOptions, solution.solutionHands, cardsAvailable);
+    }
   }, [solutionOptions, solution, cardsAvailable]);
 
   // turn off the given suit to all cards in this hand for any cards for which their suit is on and not placed yet
@@ -854,7 +942,9 @@ export const GameStateContextProvider = ({ children }) => {
     toggleSuitOptionToCardsInHand,
     resetSuitOptions,
     setNumberOptionOnly,
+    setNumberOptionOnlyToCardsInHand,
     toggleNumberOption,
+    turnOnSuitInHandIfOnAndNotPlaced,
     turnOffSuitInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
@@ -921,7 +1011,9 @@ export const GameStateContextProvider = ({ children }) => {
     toggleSuitOptionToCardsInHand,
     resetSuitOptions,
     setNumberOptionOnly,
+    setNumberOptionOnlyToCardsInHand,
     toggleNumberOption,
+    turnOnSuitInHandIfOnAndNotPlaced,
     turnOffSuitInHandIfOnAndNotPlaced,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,

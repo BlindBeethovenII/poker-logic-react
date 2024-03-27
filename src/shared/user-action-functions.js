@@ -6,6 +6,7 @@ import {
   USER_ACTION_SET_SUIT_OPTION_ONLY,
   USER_ACTION_SET_SUIT_OPTION_ONLY_TO_CARDS_IN_HAND,
   USER_ACTION_RESET_SUIT_OPTIONS,
+  USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
   USER_ACTION_TOGGLE_SUIT_OPTION,
   USER_ACTION_SET_NUMBER_OPTION_ONLY,
@@ -45,6 +46,13 @@ export const createUserActionResetSuitOptions = (solutionOptionsIndex, handOptio
   userActionType: USER_ACTION_RESET_SUIT_OPTIONS,
   solutionOptionsIndex,
   handOptionsIndex,
+});
+
+// create USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED
+export const createUserActionTurnOnSuitInHandIfOnAndNotPlaced = (suitOptionsIndex, solutionOptionsIndex) => ({
+  userActionType: USER_ACTION_TURN_ON_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED,
+  suitOptionsIndex,
+  solutionOptionsIndex,
 });
 
 // create USER_ACTION_TURN_OFF_SUIT_IN_HAND_IF_ON_AND_NOT_PLACED

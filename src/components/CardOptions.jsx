@@ -26,8 +26,8 @@ import {
 
 import {
   createUserActionSetSuitOptionOnly,
-  createUserActionSetSuitOptionOnlyToCardsInHand,
   createUserActionResetSuitOptions,
+  createUserActionTurnOnSuitInHandIfOnAndNotPlaced,
   createUserActionTurnOffSuitInHandIfOnAndNotPlaced,
   createUserActionToggleSuitOption,
   createUserActionSetNumberOptionOnly,
@@ -48,11 +48,12 @@ const CardOptions = (props) => {
     missingNumber,
     solutionOptions,
     setSuitOptionOnly,
-    setSuitOptionOnlyToCardsInHand,
     toggleSuitOption,
+    turnOnSuitInHandIfOnAndNotPlaced,
     turnOffSuitInHandIfOnAndNotPlaced,
     resetSuitOptions,
     setNumberOptionOnly,
+    setNumberOptionOnlyToCardsInHand,
     toggleNumberOption,
     turnOffNumberInHandIfOnAndNotPlaced,
     resetNumberOptions,
@@ -185,12 +186,12 @@ const CardOptions = (props) => {
         return;
       }
 
-      // if the shift key is down, then set for all cards in this hand
+      // if the shift key is down, then set for all cards in this hand that do not have their suit set yet, and for which this suit is possible
       if (e.shiftKey || e.ctrlKey) {
-        setSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex);
+        turnOnSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex);
 
         // remember this userAction
-        addUserAction(createUserActionSetSuitOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex));
+        addUserAction(createUserActionTurnOnSuitInHandIfOnAndNotPlaced(suitOptionsIndex, solutionOptionsIndex));
       } else {
         // just set for this card
         setSuitOptionOnly(suitOptionsIndex, solutionOptionsIndex, handOptionsIndex);
@@ -337,7 +338,7 @@ const CardOptions = (props) => {
 
       // set this number as the only selected number
       // note: no use for selecting this number of all cards in this hand - there is no such poker hand
-      const numberSelectThisOptionOnly = () => {
+      const numberSelectThisOptionOnly = (e) => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
         // if this number is already selected, then do nothing
@@ -352,10 +353,19 @@ const CardOptions = (props) => {
           return;
         }
 
-        setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
+        // if the shift key is down, then set for all cards in this hand
+        if (e.shiftKey || e.ctrlKey) {
+          setNumberOptionOnlyToCardsInHand(number, solutionOptionsIndex);
 
-        // remember this userAction
-        addUserAction(createUserActionSetNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex));
+          // remember this userAction
+          // TODO addUserAction(createUserActionSetNumberOptionOnlyToCardsInHand(suitOptionsIndex, solutionOptionsIndex));
+        } else {
+          // just set for this card
+          setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
+
+          // remember this userAction
+          addUserAction(createUserActionSetNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex));
+        }
       };
 
       // toggle the number option if the right button is selected
