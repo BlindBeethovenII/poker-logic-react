@@ -339,6 +339,12 @@ const CardOptions = (props) => {
       const numberSelectThisOptionOnly = () => {
         logIfDevEnv(`numberSelectThisOptionOnly ${number}`);
 
+        // if this suit is already selected, then do nothing
+        if (isSingleNumberOption) {
+          logIfDevEnv(`numberSelectThisOptionOnly ${number} already selected, doing nothing`);
+          return;
+        }
+
         setNumberOptionOnly(number, solutionOptionsIndex, handOptionsIndex);
 
         // remember this userAction
